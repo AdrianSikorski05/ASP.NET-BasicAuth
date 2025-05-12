@@ -1,0 +1,10 @@
+@RestFullApiTest_HostAddress = http://localhost:5102
+
+GET {{RestFullApiTest_HostAddress}}/weatherforecast/
+Accept: application/json
+
+### Get all books
+GET {{RestFullApiTest_HostAddress}}/Books
+Accept: application/json
+
+
