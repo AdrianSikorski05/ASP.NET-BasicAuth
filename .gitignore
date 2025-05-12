@@ -1,0 +1,27 @@
+﻿################################################################################
+# Ten plik .gitignore został utworzony automatycznie przez Microsoft(R) Visual Studio.
+################################################################################
+
+*.dll
+*.dylib
+*.so
+*.db-shm
+*.db-wal
+*.db
+*.vsidx
+*.wsuo
+*.sqlite
+*.a
+*.cache
+*.props
+*.json
+*.txt
+*.editorconfig
+*.Up2Date
+*.exe
+/RestFullApiTest/obj/Debug/net8.0
+/RestFullApiTest/obj/Release/net8.0
+/RestFullApiTest/obj
+/RestFullApiTest/Properties
+/RestFullApiTest/bin/Debug/net8.0
+/.vs
