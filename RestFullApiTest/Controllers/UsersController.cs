@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace RestFullApiTest
 {
     [Authorize(AuthenticationSchemes = "BasicAthentication")]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class UsersController(IUserService userService, ILogger<UsersController> logger) : ControllerBase
     {
