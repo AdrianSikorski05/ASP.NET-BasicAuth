@@ -9,24 +9,35 @@ namespace RestFullApiTest
     [Authorize(AuthenticationSchemes = "BasicAthentication")]
     [Route("[controller]")]
     [ApiController]
-    public class BooksController : ControllerBase
+    public class BooksController(IBookService service, ILogger<BooksController> logger) : ControllerBase
     {
-        private readonly IBookService _service;
-
-        public BooksController(IBookService service)
-        {
-            _service = service;
-        }
 
         /// <summary>
         /// Pobiera wszystkie książki
         /// </summary>
         /// <returns>zwraca obiekt Ok</returns>
-        [HttpGet(Name ="Books")]
+        [HttpGet(Name = "Books")]
         public async Task<ActionResult<IEnumerable<BookDto>>> Get()
         {
-            var books = await _service.GetAllAsync();
-            return Ok(books);
+            try
+            {
+                var books = await service.GetAllAsync();
+                if (books == null)
+                { 
+                    logger.LogInformation("Books not founds.");
+                    return NotFound("Books not founds.");
+                }
+                else
+                {
+                    logger.LogInformation($"Founds {books.ToList().Count} books");
+                    return Ok(books);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error while getting books");
+                return StatusCode(500, "Internal server error");
+            }
         }
 
         //// GET: api/books/5
@@ -44,11 +55,32 @@ namespace RestFullApiTest
         [HttpPost(Name = "AddBook")]
         public async Task<ActionResult> Post([FromBody] CreateBookDto book)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    logger.LogError("Model state is not valid");
+                    return BadRequest(ModelState);
+                }
 
-            var id = await _service.AddBook(book);
-            return CreatedAtAction(nameof(Get), new { id }, null);
+                var newBook = await service.AddBook(book);
+                if (newBook == null)
+                {
+                    logger.LogError("Book not created");
+                    return BadRequest("Book not created");
+                }
+                else
+                {
+                    logger.LogInformation($"Book {newBook.Title} created");
+                    return CreatedAtAction(nameof(Get), new { newBook }, null);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error while adding book");
+                return StatusCode(500, "Internal server error");
+            }
         }
 
         //// PUT: api/books/5
