@@ -36,7 +36,7 @@ try
 
     //// === Basic Auth ===
     //builder.Services.AddAuthentication("Basic")
-    //    .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAthentication", null);
+    //    .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
 
 
     // === JWT Auth ===
@@ -128,6 +128,7 @@ try
 
     app.UseHttpsRedirection();
 
+    app.UseMiddleware<ExceptionHandlingMiddleware>();
     app.UseAuthentication();
     app.UseAuthorization();
 

@@ -6,7 +6,7 @@ using RestFullApiTest.Logic.Services.Interfaces;
 
 namespace RestFullApiTest
 {
-    [Authorize(AuthenticationSchemes = "BasicAthentication")]
+    [Authorize(AuthenticationSchemes = "Bearer")]
     [Route("[controller]")]
     [ApiController]
     public class BooksController(IBookService service, ILogger<BooksController> logger) : ControllerBase
@@ -17,27 +17,20 @@ namespace RestFullApiTest
         /// </summary>
         /// <returns>zwraca obiekt Ok</returns>
         [HttpGet(Name = "Books")]
-        public async Task<ActionResult<IEnumerable<BookDto>>> Get()
+        public async Task<ActionResult<ResponseResult>> Get()
         {
-            try
+            var books = await service.GetAllAsync();
+            if (books == null)
             {
-                var books = await service.GetAllAsync();
-                if (books == null)
-                { 
-                    logger.LogInformation("Books not founds.");
-                    return NotFound("Books not founds.");
-                }
-                else
-                {
-                    logger.LogInformation($"Founds {books.ToList().Count} books");
-                    return Ok(books);
-                }
+                logger.LogInformation("Books not founds.");
+                return NotFound(ResponseResult.NotFound("Books not founds."));
             }
-            catch (Exception ex)
+            else
             {
-                logger.LogError(ex, "Error while getting books");
-                return StatusCode(500, "Internal server error");
+                logger.LogInformation($"Founds {books.ToList().Count} books");
+                return Ok(ResponseResult.Success("OK", books));
             }
+
         }
 
         //// GET: api/books/5
@@ -53,33 +46,24 @@ namespace RestFullApiTest
 
         // POST: api/books
         [HttpPost(Name = "AddBook")]
-        public async Task<ActionResult> Post([FromBody] CreateBookDto book)
+        public async Task<ActionResult<ResponseResult>> Post([FromBody] CreateBookDto book)
         {
-            try
+            if (!ModelState.IsValid)
             {
-                if (!ModelState.IsValid)
-                {
-                    logger.LogError("Model state is not valid");
-                    return BadRequest(ModelState);
-                }
-
-                var newBook = await service.AddBook(book);
-                if (newBook == null)
-                {
-                    logger.LogError("Book not created");
-                    return BadRequest("Book not created");
-                }
-                else
-                {
-                    logger.LogInformation($"Book {newBook.Title} created");
-                    return CreatedAtAction(nameof(Get), new { newBook }, null);
-                }
-
+                logger.LogError("Model state is not valid");
+                return  BadRequest(ResponseResult.BadRequest("Model state is not valid", ModelState));
             }
-            catch (Exception ex)
+
+            var newBook = await service.AddBook(book);
+            if (newBook == null)
             {
-                logger.LogError(ex, "Error while adding book");
-                return StatusCode(500, "Internal server error");
+                logger.LogError("Book not created");
+                return BadRequest(ResponseResult.BadRequest("Book not created"));
+            }
+            else
+            {
+                logger.LogInformation($"Book {newBook.Title} created");
+                return Ok(ResponseResult.Success("Book created", newBook));
             }
         }
 

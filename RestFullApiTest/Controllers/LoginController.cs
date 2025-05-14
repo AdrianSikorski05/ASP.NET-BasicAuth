@@ -10,22 +10,22 @@ namespace RestFullApiTest.Controllers
     {
         [AllowAnonymous]
         [HttpPost(Name = "Login")]
-        public async Task<IActionResult> Login([FromBody] LoginDto dto, [FromServices] IUserRepository repo, [FromServices] JwtService jwt)
+        public async Task<ActionResult<ResponseResult>> Login([FromBody] LoginDto dto, [FromServices] IUserRepository repo, [FromServices] JwtService jwt)
         {
             var user = await repo.GetUserByUsername(dto.Username);
             if (user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.Password))
-                return Unauthorized("Invalid credentials");
+                return Unauthorized(ResponseResult.Unauthorized("Invalid username or password"));
 
             var token = jwt.GenerateToken(user.Username);
-            return Ok(new { token });
+            return Ok(ResponseResult.Success("OK", new { token }));
         }
 
         [Authorize]
         [HttpGet("secure")]
-        public IActionResult Secure()
+        public async Task<ActionResult<ResponseResult>> Secure()
         {
             var username = User.Identity?.Name;
-            return Ok($"Cześć, {username}! Masz dostęp.");
+            return Ok(ResponseResult.Success("OK", new { message = $"Hello {username}, this is a secure endpoint!" }));
         }
     }
 }
