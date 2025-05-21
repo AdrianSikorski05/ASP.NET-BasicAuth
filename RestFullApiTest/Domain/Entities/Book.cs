@@ -23,6 +23,19 @@
             Stock = stock;
         }
 
+        public static BookDto MapToDto(Book book) 
+        { 
+            return new BookDto
+            {
+                Id = book.Id,
+                Title = book.Title,
+                Author = book.Author,
+                Genre = book.Genre,
+                Price = book.Price,
+                Stock = book.Stock             
+            };
+        }
+
         public Book(){}
         /// <summary>
         /// Unique identifier for the book

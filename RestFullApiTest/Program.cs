@@ -1,12 +1,9 @@
+using System.Reflection;
 using System.Text;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Connections;
-using Microsoft.Extensions.DependencyInjection;
+using MediatR;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using RestFullApiTest;
-using RestFullApiTest.Logic.Repositories.Interfaces;
-using RestFullApiTest.Logic.Services.Interfaces;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -28,9 +25,9 @@ try
     // === DI ===
     builder.Services.AddSingleton<IDbConnectionFactory, SqliteConnectionFactory>();
     builder.Services.AddScoped<IBookRepository, BookRepository>();
-    builder.Services.AddScoped<IBookService, BookService>();
     builder.Services.AddScoped<IUserRepository, UserRepository>();
-    builder.Services.AddScoped<IUserService, UserService>();
+    //builder.Services.AddScoped<IBookService, BookService>();
+    //builder.Services.AddScoped<IUserService, UserService>();
     builder.Services.AddScoped<JwtService>();
 
 
@@ -89,10 +86,14 @@ try
     //    });
     //});
 
+    // === MediaR ===
+    builder.Services.AddMediatR(typeof(CreateBookCommand).Assembly);
 
     // === Swagger JWT auth ===
     builder.Services.AddSwaggerGen(c =>
     {
+        c.SwaggerDoc("v1", new OpenApiInfo { Title = "Book API", Version = "v1" });
+
         c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
         {
             Description = "Podaj token JWT: Bearer {token}",
@@ -114,6 +115,9 @@ try
             Array.Empty<string>()
         }
     });
+        var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+        var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+        c.IncludeXmlComments(xmlPath);
     });
 
 
@@ -124,6 +128,7 @@ try
     {
         app.UseSwagger();
         app.UseSwaggerUI();
+        
     }
 
     app.UseHttpsRedirection();

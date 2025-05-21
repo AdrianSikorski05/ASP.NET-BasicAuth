@@ -1,9 +1,11 @@
-﻿namespace RestFullApiTest.Logic.Services.Interfaces
+﻿
+
+namespace RestFullApiTest
 {
     public interface IBookService
     {
-        Task<IEnumerable<BookDto>> GetAllAsync();
-        Task<Book?> AddBook(CreateBookDto book);
+        //Task<IEnumerable<BookDto>> GetAllAsync();
+        //Task<Book?> AddBook(CreateBookDto book);
         //Task<BookDto?> GetByIdAsync(int id);
         //Task<int> CreateAsync(CreateBookDto book);
         //Task<bool> UpdateAsync(int id, CreateBookDto book);

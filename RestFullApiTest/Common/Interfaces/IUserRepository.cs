@@ -1,4 +1,5 @@
-﻿namespace RestFullApiTest
+﻿
+namespace RestFullApiTest
 {
     public interface IUserRepository
     {

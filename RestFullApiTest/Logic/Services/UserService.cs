@@ -1,6 +1,5 @@
 ﻿
 
-
 namespace RestFullApiTest
 {
     public class UserService : IUserService

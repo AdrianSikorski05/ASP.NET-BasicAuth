@@ -1,13 +1,15 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
+
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace RestFullApiTest
 {
+    [ApiController]
     [Authorize(AuthenticationSchemes = "Bearer")]
     [Route("[controller]")]
-    [ApiController]
+    [Tags("Users")]
     public class UsersController(IUserService userService, ILogger<UsersController> logger) : ControllerBase
     {
         // GET: /UsersController

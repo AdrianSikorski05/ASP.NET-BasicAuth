@@ -2,10 +2,12 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace RestFullApiTest.Controllers
+
+namespace RestFullApiTest
 {
-    [Route("[controller]")]
     [ApiController]
+    [Route("[controller]")]
+    [Tags("Authentication")]
     public class LoginController : ControllerBase
     {
         [AllowAnonymous]

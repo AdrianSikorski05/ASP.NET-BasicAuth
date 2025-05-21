@@ -1,6 +1,4 @@
-﻿using RestFullApiTest.Logic.Repositories.Interfaces;
-using RestFullApiTest.Logic.Services.Interfaces;
-
+﻿
 namespace RestFullApiTest
 {
     public class BookService : IBookService
@@ -13,11 +11,11 @@ namespace RestFullApiTest
             _repository = repository;
         }
 
-        public async Task<IEnumerable<BookDto>> GetAllAsync()
-        {
-            var books = await _repository.GetAllAsync();
-            return books.Select(MapToDto);
-        }
+        //public async Task<IEnumerable<BookDto>> GetAllAsync()
+        //{
+        //    var books = await _repository.GetAllAsync();
+        //    return books.Select(MapToDto);
+        //}
 
         //public async Task<BookDto?> GetByIdAsync(int id)
         //{
