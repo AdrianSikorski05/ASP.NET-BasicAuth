@@ -1,6 +1,7 @@
-﻿namespace RestFullApiTest
+﻿using MediatR;
+
+namespace RestFullApiTest
 {
-    public class GetAllUsersQuery
-    {
-    }
+    public record GetAllUsersQuery(UserFilter UserFilter):IRequest<PagedResult<UserDto>>;
+    
 }

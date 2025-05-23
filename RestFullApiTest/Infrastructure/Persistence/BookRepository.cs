@@ -115,9 +115,24 @@ namespace RestFullApiTest
             return result;
         }
 
-        public Task<int> DeleteBookById(int id)
+        /// <summary>
+        /// Delete book by id from the database.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<int> DeleteBookById(int id)
         {
-            throw new NotImplementedException();
+            using var connection = dbConnectionFactory.CreateConnection();
+            var sql = @$"delete from books where Id = @Id";
+            var parameters = new DynamicParameters();
+            parameters.Add("Id", id);
+
+            var result = await connection.ExecuteAsync(sql, parameters);
+            if (result > 0)
+            {
+                return result;
+            }
+            return result;
         }
         #endregion
 
@@ -158,21 +173,19 @@ namespace RestFullApiTest
                 parameters.Add($"Genre", filter.Genre);
             }
 
-            if (!string.IsNullOrWhiteSpace(filter.SortBy))
+            var sortColumn = filter.SortBy.ToLower() switch
             {
-                var sortColumn = filter.SortBy.ToLower() switch
-                {
-                    "title" => "Title",
-                    "author" => "Author",
-                    "genre" => "Genre",
-                    "price" => "Price",
-                    _ => "Title"
-                };
+                "title" => "Title",
+                "author" => "Author",
+                "genre" => "Genre",
+                "price" => "Price",
+                _ => "Title"
+            };
 
-                var sortDir = filter.SortDir.ToLower() == "desc" ? "DESC" : "ASC";
+            var sortDir = filter.SortDir.ToLower() == "desc" ? "DESC" : "ASC";
 
-                sb.Append($" ORDER BY {sortColumn} {sortDir} ");
-            }
+            sb.Append($" ORDER BY {sortColumn} {sortDir} ");
+
 
             sb.Append(" limit @PageSize offset @Skip ");
 

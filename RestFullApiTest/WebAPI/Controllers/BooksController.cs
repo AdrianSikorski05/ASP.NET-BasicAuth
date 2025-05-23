@@ -27,10 +27,10 @@ namespace RestFullApiTest
         [ProducesResponseType(typeof(ResponseResult), 200)]
         [ProducesResponseType(typeof(ResponseResult), 404)]
         [ProducesResponseType(typeof(ResponseResult), 400)]
-        public async Task<ActionResult<ResponseResult>> GetAll([FromQuery] BookFilter filter)
+        public async Task<ActionResult<ResponseResult>> GetAllBooks([FromQuery] BookFilter filter)
         {
             var result = await mediator.Send(new GetAllBooksQuery(filter));
-            if (result == null)
+            if (result.Items.ToList().Count <= 0)
             {
                 logger.LogInformation("Books not founds.");
                 return NotFound(ResponseResult.NotFound("Books not founds."));
@@ -54,23 +54,23 @@ namespace RestFullApiTest
         [ProducesResponseType(typeof(ResponseResult), 200)]
         [ProducesResponseType(typeof(ResponseResult), 404)]
         [ProducesResponseType(typeof(ResponseResult), 400)]
-        public async Task<ActionResult<ResponseResult>> GetById([FromRoute] int id)
+        public async Task<ActionResult<ResponseResult>> GetBookById([FromRoute] GetBookByIdDto getBookByIdDto)
         {
-            if (id <= 0)
+            if (!ModelState.IsValid)
             {
-                logger.LogError($"Id is not valid: {id}");
+                logger.LogError($"Id is not valid: {getBookByIdDto.Id}");
                 return BadRequest(ResponseResult.BadRequest("Id is not valid"));
             }
 
-            var result = await mediator.Send(new GetBookByIdQuery(id));
+            var result = await mediator.Send(new GetBookByIdQuery(getBookByIdDto.Id));
             if (result == null)
             {
-                logger.LogError($"Book with id {id} not found");
-                return NotFound(ResponseResult.NotFound($"Book with id {id} not found"));
+                logger.LogError($"Book with id {getBookByIdDto.Id} not found");
+                return NotFound(ResponseResult.NotFound($"Book with id {getBookByIdDto.Id} not found"));
             }
             else
             {
-                logger.LogInformation($"Book with id {id} found");
+                logger.LogInformation($"Book with id {result.Id} found");
                 return Ok(ResponseResult.Success("OK", result));
             }
         }
@@ -78,14 +78,14 @@ namespace RestFullApiTest
         /// <summary>
         /// Add new book to the database.
         /// </summary>
-        /// <param name="book"></param>
+        /// <param name="createBookDto"></param>
         /// <returns>Return response object result. </returns>
         /// <response code = "200"> Return response object with new book.</response>
         /// <response code = "400"> Return response object with information about not valid model.</response>        
         [HttpPost(Name = "AddBook")]
         [ProducesResponseType(typeof(ResponseResult), 200)]
         [ProducesResponseType(typeof(ResponseResult), 400)]
-        public async Task<ActionResult<ResponseResult>> AddNewBook([FromBody] CreateBookDto book)
+        public async Task<ActionResult<ResponseResult>> AddNewBook([FromBody] CreateBookDto createBookDto)
         {
             if (!ModelState.IsValid)
             {
@@ -93,7 +93,7 @@ namespace RestFullApiTest
                 return BadRequest(ResponseResult.BadRequest("Model state is not valid", ModelState));
             }
 
-            var newBook = await mediator.Send(new CreateBookCommand(book));
+            var newBook = await mediator.Send(new CreateBookCommand(createBookDto));
             if (newBook == null)
             {
                 logger.LogError("Book not created");
@@ -109,7 +109,7 @@ namespace RestFullApiTest
         /// <summary>
         /// Update book in the database.
         /// </summary>
-        /// <param name="updatedBook">Book who will updating</param>
+        /// <param name="updatedBookDto">Book who will updating</param>
         /// <returns>Return a updated book</returns>
         /// <response code="200">Return updated book</response>
         /// <response code="404">Dont found book</response> 
@@ -118,7 +118,7 @@ namespace RestFullApiTest
         [ProducesResponseType(typeof(ResponseResult), 200)]
         [ProducesResponseType(typeof(ResponseResult), 404)]
         [ProducesResponseType(typeof(ResponseResult), 400)]
-        public async Task<ActionResult<ResponseResult>> UpdateBook([FromBody] UpdateBookDto updatedBook)
+        public async Task<ActionResult<ResponseResult>> UpdateBook([FromBody] UpdateBookDto updatedBookDto)
         {
             if (!ModelState.IsValid)
             {
@@ -126,11 +126,11 @@ namespace RestFullApiTest
                 return BadRequest(ResponseResult.BadRequest("Model state is not valid", ModelState));
             }
 
-            var uBook = await mediator.Send(new UpdateBookCommand(updatedBook));
+            var uBook = await mediator.Send(new UpdateBookCommand(updatedBookDto));
             if (uBook.Item2 == 0)
             {
-                logger.LogError($"Book with id {updatedBook.Id} not found");
-                return NotFound(ResponseResult.NotFound($"Book with id {updatedBook.Id} not found"));
+                logger.LogError($"Book with id {updatedBookDto.Id} not found");
+                return NotFound(ResponseResult.NotFound($"Book with id {updatedBookDto.Id} not found"));
             }
             else
             {
@@ -142,7 +142,7 @@ namespace RestFullApiTest
         /// <summary>
         /// Delete book from the database.
         /// </summary>
-        /// <param name="deleteBookDto">Object book who will deleting</param>
+        /// <param name="deleteBookDto">Object of book who will deleting</param>
         /// <returns>Id book who was deleted</returns>
         /// <response code="200">Sucess</response>
         /// <response code="404">Dont found book</response> 
@@ -168,6 +168,38 @@ namespace RestFullApiTest
             {
                 logger.LogInformation($"Book with id {deleteBookDto.Id} deleted");
                 return Ok(ResponseResult.Success("OK", $"Book with id {deleteBookDto.Id} deleted"));
+            }
+        }
+
+        /// <summary>
+        /// Delete book from the database by id.
+        /// </summary>
+        /// <param name="deleteBookByIdDto">Object of book who will deleting</param>
+        /// <returns></returns>
+        /// <response code="200">Sucess</response>
+        /// <response code="404">Dont found book</response> 
+        /// <response code="400">Invalid request parameters</response>
+        [HttpDelete("{id}", Name = "DeleteBookById")]
+        [ProducesResponseType(typeof(ResponseResult), 200)]
+        [ProducesResponseType(typeof(ResponseResult), 404)]
+        [ProducesResponseType(typeof(ResponseResult), 400)]
+        public async Task<ActionResult<ResponseResult>> DeleteBookById([FromRoute] DeleteBookByIdDto deleteBookByIdDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                logger.LogError("Model state is not valid");
+                return BadRequest(ResponseResult.BadRequest("Model state is not valid", ModelState));
+            }
+            var result = await mediator.Send(new DeleteBookByIdCommand(deleteBookByIdDto));
+            if (result == 0)
+            {
+                logger.LogError($"Book with id {deleteBookByIdDto.Id} not found");
+                return NotFound(ResponseResult.NotFound($"Book with id {deleteBookByIdDto.Id} not found"));
+            }
+            else
+            {
+                logger.LogInformation($"Book with id {deleteBookByIdDto.Id} deleted");
+                return Ok(ResponseResult.Success("OK", $"Book with id {deleteBookByIdDto.Id} deleted"));
             }
         }
     }

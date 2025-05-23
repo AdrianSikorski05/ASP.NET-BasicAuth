@@ -1,10 +1,13 @@
-﻿namespace RestFullApiTest
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace RestFullApiTest
 {
     public class User
     {
         /// <summary>
         /// Identifier for the user
         /// </summary>
+        [Required(ErrorMessage = "Id is required.")]
         public int Id { get; set; }
         /// <summary>
         /// Username of the user
@@ -27,5 +30,14 @@
             Password = password;
         }
         public User(){}
+
+        public static UserDto MapToDto(User user)
+        {
+            return new UserDto
+            {
+                Id = user.Id,
+                Username = user.Username
+            };
+        }
     }
 }

@@ -8,7 +8,7 @@ namespace RestFullApiTest
 
         public async Task<PagedResult<BookDto>> Handle(GetAllBooksQuery request, CancellationToken cancellationToken)
         {
-            var filter = request.Filter;
+            var filter = request.Filter; 
 
             var result = await bookRepository.GetAllAsync(filter);
 

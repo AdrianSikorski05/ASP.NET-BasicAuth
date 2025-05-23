@@ -10,6 +10,5 @@ namespace RestFullApiTest
         Task<(Book?,int)> UpdateBook(UpdateBookDto updateBook);
         Task<int> DeleteBook(DeleteBookDto deleteBook);
         Task<int> DeleteBookById(int id);
-
     }
 }

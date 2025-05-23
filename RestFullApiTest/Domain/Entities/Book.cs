@@ -1,4 +1,6 @@
-﻿namespace RestFullApiTest
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace RestFullApiTest
 {
     public class Book
     {
@@ -31,6 +33,7 @@
                 Title = book.Title,
                 Author = book.Author,
                 Genre = book.Genre,
+                PublishedDate = book.PublishedDate,
                 Price = book.Price,
                 Stock = book.Stock             
             };
@@ -40,6 +43,7 @@
         /// <summary>
         /// Unique identifier for the book
         /// </summary>
+        [Required(ErrorMessage = "Id is required.")]
         public int Id { get; set; }
         /// <summary>
         /// Title of the book

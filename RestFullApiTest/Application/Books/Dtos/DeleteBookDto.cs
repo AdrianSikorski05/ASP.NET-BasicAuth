@@ -22,6 +22,7 @@ namespace RestFullApiTest
         /// The unique identifier for the book.
         /// </summary>
         [Required(ErrorMessage = "Id is required.")]
+        [Range(1, int.MaxValue, ErrorMessage = "Id must be greater than 0")]
         public int Id { get; set; }
         /// <summary>
         /// The title of the book.

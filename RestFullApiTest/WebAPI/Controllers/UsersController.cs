@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -8,39 +9,58 @@ namespace RestFullApiTest
 {
     [ApiController]
     [Authorize(AuthenticationSchemes = "Bearer")]
-    [Route("[controller]")]
+    [Route("[controller]/[action]")]
     [Tags("Users")]
-    public class UsersController(IUserService userService, ILogger<UsersController> logger) : ControllerBase
+    public class UsersController(ILogger<UsersController> logger, IMediator mediator) : ControllerBase
     {
-        // GET: /UsersController
+
+        /// <summary>
+        /// Return all users.
+        /// </summary>
+        /// <returns></returns>
+        /// <response code="200">Return List of users</response>
+        /// <response code="404">Dont found users</response> 
+        /// <response code="400">Invalid request parameters</response>
         [HttpGet(Name = "GetUsers")]
-        public async Task<ActionResult<ResponseResult>> GetAllUsers()
+        [ProducesResponseType(typeof(ResponseResult), 200)]
+        [ProducesResponseType(typeof(ResponseResult), 404)]
+        [ProducesResponseType(typeof(ResponseResult), 400)]
+        public async Task<ActionResult<ResponseResult>> GetAllUsers([FromQuery] UserFilter userFilter)
         {
-            var users = await userService.GetAllUsers();
-            if (users == null)
+            var result = await mediator.Send(new GetAllUsersQuery(userFilter));
+            if (result.Items.ToList().Count <= 0)
             {
                 logger.LogError("Users not founds.");
                 return NotFound(ResponseResult.NotFound("Users not founds."));
             }
             else
             {
-                logger.LogInformation($"Founds {users.ToList().Count} users.");
-                return Ok(ResponseResult.Success("OK", users));
+                logger.LogInformation($"Founds {result.Items.ToList().Count} users.");
+                return Ok(ResponseResult.Success("OK", result));
             }
         }
 
-        // POST /UsersController
+        /// <summary>
+        /// Create new user.
+        /// </summary>
+        /// <param name="user">New user</param>
+        /// <returns>Return a new user</returns>
+        /// <response code="200">Return new user</response>
+        /// <response code="404">Dont found users</response> 
+        /// <response code="400">Invalid request parameters</response>
         [HttpPost(Name = "AddUser")]
-        public async Task<ActionResult<ResponseResult>> Post([FromBody] CreateUserDto user)
+        [ProducesResponseType(typeof(ResponseResult), 200)]
+        [ProducesResponseType(typeof(ResponseResult), 404)]
+        [ProducesResponseType(typeof(ResponseResult), 400)]
+        public async Task<ActionResult<ResponseResult>> AddNewUser([FromBody] CreateUserDto user)
         {
-
             if (!ModelState.IsValid)
             {
                 logger.LogError("Model state is invalid");
                 return BadRequest(ResponseResult.BadRequest("Model state is invalid", ModelState));
             }
 
-            var newUser = await userService.AddUser(user);
+            var newUser = await mediator.Send(new CreateUserCommand(user));
             if (newUser == null)
             {
                 logger.LogError("User not created");

@@ -1,9 +1,13 @@
-﻿namespace RestFullApiTest
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace RestFullApiTest
 {
     public class CreateUserDto
     {
-        public string Username { get; set; } = string.Empty;
-        public string Password { get; set; } = string.Empty;
+        [Required]
+        public string? Username { get; set; }
+        [Required]
+        public string? Password { get; set; }
               
     }
 }
