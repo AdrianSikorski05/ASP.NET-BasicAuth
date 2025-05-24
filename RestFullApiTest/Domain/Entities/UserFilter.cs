@@ -11,11 +11,11 @@
         /// </summary>
         public int PageSize { get; set; } = 10;
         /// <summary>
-        /// The author of the book
+        /// The Username
         /// </summary>
         public string? Username { get; set; }
         /// <summary>
-        /// Sorting criteria for the book list
+        /// Sorting criteria for the users list
         /// </summary>
         public string SortBy { get; set; } = "Username";
         /// <summary>

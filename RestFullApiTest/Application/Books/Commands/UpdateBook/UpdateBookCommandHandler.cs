@@ -9,8 +9,8 @@ namespace RestFullApiTest
         {
             var updateBook = request.UpdateBookDto;
 
-            var book = await bookRepository.UpdateBook(updateBook);
-            return book;
+            var result = await bookRepository.UpdateBook(updateBook);
+            return result;
         }
     }
 }

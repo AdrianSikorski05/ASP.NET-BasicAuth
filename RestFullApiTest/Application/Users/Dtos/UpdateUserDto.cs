@@ -2,17 +2,17 @@
 
 namespace RestFullApiTest
 {
-    public class UserDto
+    public class UpdateUserDto
     {
         /// <summary>
-        /// The unique identifier for the user.
+        /// Id of the user to update.
         /// </summary>
-        [Required(ErrorMessage = "Id is required.")]
+        [Required]
         [Range(1, int.MaxValue, ErrorMessage = "Id must be greater than 0")]
         public int Id { get; set; }
         /// <summary>
-        /// The username of the user.
+        /// Username of the user to update.
         /// </summary>
-        public string Username { get; set; } = null!;
+        public string Username { get; set; }
     }
 }
