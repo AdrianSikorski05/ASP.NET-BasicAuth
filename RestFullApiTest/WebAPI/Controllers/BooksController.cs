@@ -83,6 +83,7 @@ namespace RestFullApiTest
         /// <response code = "200"> Return response object with new book.</response>
         /// <response code = "400"> Return response object with information about not valid model.</response>        
         [HttpPost(Name = "AddBook")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(ResponseResult), 200)]
         [ProducesResponseType(typeof(ResponseResult), 400)]
         public async Task<ActionResult<ResponseResult>> AddNewBook([FromBody] CreateBookDto createBookDto)
@@ -115,6 +116,7 @@ namespace RestFullApiTest
         /// <response code="404">Dont found book</response> 
         /// <response code="400">Invalid request parameters</response>
         [HttpPut(Name = "UpdateBook")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(ResponseResult), 200)]
         [ProducesResponseType(typeof(ResponseResult), 404)]
         [ProducesResponseType(typeof(ResponseResult), 400)]
@@ -148,6 +150,7 @@ namespace RestFullApiTest
         /// <response code="404">Dont found book</response> 
         /// <response code="400">Invalid request parameters</response>
         [HttpDelete(Name = "DeleteBook")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(ResponseResult), 200)]
         [ProducesResponseType(typeof(ResponseResult), 404)]
         [ProducesResponseType(typeof(ResponseResult), 400)]
@@ -180,6 +183,7 @@ namespace RestFullApiTest
         /// <response code="404">Dont found book</response> 
         /// <response code="400">Invalid request parameters</response>
         [HttpDelete("{id}", Name = "DeleteBookById")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(ResponseResult), 200)]
         [ProducesResponseType(typeof(ResponseResult), 404)]
         [ProducesResponseType(typeof(ResponseResult), 400)]

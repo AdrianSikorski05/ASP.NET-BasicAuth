@@ -18,6 +18,10 @@ namespace RestFullApiTest
         /// </summary>
         public string Password { get; set; }
         /// <summary>
+        /// Role of the user
+        /// </summary>
+        public string Role { get; set; }
+        /// <summary>
         /// Constructor to initialize a new instance of the User class
         /// </summary>
         /// <param name="id"></param>

@@ -1,6 +1,8 @@
-using System.Reflection;
+ï»¿using System.Reflection;
 using System.Text;
+using System.Text.Json;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using RestFullApiTest;
@@ -26,6 +28,7 @@ try
     builder.Services.AddSingleton<IDbConnectionFactory, SqliteConnectionFactory>();
     builder.Services.AddScoped<IBookRepository, BookRepository>();
     builder.Services.AddScoped<IUserRepository, UserRepository>();
+    builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
     //builder.Services.AddScoped<IBookService, BookService>();
     //builder.Services.AddScoped<IUserService, UserService>();
     builder.Services.AddScoped<JwtService>();
@@ -48,9 +51,40 @@ try
                 ValidateIssuerSigningKey = true,
                 ValidIssuer = configuration["Jwt:Issuer"],
                 ValidAudience = configuration["Jwt:Audience"],
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]))
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"])),
+                ClockSkew = TimeSpan.Zero
+            };
+
+            options.Events = new JwtBearerEvents
+            {
+                OnChallenge = context =>
+                {
+                    if (context.AuthenticateFailure is SecurityTokenExpiredException)
+                    {
+                        context.HandleResponse(); // â† Zatrzymaj dalsze przetwarzanie
+
+                        context.Response.StatusCode = 401;
+                        context.Response.ContentType = "application/json";
+
+                        var result = JsonSerializer.Serialize(ResponseResult.Unauthorized("The token has expired. Please log in again."));
+
+                        return context.Response.WriteAsync(result);
+                    }
+
+                    return Task.CompletedTask;
+                },
+
+                OnForbidden = context =>
+                {
+                    context.Response.StatusCode = 403;
+                    context.Response.ContentType = "application/json";
+
+                    var result = JsonSerializer.Serialize(ResponseResult.Forbidden("Brak dostÄ™pu: musisz byÄ‡ administratorem."));
+                    return context.Response.WriteAsync(result);
+                }
             };
         });
+
 
     builder.Services.AddControllers();
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -67,7 +101,7 @@ try
     //        Type = SecuritySchemeType.Http,
     //        Scheme = "basic",
     //        In = ParameterLocation.Header,
-    //        Description = "Wpisz login i has³o (Basic Auth)"
+    //        Description = "Wpisz login i hasÅ‚o (Basic Auth)"
     //    });
 
     //    c.AddSecurityRequirement(new OpenApiSecurityRequirement
@@ -128,7 +162,7 @@ try
     {
         app.UseSwagger();
         app.UseSwaggerUI();
-        
+
     }
 
     app.UseHttpsRedirection();
@@ -139,7 +173,7 @@ try
 
     app.MapControllers();
 
-    //  tu dodaj rejestracjê zamkniêcia aplikacji
+    //  tu dodaj rejestracjÄ™ zamkniÄ™cia aplikacji
     AppDomain.CurrentDomain.ProcessExit += (_, __) =>
     {
         Log.Information("Shutting down the application via ProcessExit...");
@@ -151,6 +185,6 @@ try
 }
 catch (Exception ex)
 {
-    Log.Error($"B³¹d w us³udze ogólny: {ex.Message}");
+    Log.Error($"BÅ‚Ä…d w usÅ‚udze ogÃ³lny: {ex.Message}");
 }
 

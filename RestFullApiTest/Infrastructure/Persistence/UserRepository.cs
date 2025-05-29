@@ -25,14 +25,20 @@ namespace RestFullApiTest
             parameters.Add("Username", user.Username);
             parameters.Add("Password", hashedPassword);
 
+            var sql2 = @$"Insert into roles(UserId, Role)
+                          values(@UserId, @Role)";
             var userId = await connection.ExecuteScalarAsync<long>(sql, parameters);
+            parameters.Add("Role", "User");
+            parameters.Add("UserId", userId);
+            await connection.ExecuteAsync(sql2, parameters);
             if (userId > 0)
             {
                 return new User
                 {
                     Id = (int)userId,
                     Username = user.Username,
-                    Password = null!
+                    Password = null!,
+                    Role = "User"
                 };
             }
             return null;
@@ -165,10 +171,12 @@ namespace RestFullApiTest
         {
             using var connection = dbConnectionFactory.CreateConnection();
 
-            var sql = $@"select Id [{nameof(User.Id)}],
-                                Username [{nameof(User.Username)}]  
-                        from Users 
-                        where Id = @Id";
+            var sql = $@"select u.Id [{nameof(User.Id)}],
+                                u.Username [{nameof(User.Username)}],
+                                r.Role [{nameof(User.Role)}]
+                        from Users u
+                        inner join Roles r on u.Id = r.UserId
+                        where u.Id = @Id";
 
             var parameters = new DynamicParameters();
             parameters.Add("Id", id);
@@ -190,9 +198,12 @@ namespace RestFullApiTest
         public Task<User?> GetUserByUsername(string username)
         {
             using var connection = dbConnectionFactory.CreateConnection();
-            var sql = @$"select Username [{nameof(User.Username)}],
-                                Password [{nameof(User.Password)}]
-                        from Users
+            var sql = @$"select u.Id [{nameof(User.Id)}],
+                                u.Username [{nameof(User.Username)}],
+                                u.Password [{nameof(User.Password)}],
+                                r.Role [{nameof(User.Role)}]
+                        from Users u
+                        inner join Roles r on u.id = r.UserId
                         where Username = @Username";
             var parameters = new DynamicParameters();
             parameters.Add("Username", username);

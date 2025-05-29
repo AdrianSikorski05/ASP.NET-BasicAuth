@@ -81,6 +81,7 @@ namespace RestFullApiTest
         /// <response code="404">Dont found user</response> 
         /// <response code="400">Invalid request parameters</response>
         [HttpPost(Name = "AddUser")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(ResponseResult), 200)]
         [ProducesResponseType(typeof(ResponseResult), 404)]
         [ProducesResponseType(typeof(ResponseResult), 400)]
@@ -114,6 +115,7 @@ namespace RestFullApiTest
         /// <response code="404">Dont found user</response> 
         /// <response code="400">Invalid request parameters</response>
         [HttpPut(Name = "UpdateUser")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(ResponseResult), 200)]
         [ProducesResponseType(typeof(ResponseResult), 404)]
         [ProducesResponseType(typeof(ResponseResult), 400)]
@@ -146,6 +148,7 @@ namespace RestFullApiTest
         /// <response code="404">Dont found user</response> 
         /// <response code="400">Invalid request parameters</response>
         [HttpDelete(Name = "DeleteUser")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(ResponseResult), 200)]
         [ProducesResponseType(typeof(ResponseResult), 404)]
         [ProducesResponseType(typeof(ResponseResult), 400)]
@@ -179,6 +182,7 @@ namespace RestFullApiTest
         /// <response code="404">Dont found user</response> 
         /// <response code="400">Invalid request parameters</response>
         [HttpDelete("{id}",Name = "DeleteUserById")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(ResponseResult), 200)]
         [ProducesResponseType(typeof(ResponseResult), 404)]
         [ProducesResponseType(typeof(ResponseResult), 400)]

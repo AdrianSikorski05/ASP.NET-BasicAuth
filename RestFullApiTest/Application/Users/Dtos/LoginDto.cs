@@ -14,5 +14,7 @@ namespace RestFullApiTest
         /// </summary>
         [Required]
         public string Password { get; set; } = string.Empty;
+
+
     }
 }
