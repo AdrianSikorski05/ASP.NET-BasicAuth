@@ -8,12 +8,12 @@ namespace RestFullApiTest
         /// Username
         /// </summary>
         [Required]
-        public string Username { get; set; } = string.Empty;
+        public string? Username { get; set; }
         /// <summary>
         /// Password
         /// </summary>
         [Required]
-        public string Password { get; set; } = string.Empty;
+        public string? Password { get; set; }
 
 
     }

@@ -80,7 +80,7 @@ namespace RestFullApiTest
         /// <response code="200">Return new user</response>
         /// <response code="404">Dont found user</response> 
         /// <response code="400">Invalid request parameters</response>
-        [HttpPost(Name = "AddUser")]
+        [HttpPost("AddUser")]
         [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(ResponseResult), 200)]
         [ProducesResponseType(typeof(ResponseResult), 404)]
@@ -114,7 +114,7 @@ namespace RestFullApiTest
         /// <response code="200">Return updated user</response>
         /// <response code="404">Dont found user</response> 
         /// <response code="400">Invalid request parameters</response>
-        [HttpPut(Name = "UpdateUser")]
+        [HttpPut("UpdateUser")]
         [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(ResponseResult), 200)]
         [ProducesResponseType(typeof(ResponseResult), 404)]

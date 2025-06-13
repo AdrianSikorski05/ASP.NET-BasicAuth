@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="AplikacjaAndroid.DetailsBookView"
+             xmlns:toolkit ="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:vm="clr-namespace:AplikacjaAndroid"
+             x:DataType="vm:DetailsBookContext"
+             Title="{Binding Book.Title}">
+    <VerticalStackLayout Margin="0,20,0,20">
+        <Border/>
+        <Label Margin="10" FontSize="18">
+            <Label.FormattedText>
+                <FormattedString>
+                    <Span Text="Id:  " FontAttributes="Bold"/>
+                    <Span Text="{Binding Book.Id}"/>
+                </FormattedString>
+            </Label.FormattedText>
+        </Label>
+        <Border/>
+        <Label Margin="10" FontSize="18">
+            <Label.FormattedText>
+                <FormattedString>
+                    <Span Text="Title:  " FontAttributes="Bold"/>
+                    <Span Text="{Binding Book.Title}"/>
+                </FormattedString>
+            </Label.FormattedText>
+        </Label>
+        <Border/>
+        <Label Margin="10" FontSize="18">
+            <Label.FormattedText>
+                <FormattedString>
+                    <Span Text="Author:  " FontAttributes="Bold"/>
+                    <Span Text="{Binding Book.Author}"/>
+                </FormattedString>
+            </Label.FormattedText>
+        </Label>
+        <Border/>
+        <Label Margin="10" FontSize="18">
+            <Label.FormattedText>
+                <FormattedString>
+                    <Span Text="Genre:  " FontAttributes="Bold"/>
+                    <Span Text="{Binding Book.Genre}"/>
+                </FormattedString>
+            </Label.FormattedText>
+        </Label>
+        <Border/>
+        <Label Margin="10" FontSize="18">
+            <Label.FormattedText>
+                <FormattedString>
+                    <Span Text="Published date:  " FontAttributes="Bold"/>
+                    <Span Text="{Binding Book.PublishedDate}"/>
+                </FormattedString>
+            </Label.FormattedText>
+        </Label>
+        <Border/>
+        <Label Margin="10" FontSize="18">
+            <Label.FormattedText>
+                <FormattedString>
+                    <Span Text="Price:  " FontAttributes="Bold"/>
+                    <Span Text="{Binding Book.Price}"/>
+                </FormattedString>
+            </Label.FormattedText>
+        </Label>
+        <Border/>
+        <Label Margin="10" FontSize="18">
+            <Label.FormattedText>
+                <FormattedString>
+                    <Span Text="Stock:  " FontAttributes="Bold"/>
+                    <Span Text="{Binding Book.Stock}"/>
+                </FormattedString>
+            </Label.FormattedText>
+        </Label>
+        <Border/>
+        <Label Margin="10" FontSize="18">
+            <Label.FormattedText>
+                <FormattedString>
+                    <Span Text="Description:  " FontAttributes="Bold"/>
+                    <Span Text="Description test" FontSize="Small" TextColor="DarkGray" FontAttributes="Italic"/>
+                </FormattedString>
+            </Label.FormattedText>
+        </Label>
+        <Border/>
+        <HorizontalStackLayout HorizontalOptions="Center">
+            <Button Padding="20, 0" 
+                    Margin="30" 
+                    Text="Readed" 
+                    BackgroundColor="#34d399"
+                    FontSize="16"
+                    Command="{Binding AddToReadedCollectionCommand}">
+                <Button.Behaviors>
+                    <toolkit:TouchBehavior 
+                        DefaultAnimationDuration="80"                    
+                        PressedScale="1.4"
+                        PressedOpacity="0.8"
+                        PressedRotation="-2"/>
+                </Button.Behaviors>
+                <Button.ImageSource>
+                    <FontImageSource FontFamily="MaterialIcons" Glyph="&#xe86c;" Color="#059669" Size="20"/>
+                </Button.ImageSource>
+            </Button>
+            <Button Padding="20, 0" 
+                    Margin="30" 
+                    Text="To read" 
+                    BackgroundColor="#a78bfa"
+                    FontSize="16"
+                    Command="{Binding AddToToReadCollectionCommand}">
+                <Button.Behaviors>
+                    <toolkit:TouchBehavior 
+            DefaultAnimationDuration="80"           
+            PressedScale="1.4"
+            PressedOpacity="0.8"
+            PressedRotation="2"/>                    
+                </Button.Behaviors>
+
+               
+                <Button.ImageSource>
+                    <FontImageSource FontFamily="MaterialIcons" Glyph="&#xe87d;" Color="#EF4444" Size="20"/>
+                </Button.ImageSource>
+            </Button>
+        </HorizontalStackLayout>
+    </VerticalStackLayout>
+</ContentPage>

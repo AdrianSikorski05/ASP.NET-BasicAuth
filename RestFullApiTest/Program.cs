@@ -38,6 +38,15 @@ try
     //builder.Services.AddAuthentication("Basic")
     //    .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
 
+    builder.WebHost.ConfigureKestrel(options =>
+    {
+        options.ListenAnyIP(5000); // HTTP
+        //options.ListenAnyIP(7243, listenOptions =>
+        //{
+        //    listenOptions.UseHttps(); // HTTPS
+        //});
+    });
+
 
     // === JWT Auth ===
     builder.Services.AddAuthentication("Bearer")
@@ -165,7 +174,7 @@ try
 
     }
 
-    app.UseHttpsRedirection();
+    //app.UseHttpsRedirection();
 
     app.UseMiddleware<ExceptionHandlingMiddleware>();
     app.UseAuthentication();

@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <None Remove="test.db" />
+    <None Remove="testTestyIntegracyjne.db" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,7 +28,7 @@
 
   <ItemGroup>
     <Resource Include="test.db">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
 

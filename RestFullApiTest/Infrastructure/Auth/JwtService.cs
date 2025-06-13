@@ -8,12 +8,18 @@ namespace RestFullApiTest
 {
     public class JwtService(IConfiguration config)
     {
-        public string GenerateToken(string username, string role)
+        public string GenerateToken(User user)
         {
+            if (string.IsNullOrWhiteSpace(user.Username))
+                throw new ArgumentNullException(nameof(user.Username));
+            if (string.IsNullOrWhiteSpace(user.Role))
+                throw new ArgumentNullException(nameof(user.Role));
+
             var claims = new[]
             {
-            new Claim(ClaimTypes.Name, username),
-            new Claim(ClaimTypes.Role, role)
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new Claim(ClaimTypes.Name, user.Username),
+            new Claim(ClaimTypes.Role, user.Role)
         };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"]!));

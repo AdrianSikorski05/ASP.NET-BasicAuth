@@ -13,6 +13,6 @@ namespace RestFullApiTest
         /// <summary>
         /// Username of the user to update.
         /// </summary>
-        public string Username { get; set; }
+        public string? Username { get; set; }
     }
 }

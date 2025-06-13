@@ -10,7 +10,7 @@ namespace RestFullApiTest
     /// </summary>
     [ApiController]
     [Authorize(AuthenticationSchemes = "Bearer")]
-    [Route("[controller]/[action]")]
+    [Route("api/[controller]")]
     [Tags("Books")]
     public class BooksController(ILogger<BooksController> logger, IMediator mediator) : ControllerBase
     {
@@ -23,7 +23,7 @@ namespace RestFullApiTest
         /// <response code="200">Return List of books</response>
         /// <response code="404">Dont found books</response> 
         /// <response code="400">Invalid request parameters</response>
-        [HttpGet(Name = "Books")]
+        [HttpGet("books")]
         [ProducesResponseType(typeof(ResponseResult), 200)]
         [ProducesResponseType(typeof(ResponseResult), 404)]
         [ProducesResponseType(typeof(ResponseResult), 400)]
@@ -50,7 +50,7 @@ namespace RestFullApiTest
         /// <response code="200">Return book</response>
         /// <response code="404">Dont found book</response> 
         /// <response code="400">Invalid request parameters</response>
-        [HttpGet("{id}", Name = "GetBookById")]
+        [HttpGet("{id}", Name = "getBookById")]
         [ProducesResponseType(typeof(ResponseResult), 200)]
         [ProducesResponseType(typeof(ResponseResult), 404)]
         [ProducesResponseType(typeof(ResponseResult), 400)]
@@ -82,7 +82,7 @@ namespace RestFullApiTest
         /// <returns>Return response object result. </returns>
         /// <response code = "200"> Return response object with new book.</response>
         /// <response code = "400"> Return response object with information about not valid model.</response>        
-        [HttpPost(Name = "AddBook")]
+        [HttpPost("addBook")]
         [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(ResponseResult), 200)]
         [ProducesResponseType(typeof(ResponseResult), 400)]
@@ -115,7 +115,7 @@ namespace RestFullApiTest
         /// <response code="200">Return updated book</response>
         /// <response code="404">Dont found book</response> 
         /// <response code="400">Invalid request parameters</response>
-        [HttpPut(Name = "UpdateBook")]
+        [HttpPut("updateBook")]
         [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(ResponseResult), 200)]
         [ProducesResponseType(typeof(ResponseResult), 404)]
@@ -149,7 +149,7 @@ namespace RestFullApiTest
         /// <response code="200">Sucess</response>
         /// <response code="404">Dont found book</response> 
         /// <response code="400">Invalid request parameters</response>
-        [HttpDelete(Name = "DeleteBook")]
+        [HttpDelete("deleteBook")]
         [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(ResponseResult), 200)]
         [ProducesResponseType(typeof(ResponseResult), 404)]
@@ -182,7 +182,7 @@ namespace RestFullApiTest
         /// <response code="200">Sucess</response>
         /// <response code="404">Dont found book</response> 
         /// <response code="400">Invalid request parameters</response>
-        [HttpDelete("{id}", Name = "DeleteBookById")]
+        [HttpDelete("{id}", Name = "deleteBookById")]
         [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(ResponseResult), 200)]
         [ProducesResponseType(typeof(ResponseResult), 404)]

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<mopups:PopupPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:mopups ="clr-namespace:Mopups.Pages;assembly=Mopups"
+             xmlns:vm="clr-namespace:AplikacjaAndroid"    
+             x:DataType="vm:BookMenuPopupContext"
+             x:Class="AplikacjaAndroid.BookMenuPopup"
+             BackgroundColor="#80000000"
+             Padding="10"
+             
+             CloseWhenBackgroundIsClicked="True">
+    <Border BackgroundColor="White"
+           WidthRequest="280"                      
+           VerticalOptions="Center">
+        <Border.StrokeShape>
+            <RoundRectangle CornerRadius="15,15,15,15"/>
+        </Border.StrokeShape>
+        
+        <VerticalStackLayout >
+            <Border/>
+            <HorizontalStackLayout HorizontalOptions="Center">
+                <Image>
+                    <Image.Source>
+                        <FontImageSource FontFamily="MaterialIcons" Glyph="&#xe666;" Color="#512BD4" Size="20"/>
+                    </Image.Source>
+                </Image>
+                <Label Text="Action book"
+                       FontAttributes="Bold"
+                       FontSize="16"
+                       HorizontalOptions="Center"
+                       Padding="10"/>
+            </HorizontalStackLayout>
+            
+            <Border/>
+            <Button Text="Mark as Read"
+                    FontSize="14"
+                    BackgroundColor="#f1f5f9"
+                    TextColor="Black"
+                    Command="{Binding MarkAsReadCommand}">
+                <Button.ImageSource>
+                    <FontImageSource FontFamily="MaterialIcons" Glyph="&#xe86c;" Color="#059669" Size="20"/>
+                </Button.ImageSource>
+            </Button>
+            <Border/> 
+            <Button Text="Mark as To Read"
+                    FontSize="14"
+                    BackgroundColor="#f1f5f9"
+                    TextColor="Black"
+                    Command="{Binding MarkAsToReadCommand}">
+                <Button.ImageSource>
+                    <FontImageSource FontFamily="MaterialIcons" Glyph="&#xe87d;" Color="#EF4444" Size="20"/>
+                </Button.ImageSource>
+            </Button>
+            <Border IsVisible="{Binding IsDeleteButtonVisible}"/>
+            <Button Text="Delete"
+                    FontSize="14"
+                    BackgroundColor="#fee2e2"
+                    TextColor="#b91c1c"
+                    IsVisible="{Binding IsDeleteButtonVisible}"
+                    Command="{Binding DeleteBookCommand}">
+                <Button.ImageSource >
+                    <FontImageSource FontFamily="MaterialIcons" Glyph="&#xe872;" Color="Red" Size="20"/>
+                </Button.ImageSource>
+            </Button>
+            <Border/>
+            <Button Text="Close"
+                    FontSize="13"
+                    BackgroundColor="Transparent"
+                    TextColor="Gray"
+                    Command="{Binding CloseCommand}">
+                <Button.ImageSource >
+                    <FontImageSource FontFamily="MaterialIcons" Glyph="&#xe5cd;" Color="Gray" Size="20"/>
+                </Button.ImageSource>
+            </Button>
+            <Border/>
+        </VerticalStackLayout>
+
+
+    </Border>
+</mopups:PopupPage>

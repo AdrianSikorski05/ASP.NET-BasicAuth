@@ -1,14 +1,16 @@
 ﻿
 
+using System.Data;
+
 namespace RestFullApiTest
 {
     public interface IBookRepository
     {
-        Task<PagedResult<Book>> GetAllAsync(BookFilter filter);
-        Task<Book?> GetBookById(int id);
-        Task<Book?> AddBook(CreateBookDto newBook);
-        Task<(Book?,int)> UpdateBook(UpdateBookDto updateBook);
-        Task<int> DeleteBook(DeleteBookDto deleteBook);
-        Task<int> DeleteBookById(int id);
+        Task<PagedResult<Book>> GetAllAsync(BookFilter filter, IDbConnection? connection = null, IDbTransaction? transaction = null);
+        Task<Book?> GetBookById(int id, IDbConnection? connection = null, IDbTransaction? transaction = null);
+        Task<Book?> AddBook(CreateBookDto newBook, IDbConnection? connection = null, IDbTransaction? transaction = null);
+        Task<(Book?,int)> UpdateBook(UpdateBookDto updateBook, IDbConnection? connection = null, IDbTransaction? transaction = null);
+        Task<int> DeleteBook(DeleteBookDto deleteBook, IDbConnection? connection = null, IDbTransaction? transaction = null);
+        Task<int> DeleteBookById(int id, IDbConnection? connection = null, IDbTransaction? transaction = null);
     }
 }

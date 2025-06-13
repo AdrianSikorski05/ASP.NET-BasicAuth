@@ -2,24 +2,25 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RestFullApiTest.Application.RefreshToken.Dtos;
+using System.Security.Claims;
 
 
 namespace RestFullApiTest
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [Tags("Authentication")]
     public class LoginController : ControllerBase
     {
         [AllowAnonymous]
-        [HttpPost(Name = "Login")]
+        [HttpPost("login")]
         public async Task<ActionResult<ResponseResult>> Login([FromBody] LoginDto dto, [FromServices] IUserRepository repo, [FromServices] IRefreshTokenRepository refreshTokenRepo, [FromServices] JwtService jwt, ILogger<LoginController> logger)
         {
             var user = await repo.GetUserByUsername(dto.Username);
             if (user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.Password))
                 return Unauthorized(ResponseResult.Unauthorized("Invalid username or password"));
 
-            var token = jwt.GenerateToken(user.Username, user.Role);
+            var token = jwt.GenerateToken(user);
             var refreshToken = jwt.GenerateRefreshToken();
 
             await refreshTokenRepo.SaveToken(user.Id, refreshToken, DateTime.UtcNow.AddDays(1));
@@ -41,7 +42,7 @@ namespace RestFullApiTest
 
             await refreshTokenRepo.Revoke(token.Id);
 
-            var newAccessToken = jwt.GenerateToken(user.Username, user.Role);
+            var newAccessToken = jwt.GenerateToken(user);
             var newRefreshToken = jwt.GenerateRefreshToken();
             await refreshTokenRepo.SaveToken(user.Id, newRefreshToken, DateTime.UtcNow.AddDays(1));
 
@@ -51,6 +52,24 @@ namespace RestFullApiTest
                 refreshToken = newRefreshToken
             }));
 
+        }
+
+        [Authorize]
+        [HttpGet("me")]
+        public async Task<IActionResult> GetCurrentUser()
+        {
+            var username = User.Identity?.Name;
+            var id = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var role = User.FindFirst(ClaimTypes.Role)?.Value;
+
+            var user = new User
+            {
+                Id = Convert.ToInt32(id),
+                Username = username!,
+                Role = role!
+            };
+
+            return Ok(user);
         }
 
         [Authorize]

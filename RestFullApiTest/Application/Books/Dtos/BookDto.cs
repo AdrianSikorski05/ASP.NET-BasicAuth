@@ -28,7 +28,7 @@ namespace RestFullApiTest
         /// <summary>
         /// Price of the book.
         /// </summary>
-        public decimal Price { get; set; }
+        public double Price { get; set; }
         /// <summary>
         /// Stock of the book.
         /// </summary>

@@ -11,8 +11,15 @@ namespace RestFullApiTest
         public SqliteConnectionFactory(IConfiguration configuration)
         {
             _configuration = configuration;
-            _connectionString = _configuration.GetConnectionString("DefaultConnection")
-                                ?? throw new ArgumentNullException("DefaultConnection");
+            _connectionString = _configuration.GetConnectionString("DefaultConnection");
+                                
+        }
+
+        public SqliteConnectionFactory()
+        {
+            var builder = new ConfigurationBuilder().AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+            _configuration = builder.Build();
+            _connectionString = _configuration.GetConnectionString("DefaultConnection");
         }
         public IDbConnection CreateConnection()
         {

@@ -14,7 +14,7 @@ namespace RestFullApiTest
         /// <param name="publishedDate"></param>
         /// <param name="price"></param>
         /// <param name="stock"></param>
-        public Book(int id, string title, string author, string genre, DateTime publishedDate, decimal price, int stock)
+        public Book(int id, string title, string author, string genre, DateTime publishedDate, double price, int stock)
         {
             Id = id;
             Title = title;
@@ -48,15 +48,15 @@ namespace RestFullApiTest
         /// <summary>
         /// Title of the book
         /// </summary>
-        public string Title { get; set; } = string.Empty;
+        public string Title { get; set; }
         /// <summary>
         /// Author of the book
         /// </summary>
-        public string Author { get; set; } = string.Empty;
+        public string Author { get; set; } 
         /// <summary>
         /// Genre of the book
         /// </summary>
-        public string Genre { get; set; } = string.Empty;
+        public string Genre { get; set; } 
         /// <summary>
         /// Date when the book was published
         /// </summary>
@@ -64,7 +64,7 @@ namespace RestFullApiTest
         /// <summary>
         /// Price of the book
         /// </summary>
-        public decimal Price { get; set; }
+        public double Price { get; set; }
         /// <summary>
         /// Stock quantity of the book
         /// </summary>

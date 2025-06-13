@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="AplikacjaAndroid.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:AplikacjaAndroid"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:vm="clr-namespace:AplikacjaAndroid"
+    x:DataType="vm:AppShellContext"
+    Title="AplikacjaAndroid"
+    FlyoutBehavior="Flyout"
+    FlyoutVerticalScrollMode="Disabled"
+    FlyoutWidth="250">
+
+    <Shell.FlyoutHeader>
+        <Grid BackgroundColor="#512BD4" 
+              HeightRequest="100">
+            <StackLayout>
+                <Grid ColumnDefinitions="Auto,*,Auto">
+                    <Image Grid.Column="0"
+                           HorizontalOptions="Start"
+                           Margin="10,0,0,0"
+                           IsVisible="{Binding IsVisibleAdminTab}">
+                        <Image.Source>
+                            <FontImageSource FontFamily="MaterialIcons" Glyph="&#xf02e;" Color="Gold" Size="50"/>
+                        </Image.Source>
+                    </Image>
+
+                    <ImageButton Grid.Column="2"
+                 Source="arrow.svg"
+                 BorderWidth="10"
+                 Command="{Binding CloseTheFlyoutPresenterCommand}"
+                 HorizontalOptions="End"/>
+                </Grid>
+                <Label Text="Menu" 
+                       TextColor="White" 
+                       FontSize="24" 
+                       FontAttributes="Bold"
+                       HorizontalTextAlignment="Center"/>
+            </StackLayout>
+        </Grid>
+    </Shell.FlyoutHeader>
+   
+    <FlyoutItem Title="Books"            
+            IsVisible="True">
+        <FlyoutItem.Icon>
+            <FontImageSource FontFamily="MaterialIcons" 
+                         Glyph="&#xea19;" 
+                         Color="#512BD4"/>
+        </FlyoutItem.Icon>
+        <ShellContent Title="Books" Route="books" ContentTemplate="{DataTemplate local:BooksView}" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="{Binding CountToReadBooksCount,StringFormat='Book to read  ({0})'}"            
+        IsVisible="True">
+        <FlyoutItem.Icon>
+            <FontImageSource FontFamily="MaterialIcons" Glyph="&#xe87d;" Color="#EF4444" Size="20"/>
+        </FlyoutItem.Icon>
+        <ShellContent Title="ToRead" Route="toRead" ContentTemplate="{DataTemplate local:ToReadBookView}" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="{Binding CountReadedBooksCount,StringFormat='Readed book  ({0})'}"            
+        IsVisible="True">
+        <FlyoutItem.Icon>
+            
+            <FontImageSource FontFamily="MaterialIcons" Glyph="&#xe86c;" Color="#059669" Size="20"/>
+        </FlyoutItem.Icon>
+        <ShellContent Title="Readed" Route="readed" ContentTemplate="{DataTemplate local:ReadedBookView}" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="Users"                        
+        IsVisible="{Binding IsVisibleAdminTab}">
+        <FlyoutItem.Icon>
+            <FontImageSource FontFamily="MaterialIcons" Glyph="&#xe7fd;" Color="#512BD4" />
+        </FlyoutItem.Icon>
+        <ShellContent Title="Users" Route="users" ContentTemplate="{DataTemplate local:UsersView}" />
+    </FlyoutItem>
+
+    <!-- Flyout Footer -->
+    <Shell.FlyoutFooter>
+        <StackLayout BackgroundColor="{AppThemeBinding Light=#F0F0F0, Dark=#1C1C1E}" 
+                     Padding="20,10">
+            <Label FontSize="14" HorizontalOptions="Center" >
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="{Binding UserData.User.Username}"/>
+                        <Span Text=" (" />
+                        <Span Text="{Binding UserData.User.Role}" />
+                        <Span Text=")" />
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+            <Label Text="{Binding CountdownDisplay}"
+                   FontSize="14"
+                   TextColor="Red"
+                   HorizontalOptions="Center"/>
+
+            <Button Text="Logout" 
+                    Command="{Binding LogoutCommand}" 
+                    HorizontalOptions="Fill" 
+                    VerticalOptions="End" 
+                    Margin="0,10,0,0"
+                    BackgroundColor="#512BD4"
+                    TextColor="White">
+                <Button.ImageSource>
+                    <FontImageSource FontFamily="MaterialIcons" Glyph="&#xe9ba;" Color="White" Size="16"/>
+                </Button.ImageSource>
+            </Button>
+        </StackLayout>
+    </Shell.FlyoutFooter>
+
+</Shell>

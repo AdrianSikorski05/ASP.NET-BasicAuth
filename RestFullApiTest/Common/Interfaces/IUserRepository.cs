@@ -1,14 +1,16 @@
 ﻿
+using System.Data;
+
 namespace RestFullApiTest
 {
     public interface IUserRepository
     {
-        Task<User?> AddUser(CreateUserDto user);
-        Task<PagedResult<User>> GetAllUsers(UserFilter userFilter);
-        Task<User?> GetUserById(int id);
-        Task<User?> GetUserByUsername(string username);
-        Task<(User,int)> UpdateUser(UpdateUserDto updateUserDto);
-        Task<int> DeleteUser(DeleteUserDto deleteUserDto);
-        Task<int> DeleteUserById(int id);
+        Task<User?> AddUser(CreateUserDto user, IDbConnection? connection = null, IDbTransaction? transaction = null);
+        Task<PagedResult<User>> GetAllUsers(UserFilter userFilter, IDbConnection? connection = null, IDbTransaction? transaction = null);
+        Task<User?> GetUserById(int id, IDbConnection? connection = null, IDbTransaction? transaction = null);
+        Task<User?> GetUserByUsername(string username, IDbConnection? connection = null, IDbTransaction? transaction = null);
+        Task<(User,int)> UpdateUser(UpdateUserDto updateUserDto, IDbConnection? connection = null, IDbTransaction? transaction = null);
+        Task<int> DeleteUser(DeleteUserDto deleteUserDto, IDbConnection? connection = null, IDbTransaction? transaction = null);
+        Task<int> DeleteUserById(int id, IDbConnection? connection = null, IDbTransaction? transaction = null);
     }
 }
