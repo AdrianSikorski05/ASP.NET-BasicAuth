@@ -25,3 +25,13 @@
 /RestFullApiTest/Properties
 /RestFullApiTest/bin/Debug/net8.0
 /.vs
+/AplikacjaAndroid/obj
+/AplikacjaAndroid/bin/Debug
+/RestFullApi.IntegrationsTests/bin/Debug/net8.0
+/RestFullApi.IntegrationsTests/obj
+/RestFullApiTest.test/bin/Debug/net8.0
+/RestFullApiTest.test/obj/Debug/net8.0
+/RestFullApiTest.test/obj
+/AplikacjaAndroid/bin/Release/net9.0-android
+/RestFullApi.IntegrationsTests/bin/Release/net8.0
+/RestFullApiTest.test/bin/Release/net8.0
