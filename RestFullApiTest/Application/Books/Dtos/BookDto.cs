@@ -33,5 +33,13 @@ namespace RestFullApiTest
         /// Stock of the book.
         /// </summary>
         public int Stock { get; set; }
+        /// <summary>
+        /// Image of book
+        /// </summary>
+        public byte[]? Image { get; set; }
+        /// <summary>
+        /// Description of the book
+        /// </summary>
+        public string? Description { get; set; }
     }
 }

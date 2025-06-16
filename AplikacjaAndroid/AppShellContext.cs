@@ -25,6 +25,8 @@ namespace AplikacjaAndroid
             _toRead.CountChanged += OnToReadCountChanged;
             UpdateUserData();
             StartCountdown();
+            CountReadedBooksCount = _readed.Count;
+            CountToReadBooksCount = _toRead.Count;
         }
 
         private void OnReadedCountChanged(object? sender, EventArgs e) =>

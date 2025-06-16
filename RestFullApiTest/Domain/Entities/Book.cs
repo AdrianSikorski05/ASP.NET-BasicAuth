@@ -14,7 +14,9 @@ namespace RestFullApiTest
         /// <param name="publishedDate"></param>
         /// <param name="price"></param>
         /// <param name="stock"></param>
-        public Book(int id, string title, string author, string genre, DateTime publishedDate, double price, int stock)
+        /// <param name="image"></param>
+        /// <param name="description"></param>
+        public Book(int id, string title, string author, string genre, DateTime publishedDate, double price, int stock, byte[] image, string? description)
         {
             Id = id;
             Title = title;
@@ -23,6 +25,8 @@ namespace RestFullApiTest
             PublishedDate = publishedDate;
             Price = price;
             Stock = stock;
+            Image = image;
+            Description = description;
         }
 
         public static BookDto MapToDto(Book book) 
@@ -35,7 +39,9 @@ namespace RestFullApiTest
                 Genre = book.Genre,
                 PublishedDate = book.PublishedDate,
                 Price = book.Price,
-                Stock = book.Stock             
+                Stock = book.Stock,
+                Image = book.Image,
+                Description = book.Description
             };
         }
 
@@ -69,5 +75,13 @@ namespace RestFullApiTest
         /// Stock quantity of the book
         /// </summary>
         public int Stock { get; set; }
+        /// <summary>
+        /// Image of book
+        /// </summary>
+        public byte[] Image { get; set; }
+        /// <summary>
+        /// Description of the book
+        /// </summary>
+        public string? Description { get; set; }
     }
 }

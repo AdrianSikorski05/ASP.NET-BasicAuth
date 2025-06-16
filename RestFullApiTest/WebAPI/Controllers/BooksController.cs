@@ -138,7 +138,7 @@ namespace RestFullApiTest
             {
                 logger.LogInformation($"Book with id {uBook.Item1.Id} updated");
                 return Ok(ResponseResult.Success("OK", uBook.Item1));
-            }          
+            }
         }
 
         /// <summary>
@@ -204,6 +204,57 @@ namespace RestFullApiTest
             {
                 logger.LogInformation($"Book with id {deleteBookByIdDto.Id} deleted");
                 return Ok(ResponseResult.Success("OK", $"Book with id {deleteBookByIdDto.Id} deleted"));
+            }
+        }
+
+
+        [HttpPost("getBookWithActivityStatusByUser")]
+        [Authorize]
+        [ProducesResponseType(typeof(ResponseResult), 200)]
+        [ProducesResponseType(typeof(ResponseResult), 404)]
+        [ProducesResponseType(typeof(ResponseResult), 400)]
+        public async Task<ActionResult<ResponseResult>> GetBookWithActivityStatusByUser([FromBody] DataStatusBookWithUserIdDto data)
+        {
+            if (!ModelState.IsValid)
+            {
+                logger.LogError("Model state is not valid");
+                return BadRequest(ResponseResult.BadRequest("Model state is not valid", ModelState));
+            }
+            var result = await mediator.Send(new GetBookWithActivityStatusByUserQuery(data));
+            if (result.Count <= 0)
+            {
+                logger.LogInformation($"Books with activity status {data.StatusBook} not found for user {data.UserId}");
+                return NotFound(ResponseResult.NotFound($"Books with activity status {data.StatusBook} not found for user {data.UserId}"));
+            }
+            else
+            {
+                logger.LogInformation($"Founds {result.Count} books with activity status {data.StatusBook} for user {data.UserId}");
+                return Ok(ResponseResult.Success("OK", result));
+            }
+        }
+
+        [HttpPost("updateBookActivityStatus")]
+        [Authorize]
+        [ProducesResponseType(typeof(ResponseResult), 200)]
+        [ProducesResponseType(typeof(ResponseResult), 404)]
+        [ProducesResponseType(typeof(ResponseResult), 400)]
+        public async Task<ActionResult<ResponseResult>> UpdateBookActivityStatus([FromBody] ActivityBook activityBook)
+        {
+            if (!ModelState.IsValid)
+            {
+                logger.LogError("Model state is not valid");
+                return BadRequest(ResponseResult.BadRequest("Model state is not valid", ModelState));
+            }
+            var result = await mediator.Send(new UpdateBookActivityStatusCommand(activityBook));
+            if (result)
+            {
+                logger.LogInformation($"Book activity status updated for user {activityBook.UserId} and book {activityBook.Book.Id}");
+                return Ok(ResponseResult.Success("OK", "Book activity status updated"));
+            }
+            else
+            {
+                logger.LogError($"Failed to update book activity status for user {activityBook.UserId} and book {activityBook.Book.Id}");
+                return BadRequest(ResponseResult.BadRequest("Failed to update book activity status"));
             }
         }
     }

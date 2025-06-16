@@ -13,7 +13,9 @@ namespace RestFullApiTest
         /// <param name="genre">genre</param>
         /// <param name="price">price</param>
         /// <param name="stock">stock</param>
-        public UpdateBookDto(int id, string? title, string? author, string? genre, decimal? price, int? stock)
+        /// <param name="image">stock</param>
+        /// <param name="description">stock</param>
+        public UpdateBookDto(int id, string? title, string? author, string? genre, decimal? price, int? stock, byte[] image, string? description)
         {
             Id = id;
             Title = title;
@@ -21,6 +23,8 @@ namespace RestFullApiTest
             Genre = genre;
             Price = price;
             Stock = stock;
+            Image = image;
+            Description = description;
         }
 
         /// <summary>
@@ -53,5 +57,15 @@ namespace RestFullApiTest
         /// The stock of the book.
         /// </summary>
         public int? Stock { get; set; }
+
+        /// <summary>
+        /// Imge of the book.
+        /// </summary>
+        public byte[] Image { get; set; }
+
+        /// <summary>
+        /// Description of the book.
+        /// </summary>
+        public string? Description { get; set; }
     }
 }

@@ -10,39 +10,54 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Border Stroke="#ccc" StrokeThickness="1" Padding="10,5,10,5" Margin="5" Grid.Row="0">
-            <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
-                <Label Text="Title:" VerticalOptions="Center"/>
-                <Entry Placeholder="Search title" WidthRequest="120" Text="{Binding TitleFilter}"/>
+            <ScrollView HorizontalScrollBarVisibility="Never" Orientation="Horizontal">
+                <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
+                    <Label Text="Title:" VerticalOptions="Center"/>
+                    <Entry Placeholder="Search title" WidthRequest="120" Text="{Binding TitleFilter}" ClearButtonVisibility="WhileEditing"/>
+                    <Label Text="Author:" VerticalOptions="Center"/>
+                    <Entry Placeholder="Search author" WidthRequest="120" Text="{Binding AuthorFilter}" ClearButtonVisibility="WhileEditing"/>
 
-
-                <Label Text="Genre:" VerticalOptions="Center"/>
-                <Picker WidthRequest="120"
-            ItemsSource="{Binding AvailableGenre}"
-            SelectedItem="{Binding SelectedGenre}" />
-            </HorizontalStackLayout>
+                    <Label Text="Genre:" VerticalOptions="Center"/>
+                    <Picker WidthRequest="120"
+                            ItemsSource="{Binding AvailableGenre}"
+                            SelectedItem="{Binding SelectedGenre}" />
+                </HorizontalStackLayout>
+            </ScrollView>
+            
         </Border>
-
         <CollectionView ItemsSource="{Binding Books}" Grid.Row="1">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <Border Stroke="#ccc" Margin="10" Padding="10" StrokeShape="RoundRectangle 10">
-                        <Grid ColumnDefinitions="Auto,*,Auto">
+                    <Border  Stroke="#ccc" Margin="10" Padding="10" StrokeShape="RoundRectangle 10">
+                        <Grid ColumnDefinitions="Auto,*,Auto,Auto">
                             <Grid.GestureRecognizers>
                                 <TapGestureRecognizer
                     Command="{Binding BindingContext.GoToDetailsViewCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
                     CommandParameter="{Binding .}" />
                             </Grid.GestureRecognizers>
 
-                            <VerticalStackLayout Grid.Column="0">
+                            <Image Grid.Column="0" WidthRequest="60" HeightRequest="60" Source="{Binding ImageSource}" Aspect="AspectFit"/>
+
+                            <VerticalStackLayout Margin="20,10,10,10" Grid.Column="1">
                                 <Label Text="{Binding Title}" FontAttributes="Bold"/>
                                 <Label Text="{Binding Genre}" FontSize="12" TextColor="Gray"/>
                             </VerticalStackLayout>
 
-                            <ImageButton Scale="0.5" Grid.Column="2" 
+                            <ImageButton Scale="0.5" Grid.Column="2" IsVisible="{Binding IsReaded}">
+                                <ImageButton.Source>
+                                    <FontImageSource FontFamily="MaterialIcons" Glyph="&#xe86c;" Color="#059669" Size="20"/>
+                                </ImageButton.Source>
+                            </ImageButton>
+                            <ImageButton Scale="0.5" Grid.Column="2" IsVisible="{Binding IsToRead}">
+                                <ImageButton.Source>
+                                    <FontImageSource FontFamily="MaterialIcons" Glyph="&#xe87d;" Color="#EF4444" Size="20"/>
+                                </ImageButton.Source>
+                            </ImageButton>
+                            <ImageButton Scale="0.5" Grid.Column="3" 
                                     Command="{Binding BindingContext.ShowPopupCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
                                     CommandParameter="{Binding .}">
                                 <ImageButton.Source>
-                                    <FontImageSource FontFamily="MaterialIcons" Glyph="&#xf1df;" Color="Gray" Size="20"/>
+                                    <FontImageSource FontFamily="MaterialIcons" Glyph="&#xe8b8;" Color="#512BD4" Size="20"/>
                                 </ImageButton.Source>
                             </ImageButton>
                         </Grid>

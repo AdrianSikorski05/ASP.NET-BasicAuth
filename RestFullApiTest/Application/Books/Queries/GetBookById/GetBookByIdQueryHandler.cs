@@ -17,7 +17,9 @@ namespace RestFullApiTest
                 Author = result.Author,
                 Genre = result.Genre,
                 Price = result.Price,
-                Stock = result.Stock
+                Stock = result.Stock,
+                Image = result.Image,
+                Description = result.Description,
             };
         }
     }

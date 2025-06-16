@@ -8,6 +8,7 @@ namespace AplikacjaAndroid
     public partial class ReadedBookContext : ObservableObject
     {
         private readonly BookMenuPopup _bookMenuPopup;
+
         public ReadedBookContext(ReadedBookStorage readedBookStorage, BookMenuPopup bookMenuPopup)
         {
             _readedBooks = readedBookStorage.Books;
@@ -23,7 +24,9 @@ namespace AplikacjaAndroid
         {
             await Shell.Current.GoToAsync(nameof(DetailsBookView), true, new Dictionary<string, object>
         {
-            { "Book", selectedBook }
+            { "Book", selectedBook },
+            { "IsVisibleButtons", false },
+            { "IsVisibleConfig", true }
         });
         }
 
@@ -32,6 +35,6 @@ namespace AplikacjaAndroid
         {
             _bookMenuPopup.LoadContext(book, true);
             await MopupService.Instance.PushAsync(_bookMenuPopup, true);
-        }
+        }       
     }
 }

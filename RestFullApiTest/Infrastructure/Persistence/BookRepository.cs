@@ -30,14 +30,16 @@ namespace RestFullApiTest
                     throw new Exception($"Book with title '{book.Title}' already exists.");
                 }
 
-                var sql = @$"INSERT INTO Books ({nameof(CreateBookDto.Title)}, {nameof(CreateBookDto.Author)}, {nameof(CreateBookDto.Genre)}, {nameof(Book.PublishedDate)}, {nameof(CreateBookDto.Price)}, {nameof(CreateBookDto.Stock)})
-                        VALUES (@Title, @Author, @Genre, @PublishedDate, @Price, @Stock);
+                var sql = @$"INSERT INTO Books ({nameof(CreateBookDto.Title)}, {nameof(CreateBookDto.Author)}, {nameof(CreateBookDto.Genre)}, {nameof(Book.PublishedDate)}, {nameof(CreateBookDto.Price)}, {nameof(CreateBookDto.Stock)},{nameof(CreateBookDto.Image)},{nameof(CreateBookDto.Description)})
+                        VALUES (@Title, @Author, @Genre, @PublishedDate, @Price, @Stock, @Image, @Description);
                         SELECT last_insert_rowid();";
                 parameters.Add(nameof(Book.Author), book.Author);
                 parameters.Add(nameof(Book.Genre), book.Genre);
                 parameters.Add(nameof(Book.PublishedDate), DateTime.Now);
                 parameters.Add(nameof(Book.Price), book.Price);
                 parameters.Add(nameof(Book.Stock), book.Stock);
+                parameters.Add(nameof(Book.Image), book.Image);
+                parameters.Add(nameof(Book.Description), book.Description);
                 var bookId = await connection.ExecuteScalarAsync<long>(sql, parameters, transaction);
                 if (bookId > 0)
                 {
@@ -49,7 +51,9 @@ namespace RestFullApiTest
                         Genre = book.Genre,
                         PublishedDate = DateTime.Now,
                         Price = book.Price,
-                        Stock = book.Stock
+                        Stock = book.Stock,
+                        Image = book.Image,
+                        Description = book.Description
                     };
                 }
                 return null;
@@ -101,6 +105,19 @@ namespace RestFullApiTest
                     sb.Append($", Stock = @Stock");
                     parameters.Add("Stock", updateBook.Stock);
                 }
+
+                if (updateBook.Image != null && updateBook.Image.Length > 0)
+                {
+                    sb.Append($", Image = @Image");
+                    parameters.Add("Image", updateBook.Image);
+                }
+
+                if (!string.IsNullOrWhiteSpace(updateBook.Description))
+                {
+                    sb.Append($", Description = @Description");
+                    parameters.Add("Description", updateBook.Description);
+                }
+
                 sb.Append($" where Id = @Id");
                 parameters.Add("Id", updateBook.Id);
 
@@ -178,6 +195,56 @@ namespace RestFullApiTest
                     connection?.Dispose();
             }
         }
+
+        public async Task<bool> UpdateBookActivityStatus(ActivityBook activityBook, IDbConnection? connection = null, IDbTransaction? transaction = null)
+        {
+            var shouldDisposeConnection = connection == null;
+            connection ??= dbConnectionFactory.CreateConnection();
+            try
+            {
+                string sql = "" ;
+                var parameters = new DynamicParameters();
+
+                if (activityBook.Status == BookStatus.AddedToToRead)
+                {
+                    sql = $@"INSERT INTO ActivityBook (UserId, BookId, Status) 
+                            VALUES (@UserId, @BookId, ""toRead"")";                    
+                }
+                else if(activityBook.Status == BookStatus.AddedToReaded)
+                {
+                    sql = $@"INSERT INTO ActivityBook (UserId, BookId, Status) 
+                            VALUES (@UserId, @BookId, ""readed"")";
+                }
+                else if (activityBook.Status == BookStatus.DeletedFromToRead)
+                {
+                    sql = $@"delete from ActivityBook
+                            where UserId = @UserId and BookId = @BookId and Status = ""toRead""";
+                }
+                else if (activityBook.Status == BookStatus.DeletedFromReaded)
+                {
+                    sql = $@"delete from ActivityBook
+                            where UserId = @UserId and BookId = @BookId and Status = ""readed""";
+                }
+                else
+                {
+                    return false;
+                }
+                
+                
+                parameters.Add("UserId", activityBook.UserId);
+                parameters.Add("BookId", activityBook.Book.Id);
+                
+                var result = await connection.ExecuteAsync(sql, parameters, transaction);
+                return result > 0;
+
+            }
+            finally
+            {
+                if (shouldDisposeConnection)
+                    connection?.Dispose();
+            }
+        }
+
         #endregion
 
         #region QUERIES
@@ -202,7 +269,9 @@ namespace RestFullApiTest
                                 Genre [{nameof(Book.Genre)}],
                                 PublishedDate [{nameof(Book.PublishedDate)}],
                                 Price [{nameof(Book.Price)}],
-                                Stock [{nameof(Book.Stock)}]
+                                Stock [{nameof(Book.Stock)}],
+                                Image [{nameof(Book.Image)}],
+                                Description [{nameof(Book.Description)}]
                         FROM Books
                         Where 1 = 1 ");
                 var parameters = new DynamicParameters();
@@ -282,6 +351,8 @@ namespace RestFullApiTest
                                 ,PublishedDate [{nameof(Book.PublishedDate)}]
                                 ,Price [{nameof(Book.Price)}]
                                 ,Stock [{nameof(Book.Stock)}]
+                                ,Image [{nameof(Book.Image)}]
+                                ,Description [{nameof(Book.Description)}]
                         from books
                         where Id = @Id";
 
@@ -301,7 +372,9 @@ namespace RestFullApiTest
                     Genre = book.Genre,
                     PublishedDate = book.PublishedDate,
                     Price = book.Price,
-                    Stock = book.Stock
+                    Stock = book.Stock,
+                    Image = book.Image,
+                    Description = book.Description
                 };
             }
             finally
@@ -310,6 +383,42 @@ namespace RestFullApiTest
                     connection?.Dispose();
             }
         }
+
+        public async Task<List<Book?>> GetBookWithActivityStatusByUser(DataStatusBookWithUserIdDto data, IDbConnection? connection = null, IDbTransaction? transaction = null)
+        {
+            var shouldDisposeConnection = connection == null;
+            connection ??= dbConnectionFactory.CreateConnection();
+
+            try
+            {
+                var sql = $@"select b.Id [{nameof(Book.Id)}]
+                                    ,b.Title [{nameof(Book.Title)}]
+                                    ,b.Genre [{nameof(Book.Genre)}]
+                                    ,b.Author [{nameof(Book.Author)}]
+                                    ,b.PublishedDate [{nameof(Book.PublishedDate)}]
+                                    ,b.Price [{nameof(Book.Price)}]
+                                    ,b.Stock [{nameof(Book.Stock)}]
+                                    ,b.Image [{nameof(Book.Image)}]
+                                    ,b.Description [{nameof(Book.Description)}]
+                            from ActivityBook ab 
+                            inner join books b on b.Id = ab.BookId
+                            where ab.UserId = @UserId and ab.Status = @Status";
+
+                var parameters = new DynamicParameters();
+                parameters.Add("UserId", data.UserId);
+                parameters.Add("Status", data.StatusBook);
+
+                var books = await connection.QueryAsync<Book>(sql, parameters, transaction);
+                return books.ToList();
+            }
+            finally
+            {
+                if (shouldDisposeConnection)
+                    connection?.Dispose();
+            }
+        }
+
+
 
         #endregion
     }

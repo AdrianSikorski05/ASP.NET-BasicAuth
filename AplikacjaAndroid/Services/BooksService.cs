@@ -26,6 +26,29 @@ namespace AplikacjaAndroid
             return await response.Content.ReadFromJsonAsync<ResponseResult<PagedResult<Book>>>();
         }
 
+        public async Task<ResponseResult<List<Book>>?> GetBookWithActivityStatusByUser(DataStatusBookWithUserIdDto data)
+        {
+            var url = $"Books/getBookWithActivityStatusByUser";
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _userStorage.Token);
+            var response = await _httpClient.PostAsJsonAsync(url, data);
+            
+            return await response.Content.ReadFromJsonAsync<ResponseResult<List<Book>>>();
+            
+        }
+
+        public async Task<bool> UpdateBookActivityStatus(Book book, BookStatus status = BookStatus.Default)
+        {
+            var url = $"Books/updateBookActivityStatus";
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _userStorage.Token);
+            var response = await _httpClient.PostAsJsonAsync(url, new ActivityBook {UserId = _userStorage.User.Id,Book = book,Status = status });
+            if (response.IsSuccessStatusCode)
+            {
+                return true;
+            }
+            
+            return false;
+        }
+
 
         private string ToQueryString(BookFilter filter)
         {

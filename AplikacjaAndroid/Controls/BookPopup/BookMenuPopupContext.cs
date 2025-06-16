@@ -85,7 +85,11 @@ namespace AplikacjaAndroid
                 readedBookStorage.Remove(_book);
                 message = "Removed from books read.";
             }
-            snackBar = _succesSnackBarOption;
+            else
+            {
+
+            }
+                snackBar = _succesSnackBarOption;
 
             await MopupService.Instance.PopAllAsync();
 

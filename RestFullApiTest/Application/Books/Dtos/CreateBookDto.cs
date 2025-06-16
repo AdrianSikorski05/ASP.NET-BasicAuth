@@ -4,13 +4,15 @@ namespace RestFullApiTest
 {
     public class CreateBookDto
     {
-        public CreateBookDto( string title, string author, string genre, double price, int stock)
+        public CreateBookDto(string title, string author, string genre, double price, int stock, byte[] image, string? description)
         {
             Title = title;
             Author = author;
             Genre = genre;
             Price = price;
             Stock = stock;
+            Image = image;
+            Description = description;
         }
 
         /// <summary>
@@ -38,5 +40,11 @@ namespace RestFullApiTest
         /// </summary>
         [Required(ErrorMessage = "Stock is required")]
         public int Stock { get; set; }
+
+        [Required(ErrorMessage = "Image is required")]
+        public byte[] Image { get; set; }
+
+        [Required(ErrorMessage = "Description is required")]
+        public string? Description { get; set; }
     }
 }

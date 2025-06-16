@@ -25,8 +25,10 @@
                                 Command="{Binding BindingContext.GoToDetailsViewCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
                                 CommandParameter="{Binding .}" />
                             </Grid.GestureRecognizers>
-                            
-                            <VerticalStackLayout Grid.Column="0">
+
+                            <Image Grid.Column="0" WidthRequest="60" HeightRequest="60" Source="{Binding ImageSource}" Aspect="AspectFit"/>
+
+                            <VerticalStackLayout Margin="20,10,10,10" Grid.Column="1">
                                 <Label Text="{Binding Title}" 
                                        FontAttributes="Bold"/>
                                 <Label Text="{Binding Genre}" 
@@ -40,8 +42,8 @@
                                          CommandParameter="{Binding .}">
                                 <ImageButton.Source>
                                     <FontImageSource FontFamily="MaterialIcons" 
-                                                     Glyph="&#xf1df;" 
-                                                     Color="Gray" 
+                                                     Glyph="&#xe8b8;" 
+                                                     Color="#512BD4" 
                                                      Size="20"/>
                                 </ImageButton.Source>
                             </ImageButton>

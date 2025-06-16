@@ -1,6 +1,9 @@
-﻿namespace AplikacjaAndroid
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System.Text.Json.Serialization;
+
+namespace AplikacjaAndroid
 {
-    public class Book
+    public partial class Book : ObservableObject
     {
         /// <summary>
         /// Constructor to initialize a new instance of the Book class
@@ -12,7 +15,9 @@
         /// <param name="publishedDate"></param>
         /// <param name="price"></param>
         /// <param name="stock"></param>
-        public Book(int id, string title, string author, string genre, DateTime publishedDate, double price, int stock)
+        /// <param name="image"></param>
+        /// <param name="description"></param>
+        public Book(int id, string title, string author, string genre, DateTime publishedDate, double price, int stock, byte[] image, string? description)
         {
             Id = id;
             Title = title;
@@ -21,6 +26,8 @@
             PublishedDate = publishedDate;
             Price = price;
             Stock = stock;
+            Image = image;
+            Description = description;
         }
 
         /// <summary>
@@ -38,7 +45,7 @@
         /// <summary>
         /// Genre of the book
         /// </summary>
-        public string Genre { get; set; } 
+        public string Genre { get; set; }
         /// <summary>
         /// Date when the book was published
         /// </summary>
@@ -51,5 +58,33 @@
         /// Stock quantity of the book
         /// </summary>
         public int Stock { get; set; }
+        /// <summary>
+        /// Image of the book
+        /// </summary>
+        public byte[] Image { get; set; }
+
+        /// <summary>
+        /// Description of the book
+        /// </summary>
+        public string? Description { get; set; }
+
+        [JsonIgnore]
+        public ImageSource? ImageSource => Image != null && Image.Length > 0
+            ? ImageSource.FromStream(() => new MemoryStream(Image))
+            : null;
+
+        [JsonIgnore]
+        [ObservableProperty]
+        bool _isReaded;
+
+        [JsonIgnore]
+        [ObservableProperty]
+        bool _isToRead;
+
+        public void UpdateStatuses(bool isReaded, bool isToRead)
+        {
+            IsReaded = isReaded;
+            IsToRead = isToRead;
+        }
     }
 }

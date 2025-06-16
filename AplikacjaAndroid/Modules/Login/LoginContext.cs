@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace AplikacjaAndroid;
 
-public partial class LoginContext(IUsersService usersService) : ObservableObject
+public partial class LoginContext(IUsersService usersService, ReadedBookStorage readedBookStorage, ToReadBookStorage toReadBookStorage) : ObservableObject
 {
     [ObservableProperty]
     private LoginUser _loginUser = new();
@@ -33,6 +33,8 @@ public partial class LoginContext(IUsersService usersService) : ObservableObject
             if (response.StatusCode == 200)
             {
                 // Tworzymy nowy Shell i podmieniamy stronê g³ówn¹ aplikacji
+                await readedBookStorage.LoadData();
+                await toReadBookStorage.LoadData();
                 Application.Current.MainPage = App.ServiceProvider.GetRequiredService<AppShell>();
             }
             else if(response.StatusCode == 401 && response.Message == "Invalid username or password")
