@@ -69,9 +69,18 @@ namespace AplikacjaAndroid
         public string? Description { get; set; }
 
         [JsonIgnore]
-        public ImageSource? ImageSource => Image != null && Image.Length > 0
-            ? ImageSource.FromStream(() => new MemoryStream(Image))
-            : null;
+        private ImageSource? _cachedImageSource;
+
+        [JsonIgnore]
+        public ImageSource? ImageSource
+        {
+            get
+            {
+                if (_cachedImageSource == null && Image != null && Image.Length > 0)
+                    _cachedImageSource = ImageSource.FromStream(() => new MemoryStream(Image));
+                return _cachedImageSource;
+            }
+        }
 
         [JsonIgnore]
         [ObservableProperty]

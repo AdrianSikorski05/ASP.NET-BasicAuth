@@ -28,6 +28,7 @@ try
     builder.Services.AddSingleton<IDbConnectionFactory, SqliteConnectionFactory>();
     builder.Services.AddScoped<IBookRepository, BookRepository>();
     builder.Services.AddScoped<IUserRepository, UserRepository>();
+    builder.Services.AddScoped<ICommentRepository, CommentRepository>();
     builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
     //builder.Services.AddScoped<IBookService, BookService>();
     //builder.Services.AddScoped<IUserService, UserService>();

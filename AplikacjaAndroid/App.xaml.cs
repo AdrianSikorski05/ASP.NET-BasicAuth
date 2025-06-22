@@ -1,4 +1,6 @@
-﻿namespace AplikacjaAndroid
+﻿using System.Diagnostics;
+
+namespace AplikacjaAndroid
 {
     public partial class App : Application
     {

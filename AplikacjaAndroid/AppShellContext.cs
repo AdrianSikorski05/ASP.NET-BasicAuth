@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using Mopups.Services;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -48,9 +49,10 @@ namespace AplikacjaAndroid
         [RelayCommand]
         public void Logout()
         {
-            System.Diagnostics.Debug.WriteLine("Logout command executed.");
-            // Przejdź do strony logowania
-            Application.Current.MainPage = App.ServiceProvider.GetRequiredService<LoginView>();
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                Application.Current.MainPage = App.ServiceProvider.GetRequiredService<LoginView>();
+            });
         }
      
         [RelayCommand]
@@ -60,8 +62,8 @@ namespace AplikacjaAndroid
         }
 
         private void UpdateUserData()
-        {          
-            if (UserData.User.Role.ToLower() == "Admin".ToLower())
+        {
+            if (!string.IsNullOrWhiteSpace(UserData?.User?.Role) && UserData.User.Role.Equals("Admin", StringComparison.OrdinalIgnoreCase))
             {
                 IsVisibleAdminTab = true;
             }
@@ -90,12 +92,20 @@ namespace AplikacjaAndroid
 
                 MainThread.BeginInvokeOnMainThread(async () =>
                 {
-                    CountdownDisplay = "00:00";                   
-                    await MopupService.Instance.PopAllAsync();
+                    try
+                    {
+                        CountdownDisplay = "00:00";
+                        await MopupService.Instance.PopAllAsync();
 
-                    Logout();
-                    UserData.LoadData(null, new User());
+                        Logout();
+                        UserData.LoadData(null, new User());
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine($"[Countdown Error] {ex}");
+                    }
                 });
+
             }
             else
             {

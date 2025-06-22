@@ -7,8 +7,11 @@ using System.Collections.ObjectModel;
 
 namespace AplikacjaAndroid
 {
+    [QueryProperty(nameof(IsVisibleButtons), "IsVisibleButtons")]
+    [QueryProperty(nameof(IsVisibleConfig), "IsVisibleConfig")]
+    [QueryProperty(nameof(Book), "Book")]
     public partial class DetailsBookContext : ObservableObject
-    {     
+    {
         [ObservableProperty]
         private Book _book;
 
@@ -21,30 +24,43 @@ namespace AplikacjaAndroid
         [ObservableProperty]
         string _commentText;
 
-        private readonly ReadedBookStorage _readedBookStorage;       
-        private readonly ToReadBookStorage _toReadBookStorage;
-        private readonly BookMenuPopup _bookMenuPopup;
+        [ObservableProperty]
+        bool _isLoading = false;
 
         [ObservableProperty]
-        public List<int> _ratingOptions = new List<int>{ 1, 2, 3, 4, 5 };
+        bool _areCommentsLoaded = false;
 
-        public DetailsBookContext(ReadedBookStorage readedBookStorage, ToReadBookStorage toReadBookStorage, BookMenuPopup bookMenuPopup)
-        {           
+        private CommentFilter _commentFilter = new();
+
+        private readonly ReadedBookStorage _readedBookStorage;
+        private readonly ToReadBookStorage _toReadBookStorage;
+        private readonly BookMenuPopup _bookMenuPopup;
+        private readonly UserStorage _userStorage;
+        private readonly ICommentService _commentService;
+        private readonly CommentPopupView _commentPopupView;
+        private readonly NavigationService _navigationService;
+        private readonly IServiceProvider _serviceProvider;
+
+
+        public DetailsBookContext(ReadedBookStorage readedBookStorage, ToReadBookStorage toReadBookStorage
+            , BookMenuPopup bookMenuPopup, UserStorage userStorage, ICommentService commentService,
+            CommentPopupView commentPopupView, NavigationService navigationService , IServiceProvider serviceProvider)
+        {
             _readedBookStorage = readedBookStorage;
             _toReadBookStorage = toReadBookStorage;
             _bookMenuPopup = bookMenuPopup;
-            Comments = new ObservableCollection<CommentBook> 
-            { 
-                new CommentBook {id = 1, Author = "Admin",Content = "testowy komentarz",Rate = 1,PublishedDate = DateTime.Now},
-                new CommentBook {id = 2, Author = "Kutas",Content = "testowy komentarz1",Rate = 4,PublishedDate = DateTime.Now},
-                new CommentBook {id = 3, Author = "Pizda",Content = "testowy komentarz testowy komentarz testowy komentarz testowy komentarz testowy komentarz testowy komentarz",Rate = 5,PublishedDate = DateTime.Now},
-                new CommentBook {id = 4, Author = "Dupa",Content = "testowy komentarz2",Rate = 3,PublishedDate = DateTime.Now},
-                new CommentBook {id = 5, Author = "Chuj",Content = "testowy komentarz3",Rate = 5,PublishedDate = DateTime.Now},
-            };
+            _userStorage = userStorage;
+            _commentService = commentService;
+            _commentPopupView = commentPopupView;
+            _navigationService = navigationService;
+            _serviceProvider = serviceProvider;
         }
 
         [ObservableProperty]
-        public ObservableCollection<CommentBook> _comments = new ();
+        public ObservableCollection<CommentBook> _comments = new();
+
+        [ObservableProperty]
+        public CreateCommentBookDto _newComment = new();
 
         [RelayCommand]
         public async Task AddToToReadCollection()
@@ -56,7 +72,7 @@ namespace AplikacjaAndroid
                 CornerRadius = 8,
                 Font = Microsoft.Maui.Font.SystemFontOfSize(14),
                 TextColor = Colors.Black,
-                
+
             };
 
             string message = "";
@@ -80,17 +96,16 @@ namespace AplikacjaAndroid
             else
             {
                 message = "Book added to read.";
-                _toReadBookStorage.Add(Book);
+                await _toReadBookStorage.Add(Book);
             }
 
             await Snackbar.Make(message, action: async () =>
             {
-                // reset stosu w aktualnej zakładce
                 await Shell.Current.Navigation.PopToRootAsync();
-
-                // przejście do zakładki "toRead" bez historii
                 await Shell.Current.GoToAsync(route);
+
             }, actionButtonText: "Show", visualOptions: stackbarOption).Show();
+
         }
 
         [RelayCommand]
@@ -103,7 +118,7 @@ namespace AplikacjaAndroid
                 CornerRadius = 8,
                 Font = Microsoft.Maui.Font.SystemFontOfSize(14),
                 TextColor = Colors.Black,
-                
+
             };
 
             string message = "";
@@ -125,18 +140,14 @@ namespace AplikacjaAndroid
             }
             else
             {
-                _readedBookStorage.Add(Book);
+                await _readedBookStorage.Add(Book);
                 message = "Book added to read list.";
             }
 
 
             await Snackbar.Make(message, action: async () =>
             {
-                // reset stosu w aktualnej zakładce
-                await Shell.Current.Navigation.PopToRootAsync();
-
-                // przejście do zakładki "Readed" bez historii
-                await Shell.Current.GoToAsync(route);
+                await _navigationService.GoToRootAsync(route);
 
             }, actionButtonText: "Show", visualOptions: stackbarOption).Show();
         }
@@ -144,23 +155,142 @@ namespace AplikacjaAndroid
         [RelayCommand]
         public async Task GoToDetailsView(Book selectedBook)
         {
-            await Shell.Current.GoToAsync(nameof(DetailsBookView), true, new Dictionary<string, object>
-        {
-            { "Book", selectedBook }
-        });
+            await _navigationService.NavigateToAsync(nameof(DetailsBookView), new()
+            {
+                { "Book", selectedBook }
+            });
         }
 
         [RelayCommand]
         public async Task ShowPopup()
         {
-            _bookMenuPopup.LoadContext(_book, true);
+            var context = _bookMenuPopup.BindingContext as BookMenuPopupContext;
+            context?.LoadContext(Book, false);
             await MopupService.Instance.PushAsync(_bookMenuPopup, true);
+
         }
-       
+
         [RelayCommand]
         void ClearComment()
         {
-            CommentText = string.Empty;
+            NewComment.Content = string.Empty;
+            NewComment.Rate = 0;
+        }
+
+        [RelayCommand]
+        public async Task AddComment()
+        {
+            if (NewComment.IsValid())
+            {
+                NewComment.BookId = Book.Id;
+                NewComment.UserId = _userStorage.User.Id;
+                NewComment.Author = _userStorage.User.Username;
+                var result = await _commentService.AddCommentAsync(NewComment);
+                if (result != null && result.StatusCode == 200 && result.Data != null)
+                {
+                    Comments.Insert(0, result.Data);
+                    NewComment = new();
+                }
+            }
+        }
+
+        [ObservableProperty]
+        bool _hasMorePages;
+
+        [RelayCommand]
+        public async Task LoadComments()
+        {
+            if (AreCommentsLoaded)
+                return;
+
+            IsLoading = true;
+            _commentFilter.Page = 1;
+
+            _commentFilter.BookId = Book.Id;
+            var response = await _commentService.GetComments(_commentFilter);
+
+            if (response != null && response.StatusCode == 200 && response.Data?.Items != null)
+            {
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    Comments = new ObservableCollection<CommentBook>(response.Data.Items);                    
+                });
+
+                response.Data.Items.Where(c => c.UserId == _userStorage?.User?.Id).ToList().ForEach(c => c.IsOwner = true);
+
+                HasMorePages = response.Data.TotalPages >= _commentFilter.Page;
+                AreCommentsLoaded = true;
+            }
+            else
+            {
+                Comments = new ObservableCollection<CommentBook>();
+                HasMorePages = false;
+            }
+
+            IsLoading = false;
+        }
+
+        [ObservableProperty]
+        bool _isLoadingNextComment = false;
+
+        [RelayCommand]
+        public async Task LoadNextPageComments()
+        {
+            if (!HasMorePages)
+                return;
+
+            IsLoadingNextComment = true;
+            _commentFilter.Page++;
+
+            var result = await _commentService.GetComments(_commentFilter);
+
+            if (result?.Data?.Items != null && result.Data.Items.Any())
+            {
+                foreach (var item in result.Data.Items)
+                {                   
+                    MainThread.BeginInvokeOnMainThread(() =>
+                    {
+                        Comments.Add(item);
+                    });
+
+                    foreach (var comment in Comments)
+                    {
+                        comment.IsOwner = comment.UserId == _userStorage?.User?.Id;
+                    }
+
+                }
+
+                HasMorePages = result.Data.TotalPages >= _commentFilter.Page;
+            }
+            else
+            {
+                HasMorePages = false;
+            }
+
+            IsLoadingNextComment = false;
+        }
+
+        [RelayCommand]
+        public async Task OpenCommentPopup(CommentBook comment)
+        {
+            var context = _serviceProvider.GetRequiredService<CommentPopupContext>();
+            context.LoadContext(comment);
+
+            var popup = new CommentPopupView(context); // nowa instancja popupu
+            await MopupService.Instance.PushAsync(popup, true);
+
+            var result = await context.ShowAsync();
+            if (result != null)
+            {
+                var original = Comments.FirstOrDefault(c => c.Id == result.Id);
+                if (original != null)
+                {
+                    var index = Comments.IndexOf(original);
+        Comments.RemoveAt(index);
+        Comments.Insert(index, result);
+                }
+            }
+            await Task.Delay(1000);
         }
     }
 }

@@ -39,6 +39,13 @@ namespace AplikacjaAndroid
 
         public async Task LoadData()
         {
+
+            if (userStorage.User == null)
+            {
+                Console.WriteLine("User is null, cannot load book data.");
+                return;
+            }
+
             var data = new DataStatusBookWithUserIdDto
             {
                 UserId = userStorage.User.Id,
@@ -49,14 +56,20 @@ namespace AplikacjaAndroid
 
             if (response != null && response.StatusCode == 200 && response.Data != null)
             {
-                Books = new ObservableCollection<Book>(response.Data);
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    Books = new ObservableCollection<Book>(response.Data);
+                    RaiseCountChanged();
+                });
             }
             else
             {
-                Books = new ObservableCollection<Book>();
-                Console.WriteLine($"Błąd: {response?.Message ?? "Brak odpowiedzi z serwera"}");
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    Books = new ObservableCollection<Book>();
+                    RaiseCountChanged();
+                });
             }
-            RaiseCountChanged();
         }
     }
 }

@@ -11,12 +11,4 @@ public partial class BookMenuPopup :PopupPage
 		InitializeComponent();
 		BindingContext = bookMenuPopupContext;	
     }
-
-    public void LoadContext(Book book, bool isDeleteButtonVisible)
-    {
-        if (BindingContext is BookMenuPopupContext vm)
-        {
-            vm.LoadContext(book, isDeleteButtonVisible);
-        }
-    }
 }

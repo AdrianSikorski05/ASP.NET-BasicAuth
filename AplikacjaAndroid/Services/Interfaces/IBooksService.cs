@@ -1,4 +1,5 @@
-﻿namespace AplikacjaAndroid
+﻿
+namespace AplikacjaAndroid
 {
     public interface IBooksService
     {

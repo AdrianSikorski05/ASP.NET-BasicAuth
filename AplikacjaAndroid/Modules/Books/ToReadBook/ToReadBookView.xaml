@@ -4,15 +4,16 @@
              x:Class="AplikacjaAndroid.ToReadBookView"
              xmlns:vm="clr-namespace:AplikacjaAndroid"
              Title="To read books">
-    <VerticalStackLayout>
+    <Grid RowDefinitions="Auto,*">
         <Label 
             Text="Your to read books."
             VerticalOptions="Center" 
             HorizontalOptions="Center"
             FontAttributes="Bold"
-            FontSize="20"/>
+            FontSize="20"
+            Grid.Row="0"/>
 
-        <CollectionView ItemsSource="{Binding ReadedBooks}">
+        <CollectionView ItemsSource="{Binding ToReadBooks}" Grid.Row="1">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Border Stroke="#ccc" 
@@ -51,5 +52,5 @@
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-    </VerticalStackLayout>
+    </Grid>
 </ContentPage>

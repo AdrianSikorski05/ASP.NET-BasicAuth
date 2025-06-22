@@ -17,36 +17,65 @@ namespace AplikacjaAndroid
 
         public async Task<ResponseResult<PagedResult<Book>>?> GetAllBooks(BookFilter bookFilter)
         {
-            var query = ToQueryString(bookFilter);
-            var url = $"Books/books?{query}";
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _userStorage.Token);
-            var response = await _httpClient.GetAsync(url);
+            try
+            {
+                var query = ToQueryString(bookFilter);
+                var url = $"Books/books?{query}";
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _userStorage.Token);
+                var response = await _httpClient.GetAsync(url);
 
-            
-            return await response.Content.ReadFromJsonAsync<ResponseResult<PagedResult<Book>>>();
+
+                return await response.Content.ReadFromJsonAsync<ResponseResult<PagedResult<Book>>>();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[GetAllBooks ERROR] {ex.Message}");
+                return new ResponseResult<PagedResult<Book>> { StatusCode = 500, Message = "Connect serwer error. " };
+            }
         }
 
         public async Task<ResponseResult<List<Book>>?> GetBookWithActivityStatusByUser(DataStatusBookWithUserIdDto data)
         {
-            var url = $"Books/getBookWithActivityStatusByUser";
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _userStorage.Token);
-            var response = await _httpClient.PostAsJsonAsync(url, data);
-            
-            return await response.Content.ReadFromJsonAsync<ResponseResult<List<Book>>>();
-            
+            try
+            {
+                var url = $"Books/getBookWithActivityStatusByUser";
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _userStorage.Token);
+                var response = await _httpClient.PostAsJsonAsync(url, data);
+
+                return await response.Content.ReadFromJsonAsync<ResponseResult<List<Book>>>();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[GetBookWithActivityStatusByUser ERROR] {ex.Message}");
+                return new ResponseResult<List<Book>> { StatusCode = 500, Message = "Connect serwer error. " };
+            }          
         }
 
         public async Task<bool> UpdateBookActivityStatus(Book book, BookStatus status = BookStatus.Default)
         {
-            var url = $"Books/updateBookActivityStatus";
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _userStorage.Token);
-            var response = await _httpClient.PostAsJsonAsync(url, new ActivityBook {UserId = _userStorage.User.Id,Book = book,Status = status });
-            if (response.IsSuccessStatusCode)
+            try
             {
-                return true;
+
+                if (_userStorage.User == null)
+                {
+                    return false;
+                }
+
+                var url = $"Books/updateBookActivityStatus";
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _userStorage.Token);
+                var response = await _httpClient.PostAsJsonAsync(url, new ActivityBook { UserId = _userStorage.User.Id, Book = book, Status = status });
+                if (response.IsSuccessStatusCode)
+                {
+                    return true;
+                }
+
+                return false;
             }
-            
-            return false;
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[UpdateBookActivityStatus ERROR] {ex.Message}");
+                return false;
+            }           
         }
 
 

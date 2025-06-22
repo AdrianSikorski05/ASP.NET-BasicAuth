@@ -25,7 +25,7 @@
             </ScrollView>
             
         </Border>
-        <CollectionView ItemsSource="{Binding Books}" Grid.Row="1">
+        <CollectionView ItemsSource="{Binding Books}" Grid.Row="1" RemainingItemsThreshold="1" RemainingItemsThresholdReachedCommand="{Binding LoadNextPageCommand}">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Border  Stroke="#ccc" Margin="10" Padding="10" StrokeShape="RoundRectangle 10">
@@ -66,14 +66,6 @@
             </CollectionView.ItemTemplate>
             <CollectionView.Footer>
                 <AbsoluteLayout  HeightRequest="100">
-                    <Button Text="Load more"
-                            Command="{Binding LoadNextPageCommand}"
-                            IsVisible="{Binding VisibilityButtonNextPage}"
-                            HorizontalOptions="Center"
-                            Margin="0,20,0,20"
-                            AbsoluteLayout.LayoutBounds="0.5,0.2,-1,-1"
-                            AbsoluteLayout.LayoutFlags="PositionProportional" />
-
                     <ActivityIndicator Margin="0,20,0,10"
                                        IsRunning="{Binding IsLoading}"
                                        IsVisible="{Binding IsLoading}"

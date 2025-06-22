@@ -12,15 +12,19 @@ public partial class BooksContext : ObservableObject
     private readonly BookMenuPopup _bookMenuPopup;
     private readonly ReadedBookStorage _readedBookStorage;
     private readonly ToReadBookStorage _toReadBookStorage;
+    private readonly NavigationService _navigationService;
+
 
     private List<Book> _allLoadedBooks = new List<Book>();
 
-    public BooksContext(IBooksService booksService, BookMenuPopup bookMenuPopup, ReadedBookStorage readedBookStorage, ToReadBookStorage toReadBookStorage)
+    public BooksContext(IBooksService booksService, BookMenuPopup bookMenuPopup, ReadedBookStorage readedBookStorage
+        , ToReadBookStorage toReadBookStorage, NavigationService navigationService)
     {
         _booksService = booksService;
         _bookMenuPopup = bookMenuPopup;
         _readedBookStorage = readedBookStorage;
         _toReadBookStorage = toReadBookStorage;
+        _navigationService = navigationService;
 
         _ = LoadBooksFromServerAsync();
     }
@@ -30,9 +34,6 @@ public partial class BooksContext : ObservableObject
 
     [ObservableProperty]
     bool _isLoading;
-
-    [ObservableProperty]
-    bool _visibilityButtonNextPage = true;
 
     [ObservableProperty]
     ObservableCollection<string> _availableGenre = new ObservableCollection<string>() { "All", "test", "kupa", "test11111", "111" };
@@ -104,7 +105,6 @@ public partial class BooksContext : ObservableObject
     /// </summary>
     private async Task LoadBooksFromServerAsync()
     {
-        VisibilityButtonNextPage = false;
         IsLoading = true;
         BookFilter.Page = 1;
 
@@ -113,36 +113,50 @@ public partial class BooksContext : ObservableObject
         if (response != null && response.StatusCode == 200 && response.Data?.Items != null)
         {
             _allLoadedBooks = response.Data.Items.ToList();
-            Books = new ObservableCollection<Book>(_allLoadedBooks);
-            VisibilityButtonNextPage = response.Data.Items.Count() == BookFilter.PageSize;
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                Books = new ObservableCollection<Book>(_allLoadedBooks);
+            });
             SetBookStatuses(Books);
         }
         else
         {
             _allLoadedBooks = new List<Book>();
             Books = new ObservableCollection<Book>();
-            VisibilityButtonNextPage = false;
         }
         IsLoading = false;
     }
 
+    private bool _isNavigating = false;
+
     [RelayCommand]
     public async Task GoToDetailsView(Book selectedBook)
     {
-        await Shell.Current.GoToAsync(nameof(DetailsBookView), true, new Dictionary<string, object>
+        if (_isNavigating) return;
+
+        _isNavigating = true;
+        try
         {
-            { "Book", selectedBook },
-            { "IsVisibleButtons", true },
-            { "IsVisibleConfig", false }
-        });
+            await _navigationService.NavigateToAsync(nameof(DetailsBookView), new()
+            {
+                { "Book", selectedBook },
+                { "IsVisibleButtons", true },
+                { "IsVisibleConfig", false }
+            });
+        }
+        finally
+        {
+            _isNavigating = false;
+        }
     }
 
     [RelayCommand]
     public async Task LoadNextPage()
     {
-        IsLoading = true;
-        VisibilityButtonNextPage = false;
+        if (Books.Count < BookFilter.PageSize)
+            return;
 
+        IsLoading = true;
         BookFilter.Page++;
 
         var result = await _booksService.GetAllBooks(BookFilter);
@@ -150,27 +164,39 @@ public partial class BooksContext : ObservableObject
         if (result?.Data?.Items != null && result.Data.Items.Any())
         {
             SetBookStatuses(result.Data.Items);
-            foreach (var item in result.Data.Items)
+            MainThread.BeginInvokeOnMainThread(() =>
             {
-                Books.Add(item);
-            }
+                foreach (var item in result.Data.Items)
+                {
+                    Books.Add(item);
+                }
+            });
             _allLoadedBooks.AddRange(result.Data.Items);
-            VisibilityButtonNextPage = result.Data.Items.Count() == BookFilter.PageSize;
-        }
-        else
-        {
-            VisibilityButtonNextPage = false;
         }
         IsLoading = false;
     }
 
+    private bool _isPopupOpen = false;
+
     [RelayCommand]
     public async Task ShowPopup(Book book)
     {
-        _bookMenuPopup.LoadContext(book, false);
-        await MopupService.Instance.PushAsync(_bookMenuPopup, true);
-        await Task.Delay(1000);
-        SetBookStatuses(Books);
+        if (_isPopupOpen) return;
+        _isPopupOpen = true;
+
+        try
+        {
+            var context = _bookMenuPopup.BindingContext as BookMenuPopupContext;
+            context?.LoadContext(book, false);
+            await MopupService.Instance.PushAsync(_bookMenuPopup, true);
+
+            await Task.Delay(1000); // to mo¿e byæ w¹tpliwe UX, ale ok
+            SetBookStatuses(Books);
+        }
+        finally
+        {
+            _isPopupOpen = false;
+        }
 
     }
 

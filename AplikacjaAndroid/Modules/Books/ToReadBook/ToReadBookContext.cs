@@ -8,32 +8,59 @@ namespace AplikacjaAndroid
     public partial class ToReadBookContext : ObservableObject
     {
         private readonly BookMenuPopup _bookMenuPopup;
+        private readonly NavigationService _navigationService;
 
-        public ToReadBookContext(ToReadBookStorage toReadBookStorage, BookMenuPopup bookMenuPopup)
+        public ToReadBookContext(NavigationService navigationService, ToReadBookStorage toReadBookStorage, BookMenuPopup bookMenuPopup)
         {
-            _readedBooks = toReadBookStorage.Books;
+            _toReadBooks = toReadBookStorage.Books;
             _bookMenuPopup = bookMenuPopup;
+            _navigationService = navigationService;
         }
 
         [ObservableProperty]
-        private ObservableCollection<Book> _readedBooks;
+        private ObservableCollection<Book> _toReadBooks;
+
+        private bool _isNavigating = false;
 
         [RelayCommand]
         public async Task GoToDetailsView(Book selectedBook)
         {
-            await Shell.Current.GoToAsync(nameof(DetailsBookView), true, new Dictionary<string, object>
-        {
-            { "Book", selectedBook },
-            { "IsVisibleButtons", false },
-            { "IsVisibleConfig", true }
-        });
+            if (_isNavigating) return;
+            _isNavigating = true;
+
+            try
+            {
+                await _navigationService.NavigateToAsync(nameof(DetailsBookView), new()
+                {
+                    { "Book", selectedBook },
+                    { "IsVisibleButtons", false },
+                    { "IsVisibleConfig", true }
+                });
+            }
+            finally
+            {
+                _isNavigating = false;
+            }
         }
+
+        private bool _isPopupOpen = false;
 
         [RelayCommand]
         public async Task ShowPopup(Book book)
         {
-            _bookMenuPopup.LoadContext(book, true);
-            await MopupService.Instance.PushAsync(_bookMenuPopup, true);
-        }        
+            if (_isPopupOpen) return;
+            _isPopupOpen = true;
+
+            try
+            {
+                var context = _bookMenuPopup.BindingContext as BookMenuPopupContext;
+                context?.LoadContext(book, true);
+                await MopupService.Instance.PushAsync(_bookMenuPopup, true);
+            }
+            finally
+            {
+                _isPopupOpen = false;
+            }
+        }
     }
 }

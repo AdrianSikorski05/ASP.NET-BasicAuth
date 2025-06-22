@@ -6,8 +6,7 @@
              x:DataType="vm:BookMenuPopupContext"
              x:Class="AplikacjaAndroid.BookMenuPopup"
              BackgroundColor="#80000000"
-             Padding="10"
-             
+             Padding="10"             
              CloseWhenBackgroundIsClicked="True">
     <Border BackgroundColor="White"
            WidthRequest="280"                      

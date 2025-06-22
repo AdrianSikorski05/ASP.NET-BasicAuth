@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<mopups:PopupPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:mopups ="clr-namespace:Mopups.Pages;assembly=Mopups"
+             xmlns:toolkit ="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="AplikacjaAndroid.CommentPopupView"
+             xmlns:vm="clr-namespace:AplikacjaAndroid"              
+             BackgroundColor="#80000000"
+             Padding="10"             
+             CloseWhenBackgroundIsClicked="True">
+    <mopups:PopupPage.Resources>
+        <ResourceDictionary>
+            <vm:InverseBoolConverter x:Key="InverseBoolConverter" />
+        </ResourceDictionary>
+    </mopups:PopupPage.Resources>
+    <Border BackgroundColor="White"
+            WidthRequest="280"                      
+            VerticalOptions="Center">
+        <Border.StrokeShape>
+            <RoundRectangle CornerRadius="15,15,15,15"/>
+        </Border.StrokeShape>
+
+        <VerticalStackLayout x:Name="MainContent">
+            <Border/>
+            <HorizontalStackLayout HorizontalOptions="Center">
+                <Image>
+                    <Image.Source>
+                        <FontImageSource FontFamily="MaterialIcons" Glyph="&#xe666;" Color="#512BD4" Size="20"/>
+                    </Image.Source>
+                </Image>
+                <Label Text="Action Comment"
+                       FontAttributes="Bold"
+                       FontSize="16"
+                       HorizontalOptions="Center"
+                       Padding="10"/>
+            </HorizontalStackLayout>
+            <StackLayout x:Name="ButtonSection" 
+                         IsVisible="{Binding IsEditMode, Converter={StaticResource InverseBoolConverter}}">
+                <Border/>
+                <Button Text="Update Comment"
+                        FontSize="14"
+                        BackgroundColor="#f1f5f9"
+                        TextColor="Black"
+                        Command="{Binding UpdateCommentCommand}">
+                    <Button.ImageSource>
+                        <FontImageSource FontFamily="MaterialIcons" 
+                                         Glyph="&#xe86c;" 
+                                         Color="#059669" 
+                                         Size="20"/>
+                    </Button.ImageSource>
+                </Button>
+                <Border />
+                <Button Text="Delete Comment"
+                        FontSize="14"
+                        BackgroundColor="#fee2e2"
+                        TextColor="#b91c1c"                
+                        Command="{Binding DeleteCommentCommand}">
+                    <Button.ImageSource >
+                        <FontImageSource FontFamily="MaterialIcons" Glyph="&#xe872;" Color="Red" Size="20"/>
+                    </Button.ImageSource>
+                </Button>
+                <Border/>
+                <Button Text="Close"
+                        FontSize="13"
+                        BackgroundColor="Transparent"
+                        TextColor="Gray"
+                        Command="{Binding CloseCommand}">
+                    <Button.ImageSource >
+                        <FontImageSource FontFamily="MaterialIcons" Glyph="&#xe5cd;" Color="Gray" Size="20"/>
+                    </Button.ImageSource>
+                </Button>
+                <Border/>
+            </StackLayout>
+
+
+            <StackLayout x:Name="EditSection" IsVisible="{Binding IsEditMode}">
+                <VerticalStackLayout>
+                    <Editor Text="{Binding Comment.Content,Mode = TwoWay}"
+                            Placeholder="Write your comment..."
+                            AutoSize="TextChanges"
+                            BackgroundColor="#f3f4f6"
+                            TextColor="Black"
+                            Margin="10"
+                            FontSize="14"
+                            HeightRequest="100"
+                            />
+                    <toolkit:RatingView Rating="{Binding Comment.Rate, Mode=TwoWay}" 
+                                        HorizontalOptions="Center" 
+                                        FillColor="Gold" 
+                                        Scale="1.4" 
+                                        ShapeBorderColor="Gold"
+                                        ShapeBorderThickness="1.3"
+                                        Padding="10"/>
+                    <HorizontalStackLayout HorizontalOptions="Center" Spacing="30" Padding="10">
+                        <Button Text="Save" Command="{Binding ConfirmEditCommand}" Background="#34d399" FontAttributes="Bold">
+                            <Button.ImageSource >
+                                <FontImageSource FontFamily="MaterialIcons" Glyph="&#xe5ca;" Color="#059669" Size="20"/>
+                            </Button.ImageSource>
+                        </Button>
+                        <Button Text="Cancel" Command="{Binding CancelEditCommand}" FontAttributes="Bold">
+                            <Button.ImageSource >
+                                <FontImageSource FontFamily="MaterialIcons" Glyph="&#xe5cd;" Color="Red" Size="20"/>
+                            </Button.ImageSource>
+                        </Button>
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+            </StackLayout>
+        </VerticalStackLayout>
+    </Border>
+</mopups:PopupPage>

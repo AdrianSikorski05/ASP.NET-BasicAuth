@@ -5,251 +5,301 @@
              xmlns:toolkit ="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:vm="clr-namespace:AplikacjaAndroid"             
              Title="{Binding Book.Title}">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <vm:InverseBoolConverter x:Key="InverseBoolConverter"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
 
-    <Grid RowDefinitions="Auto,*,Auto">
-        <Image WidthRequest="200" 
+    <ScrollView>
+        <VerticalStackLayout Spacing="15">
+            <!-- Obrazek -->
+            <Image WidthRequest="200" 
                    HeightRequest="200" 
                    Source="{Binding Book.ImageSource}" 
-                   Aspect="AspectFit"
-                   Grid.Row="0"/>
-        <AbsoluteLayout IsVisible="{Binding IsVisibleConfig}">
-            <ImageButton                  
+                   Aspect="AspectFit"/>
+
+            <!-- Ustawienia -->
+            <AbsoluteLayout IsVisible="{Binding IsVisibleConfig}">
+                <ImageButton                  
                 AbsoluteLayout.LayoutBounds="0.97,0,30,30"
                 AbsoluteLayout.LayoutFlags="PositionProportional"
-                Command="{Binding BindingContext.ShowPopupCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
-                >
-                <ImageButton.Source>
-                    <FontImageSource FontFamily="MaterialIcons" Glyph="&#xe8b8;" Color="#512BD4" Size="20"/>
-                </ImageButton.Source>
-            </ImageButton>
-        </AbsoluteLayout>
-        <ScrollView Grid.Row="1">
-            <VerticalStackLayout>
-                <Border/>
-                <Label Margin="10" FontSize="18">
-                    <Label.FormattedText>
-                        <FormattedString>
-                            <Span Text="Id:  " FontAttributes="Bold"/>
-                            <Span Text="{Binding Book.Id}"/>
-                        </FormattedString>
-                    </Label.FormattedText>
-                </Label>
-                <Border/>
-                <Label Margin="10" FontSize="18">
-                    <Label.FormattedText>
-                        <FormattedString>
-                            <Span Text="Title:  " FontAttributes="Bold"/>
-                            <Span Text="{Binding Book.Title}"/>
-                        </FormattedString>
-                    </Label.FormattedText>
-                </Label>
-                <Border/>
-                <Label Margin="10" FontSize="18">
-                    <Label.FormattedText>
-                        <FormattedString>
-                            <Span Text="Author:  " FontAttributes="Bold"/>
-                            <Span Text="{Binding Book.Author}"/>
-                        </FormattedString>
-                    </Label.FormattedText>
-                </Label>
-                <Border/>
-                <Label Margin="10" FontSize="18">
-                    <Label.FormattedText>
-                        <FormattedString>
-                            <Span Text="Genre:  " FontAttributes="Bold"/>
-                            <Span Text="{Binding Book.Genre}"/>
-                        </FormattedString>
-                    </Label.FormattedText>
-                </Label>
-                <Border/>
-                <Label Margin="10" FontSize="18">
-                    <Label.FormattedText>
-                        <FormattedString>
-                            <Span Text="Published date:  " FontAttributes="Bold"/>
-                            <Span Text="{Binding Book.PublishedDate}"/>
-                        </FormattedString>
-                    </Label.FormattedText>
-                </Label>
-                <Border/>
-                <Label Margin="10" FontSize="18">
-                    <Label.FormattedText>
-                        <FormattedString>
-                            <Span Text="Price:  " FontAttributes="Bold"/>
-                            <Span Text="{Binding Book.Price}"/>
-                        </FormattedString>
-                    </Label.FormattedText>
-                </Label>
-                <Border/>
-                <Label Margin="10" FontSize="18">
-                    <Label.FormattedText>
-                        <FormattedString>
-                            <Span Text="Stock:  " FontAttributes="Bold"/>
-                            <Span Text="{Binding Book.Stock}"/>
-                        </FormattedString>
-                    </Label.FormattedText>
-                </Label>
-                <Border/>
-                <Label Margin="10" FontSize="18">
-                    <Label.FormattedText>
-                        <FormattedString>
-                            <Span Text="Description:  " FontAttributes="Bold"/>
-                            <Span Text="{Binding Book.Description}" FontSize="Small" TextColor="DarkGray" FontAttributes="Italic"/>
-                        </FormattedString>
-                    </Label.FormattedText>
-                </Label>
-                <Border/>
-                <Label Text="Comments" FontAttributes="Bold" Margin="10" FontSize="17"/>
-                <Border Padding="-2"
-                        BackgroundColor="Transparent"
-                        Margin="10"
-                        StrokeShape="15">
-                    <VerticalStackLayout>
-                        <Grid>
-                            <Editor x:Name="CommentEditor"
-                                Text="{Binding CommentText}"
+                Command="{Binding ShowPopupCommand}">
+                    <ImageButton.Source>
+                        <FontImageSource FontFamily="MaterialIcons" Glyph="&#xe8b8;" Color="#512BD4" Size="20"/>
+                    </ImageButton.Source>
+                </ImageButton>
+            </AbsoluteLayout>
+
+            <!-- Informacje o książce -->
+            <Border/>
+            <Label Margin="10,0,0,0" FontSize="15">
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="Id:  " FontAttributes="Bold"/>
+                        <Span Text="{Binding Book.Id}"/>
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+            <Border/>
+            <Label Margin="10,0,0,0" FontSize="15">
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="Title:  " FontAttributes="Bold"/>
+                        <Span Text="{Binding Book.Title}"/>
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+            <Border/>
+            <Label Margin="10,0,0,0" FontSize="15">
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="Author:  " FontAttributes="Bold"/>
+                        <Span Text="{Binding Book.Author}"/>
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+            <Border/>
+            <Label Margin="10,0,0,0" FontSize="15">
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="Genre:  " FontAttributes="Bold"/>
+                        <Span Text="{Binding Book.Genre}"/>
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+            <Border/>
+            <Label Margin="10,0,0,0" FontSize="15">
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="Published date:  " FontAttributes="Bold"/>
+                        <Span Text="{Binding Book.PublishedDate}"/>
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+            <Border/>
+            <Label Margin="10,0,0,0" FontSize="15">
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="Price:  " FontAttributes="Bold"/>
+                        <Span Text="{Binding Book.Price}"/>
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+            <Border/>
+            <Label Margin="10,0,0,0" FontSize="15">
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="Stock:  " FontAttributes="Bold"/>
+                        <Span Text="{Binding Book.Stock}"/>
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+            <Border/>
+            <Label Margin="10,0,0,0" FontSize="15">
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="Description:  " FontAttributes="Bold"/>
+                        <Span Text="{Binding Book.Description}" FontSize="Micro" TextColor="DarkGray" FontAttributes="Italic"/>
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+            <Border/>
+
+            <!--Dodaj komentarz-->
+            <Label Text="Comments" FontAttributes="Bold" Margin="10,0,0,0" FontSize="17"/>
+            <Border BackgroundColor="Transparent"
+                    Margin="20,5,20,0"
+                    StrokeShape="15">
+                <VerticalStackLayout >
+                    <Grid>
+                        <Editor x:Name="CommentEditor"
+                                Text="{Binding NewComment.Content}"
                                 Placeholder="Write your comment..."
                                 AutoSize="TextChanges"
                                 BackgroundColor="#f3f4f6"
                                 TextColor="Black"
                                 Margin="10"
                                 FontSize="14"
-                                HeightRequest="100"
-                                />
-
-                            <ImageButton BackgroundColor="Transparent"
+                                HeightRequest="100"/>
+                        <ImageButton BackgroundColor="Transparent"
                                      Scale="0.5"
                                      HorizontalOptions="End"
                                      VerticalOptions="Start"
                                      Margin="20,10,10,0"
                                      Command="{Binding ClearCommentCommand}" >
-                                <ImageButton.Source>
-                                    <FontImageSource FontFamily="MaterialIcons" Glyph="&#xe5cd;" Color="Black" Size="20"/>
-                                </ImageButton.Source>
-                            </ImageButton>
-                        </Grid>
-                        <HorizontalStackLayout HorizontalOptions="Center" Margin="0,-12,0,0">
-                            <Label FontFamily="MaterialIcons" 
-                                   Text="&#xe838;" 
-                                   FontSize="24" 
-                                   TextColor="Gold"
-                                   VerticalOptions="Center"
-                                   />
-                            <Label Text="Rate:" FontAttributes="Bold" VerticalOptions="Center" Margin="5"/>
-                            <Picker Title="Select"
-                                    ItemsSource="{Binding RatingOptions}"
-                                    SelectedItem="{Binding SelectedRating}"
-                                    WidthRequest="10"
-                                    />
-                            <Label Text="/ 5" FontAttributes="Bold" VerticalOptions="Center"/>
-                        </HorizontalStackLayout>
-                        <Button Text="Add comment" FontAttributes="Bold" FontSize="Subtitle" MaximumHeightRequest="50">
-                            <Button.ImageSource>
-                                <FontImageSource FontFamily="MaterialIcons" Glyph="&#xe0b9;" Color="White" Size="20"/>
-                            </Button.ImageSource>
-                        </Button>
-                    </VerticalStackLayout>
-                </Border>
-                <CollectionView ItemsSource="{Binding Comments}" 
-                                Margin="10"
-                                SelectionMode="None">
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate>
-                            <Border>
-                                <Grid Padding="10">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                    </Grid.RowDefinitions>
+                            <ImageButton.Source>
+                                <FontImageSource FontFamily="MaterialIcons" Glyph="&#xe5cd;" Color="Black" Size="20"/>
+                            </ImageButton.Source>
+                        </ImageButton>
+                    </Grid>
+                    <!--Ocena-->
+                    <toolkit:RatingView HorizontalOptions="Center" 
+                                            Padding="10" 
+                                            FillColor="Gold" 
+                                            Scale="1.4" 
+                                            ShapeBorderColor="Gold"
+                                            ShapeBorderThickness="1.3"
+                                            Rating="{Binding NewComment.Rate,Mode=TwoWay}"
+                                            MaximumRating="5">
 
-                                    <!-- GŁÓWNA POPRAWKA TU ⬇ -->
-                                    <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto,Auto" Padding="4">
-                                        <Label FontFamily="MaterialIcons" 
+                    </toolkit:RatingView>
+                    <Button Text="Add comment" 
+                                FontAttributes="Bold" 
+                                FontSize="10"                                
+                                Command="{Binding AddCommentCommand}">
+                        <Button.ImageSource>
+                            <FontImageSource FontFamily="MaterialIcons" Glyph="&#xe0b9;" Color="White" Size="19"/>
+                        </Button.ImageSource>
+                    </Button>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Button: Show comments -->
+            <Border />
+            <Button Text="Show comments" 
+                            Background="Transparent" 
+                            TextColor="Black" 
+                            FontSize="13"                            
+                            HorizontalOptions="Fill"
+                            Command="{Binding LoadCommentsCommand}"
+                            IsVisible="{Binding IsLoading, Converter={StaticResource InverseBoolConverter}}">
+                <Button.ImageSource>
+                    <FontImageSource FontFamily="MaterialIcons" Glyph="&#xe7cd;" Color="#512BD4" Size="20"/>
+                </Button.ImageSource>
+            </Button>
+
+            <!-- Spinner -->
+            <ActivityIndicator IsRunning="{Binding IsLoading}"
+                               IsVisible="{Binding IsLoading}"
+                               HorizontalOptions="Center"
+                               HeightRequest="30"/>
+
+            <CollectionView ItemsSource="{Binding Comments}"                
+                SelectionMode="None"                
+                HorizontalOptions="Center">
+
+                <!--Komentarze-->
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Border IsVisible="{Binding BindingContext.AreCommentsLoaded, Source={RelativeSource AncestorType={x:Type ContentPage}}}">
+                            <Grid Padding="10">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto,Auto,Auto" Margin="0,-9,0,0" >
+                                    <Label FontFamily="MaterialIcons" 
                                                Text="&#xe851;" 
                                                FontSize="24" 
                                                TextColor="#512BD4"
-                                               Grid.Column="0"/>
+                                               Grid.Column="0"
+                                       VerticalOptions="Center"/>
 
-                                        <Label Text="{Binding Author}" 
+                                    <Label Text="{Binding Author}" 
                                                FontAttributes="Bold" 
                                                VerticalOptions="Center" 
                                                Margin="5,0,0,0"
                                                Grid.Column="1"/>
 
-                                        <Label FontFamily="MaterialIcons" 
+                                    <Label FontSize="13" 
+                                               TextColor="Gray" 
+                                               VerticalOptions="Center"
+                                               Grid.Column="2">
+                                        <Label.FormattedText>
+                                            <FormattedString>
+                                                <Span Text="{Binding Rate}"/>
+                                                <Span Text="/"/>
+                                                <Span Text="5"/>
+                                            </FormattedString>
+                                        </Label.FormattedText>
+                                    </Label>
+                                    <Label FontFamily="MaterialIcons" 
                                                Text="&#xe838;" 
                                                FontSize="24" 
                                                TextColor="Gold"
-                                               Grid.Column="2"/>
+                                               Grid.Column="3"
+                                               Scale="0.7"
+                                               VerticalOptions="Center"/>
 
-                                        <Label FontSize="13" 
-                                               TextColor="Gray" 
-                                               VerticalOptions="Center"
-                                               Grid.Column="3">
-                                            <Label.FormattedText>
-                                                <FormattedString>
-                                                    <Span Text="{Binding Rate}"/>
-                                                    <Span Text="/"/>
-                                                    <Span Text="5"/>
-                                                </FormattedString>
-                                            </Label.FormattedText>
-                                        </Label>
-                                    </Grid>
+                                    <ImageButton Grid.Column="4" 
+                                             Scale="0.4"
+                                             Command="{Binding BindingContext.OpenCommentPopupCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
+                                             CommandParameter="{Binding .}"
+                                             IsVisible="{Binding IsOwner}">
+                                        <ImageButton.Source>
+                                            <FontImageSource FontFamily="MaterialIcons" Glyph="&#xe8b8;" Color="#512BD4" Size="20"/>
+                                        </ImageButton.Source>
+                                    </ImageButton>
+                                </Grid>
 
-                                    <Label Text="{Binding Content}" Grid.Row="1" FontSize="13" TextColor="Gray"/>
-                                    <Label Text="{Binding PublishedDate}" 
+                                <Label Text="{Binding Content}" Grid.Row="1" FontSize="13" TextColor="Gray"/>
+                                <Label Text="{Binding PublishedDate}" 
                                            Grid.Row="3" 
                                            Margin="0,10,0,0"
                                            HorizontalTextAlignment="End" 
                                            FontSize="13" 
                                            TextColor="Gray"/>
-                                </Grid>
-                            </Border>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
 
+            <VerticalStackLayout HorizontalOptions="Center" Spacing="-2">
+                <!-- Spinner -->
+                <ActivityIndicator IsRunning="{Binding IsLoadingNextComment}"
+                                   IsVisible="{Binding IsLoadingNextComment}"
+                                   HorizontalOptions="Center"
+                                   HeightRequest="15"
+                                   VerticalOptions="Center"/>
+                <Button Text="Load more comments"
+                        Margin="0,-15,0,0"
+                        FontSize="9"
+                        TextColor="DimGray"                    
+                        BackgroundColor="Transparent"
+                        Command="{Binding LoadNextPageCommentsCommand}"
+                        IsVisible="{Binding HasMorePages}"
+                        VerticalOptions="Center"/>
             </VerticalStackLayout>
-        </ScrollView>
-        <HorizontalStackLayout Grid.Row="2" HorizontalOptions="Center" IsVisible="{Binding IsVisibleButtons}">
-            <Button Padding="20, 0" 
-                    Margin="30" 
-                    Text="Readed" 
+
+            <!--Fotter z buttonami-->
+            <HorizontalStackLayout Margin="0,0,0,30" HorizontalOptions="Center" Spacing="30" IsVisible="{Binding IsVisibleButtons}">
+                <Button Text="Readed" 
                     BackgroundColor="#34d399"
                     FontSize="16"
                     Command="{Binding AddToReadedCollectionCommand}">
-                <Button.Behaviors>
-                    <toolkit:TouchBehavior 
+                    <Button.Behaviors>
+                        <toolkit:TouchBehavior 
                         DefaultAnimationDuration="80"                    
                         PressedScale="1.4"
                         PressedOpacity="0.8"
                         PressedRotation="-2"/>
-                </Button.Behaviors>
-                <Button.ImageSource>
-                    <FontImageSource FontFamily="MaterialIcons" Glyph="&#xe86c;" Color="#059669" Size="20"/>
-                </Button.ImageSource>
-            </Button>
-            <Button Padding="20, 0" 
-                    Margin="30" 
-                    Text="To read" 
+                    </Button.Behaviors>
+                    <Button.ImageSource>
+                        <FontImageSource FontFamily="MaterialIcons" Glyph="&#xe86c;" Color="#059669" Size="20"/>
+                    </Button.ImageSource>
+                </Button>
+                <Button Text="To read" 
                     BackgroundColor="#a78bfa"
                     FontSize="16"
                     Command="{Binding AddToToReadCollectionCommand}">
-                <Button.Behaviors>
-                    <toolkit:TouchBehavior 
+                    <Button.Behaviors>
+                        <toolkit:TouchBehavior 
             DefaultAnimationDuration="80"           
             PressedScale="1.4"
             PressedOpacity="0.8"
             PressedRotation="2"/>
-                </Button.Behaviors>
-
-
-                <Button.ImageSource>
-                    <FontImageSource FontFamily="MaterialIcons" Glyph="&#xe87d;" Color="#EF4444" Size="20"/>
-                </Button.ImageSource>
-            </Button>
-        </HorizontalStackLayout>
-    </Grid>
+                    </Button.Behaviors>
+                    <Button.ImageSource>
+                        <FontImageSource FontFamily="MaterialIcons" Glyph="&#xe87d;" Color="#EF4444" Size="20"/>
+                    </Button.ImageSource>
+                </Button>
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

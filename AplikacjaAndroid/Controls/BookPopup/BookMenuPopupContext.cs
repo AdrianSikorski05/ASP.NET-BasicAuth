@@ -60,10 +60,7 @@ namespace AplikacjaAndroid
 
             await Snackbar.Make(message, action: async () =>
             {
-                // reset stosu w aktualnej zakładce
                 await Shell.Current.Navigation.PopToRootAsync();
-
-                // przejście do zakładki "Readed" bez historii
                 await Shell.Current.GoToAsync(route);
 
             }, actionButtonText: "Show", visualOptions: snackBar).Show();
@@ -76,12 +73,12 @@ namespace AplikacjaAndroid
             SnackbarOptions snackBar;
 
             if (toReadBookStorage.IfBookExists(_book))
-            {               
+            {
                 toReadBookStorage.Remove(_book);
                 message = "Removed from books to read";
             }
             else if (readedBookStorage.IfBookExists(_book))
-            {                
+            {
                 readedBookStorage.Remove(_book);
                 message = "Removed from books read.";
             }
@@ -89,13 +86,12 @@ namespace AplikacjaAndroid
             {
 
             }
-                snackBar = _succesSnackBarOption;
+            snackBar = _succesSnackBarOption;
 
-            await MopupService.Instance.PopAllAsync();
+            await Close();
 
             await Snackbar.Make(message, action: async () =>
             {
-                // reset stosu w aktualnej zakładce
                 await Shell.Current.Navigation.PopToRootAsync();
 
             }, visualOptions: snackBar).Show();
@@ -108,7 +104,7 @@ namespace AplikacjaAndroid
             string route = "//toRead";
             SnackbarOptions snackBar;
 
-            if (toReadBookStorage.IfBookExists(_book)) 
+            if (toReadBookStorage.IfBookExists(_book))
             {
                 snackBar = _errorSnackBarOption;
                 message = "The book is already marked as ready to read.";
@@ -116,25 +112,22 @@ namespace AplikacjaAndroid
             else if (readedBookStorage.IfBookExists(_book))
             {
                 snackBar = _succesSnackBarOption;
-                readedBookStorage.Remove(_book);
-                toReadBookStorage.Add(_book);
+                await readedBookStorage.Remove(_book);
+                await toReadBookStorage.Add(_book);
                 message = "The book has been moved from read to to read.";
             }
             else
             {
                 snackBar = _succesSnackBarOption;
-                toReadBookStorage.Add(_book);
+                await toReadBookStorage.Add(_book);
                 message = "The book has been marked as to read.";
             }
 
-            await MopupService.Instance.PopAllAsync();
+            await Close();
 
             await Snackbar.Make(message, action: async () =>
             {
-                // reset stosu w aktualnej zakładce
                 await Shell.Current.Navigation.PopToRootAsync();
-
-                // przejście do zakładki "Readed" bez historii
                 await Shell.Current.GoToAsync(route);
 
             }, actionButtonText: "Show", visualOptions: snackBar).Show();

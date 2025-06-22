@@ -32,10 +32,26 @@ public partial class LoginContext(IUsersService usersService, ReadedBookStorage 
             var response = await usersService.Login(LoginUser);
             if (response.StatusCode == 200)
             {
-                // Tworzymy nowy Shell i podmieniamy stronê g³ówn¹ aplikacji
+                // zabezpiecz dane
+                if (response.Data == null)
+                {
+                    ErrorMessage = "Login failed. Missing user data.";
+                    LabelVisible = true;
+                    return;
+                }
+
+                // PRZED zmian¹ MainPage – ustaw dane i zainicjalizuj
                 await readedBookStorage.LoadData();
                 await toReadBookStorage.LoadData();
-                Application.Current.MainPage = App.ServiceProvider.GetRequiredService<AppShell>();
+
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+
+                // NA KOÑCU — na g³ównym w¹tku zmieñ stronê
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    Application.Current.MainPage = App.ServiceProvider.GetRequiredService<AppShell>();
+                });
             }
             else if(response.StatusCode == 401 && response.Message == "Invalid username or password")
             {

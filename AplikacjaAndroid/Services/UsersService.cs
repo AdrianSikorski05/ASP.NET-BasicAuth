@@ -12,27 +12,50 @@ namespace AplikacjaAndroid
         {
             _httpClient = factory.CreateClient("api");
             _userStorage = userStorage;
+            
         }
         public async Task<ResponseResult<TokenResponse>?> Login(LoginUser loginUser)
         {
-            var response = await _httpClient.PostAsJsonAsync("Login/login", loginUser);
-
-            var responseResult = await response.Content.ReadFromJsonAsync<ResponseResult<TokenResponse>>();
-
-            if (responseResult.StatusCode == 200 && responseResult.Data != null)
+            try
             {
-                _userStorage.LoadData(responseResult, await WhoIam(responseResult.Data.Token));
-            }
+                var response = await _httpClient.PostAsJsonAsync("Login/login", loginUser);
 
-            return responseResult;
+                var responseResult = await response.Content.ReadFromJsonAsync<ResponseResult<TokenResponse>>();
+                if (responseResult.StatusCode == 200 && responseResult.Data != null)
+                {
+                    _userStorage.LoadData(responseResult, await WhoIam(responseResult.Data.Token));
+                }
+
+                return responseResult;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[Login ERROR] {ex.Message}");
+                return new ResponseResult<TokenResponse> { StatusCode = 500, Message = "Connect serwer error. " };
+            }          
         }
 
         public async Task<User?> WhoIam(string token) 
         {
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var response = await _httpClient.GetAsync("Login/me");
-            var user = await response.Content.ReadFromJsonAsync<User>();
-            return user;
+            try
+            {
+                var request = new HttpRequestMessage(HttpMethod.Get, "Login/me");
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                var response = await _httpClient.SendAsync(request);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return await response.Content.ReadFromJsonAsync<User>();
+                }
+
+                Console.WriteLine($"[WhoIam] HTTP {response.StatusCode}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[WhoIam ERROR] {ex.Message}");
+                return null;
+            }           
         }
     }
 }

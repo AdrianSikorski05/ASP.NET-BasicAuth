@@ -23,12 +23,11 @@ namespace AplikacjaAndroid
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                     fonts.AddFont("MaterialIcons-Regular.ttf", "MaterialIcons");
                 });
-
-            
+         
             // Dodaj HttpClient do usług
             builder.Services.AddHttpClient("api", client =>
             {
-                client.BaseAddress = new Uri("http://10.0.2.2:5000/api/");
+                client.BaseAddress = new Uri("http://192.168.33.103:5000/api/");
             });
 
             // Rejestracja Views i Contexts
@@ -55,9 +54,15 @@ namespace AplikacjaAndroid
 
             builder.Services.AddTransient<BookMenuPopup>();
             builder.Services.AddTransient<BookMenuPopupContext>();
+
+            builder.Services.AddTransientPopup<CommentPopupView>();
+            builder.Services.AddTransient<CommentPopupContext>();
+
             // Serwisy
             builder.Services.AddSingleton<IUsersService, UsersService>();
             builder.Services.AddSingleton<IBooksService, BooksService>();
+            builder.Services.AddSingleton<ICommentService, CommentService>();
+            builder.Services.AddSingleton<NavigationService>();
 
             //Storage
             builder.Services.AddSingleton<UserStorage>();
@@ -69,7 +74,9 @@ namespace AplikacjaAndroid
             builder.Logging.AddDebug();
 #endif
 
-            return builder.Build();
+            var app = builder.Build();
+
+            return app;
         }
     }
 }

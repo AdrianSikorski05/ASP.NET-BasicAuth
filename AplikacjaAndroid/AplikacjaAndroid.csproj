@@ -78,6 +78,9 @@
 	  <MauiXaml Update="Controls\BookPopup\BookMenuPopup.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Controls\CommentPopuP\CommentPopupView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Controls\PasswordEntry\PasswordEntry.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
