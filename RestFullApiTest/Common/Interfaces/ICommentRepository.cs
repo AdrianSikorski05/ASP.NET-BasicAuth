@@ -27,6 +27,6 @@
         /// Delete a comment by its ID.
         /// </summary>
         /// <param name="id">ID of the comment to be deleted.</param>
-        Task DeleteCommentAsync(int id);
+        Task<bool> DeleteCommentAsync(int id);
     }
 }

@@ -19,10 +19,10 @@
                 <Grid ColumnDefinitions="Auto,*,Auto">
                     <Image Grid.Column="0"
                            HorizontalOptions="Start"
-                           Margin="10,0,0,0"
+                           Margin="10,8,0,0"
                            IsVisible="{Binding IsVisibleAdminTab}">
                         <Image.Source>
-                            <FontImageSource FontFamily="MaterialIcons" Glyph="&#xf02e;" Color="Gold" Size="50"/>
+                            <FontImageSource FontFamily="MaterialIcons" Glyph="&#xe8e8;" Color="Gold" Size="40"/>
                         </Image.Source>
                     </Image>
 
@@ -40,7 +40,7 @@
             </StackLayout>
         </Grid>
     </Shell.FlyoutHeader>
-   
+
     <FlyoutItem Title="Books"            
             IsVisible="True">
         <FlyoutItem.Icon>
@@ -51,7 +51,7 @@
         <ShellContent Title="Books" Route="books" ContentTemplate="{DataTemplate local:BooksView}" />
     </FlyoutItem>
 
-    <FlyoutItem Title="{Binding CountToReadBooksCount,StringFormat='Book to read  ({0})'}"            
+    <FlyoutItem Title="{Binding TitleToRead}"            
         IsVisible="True">
         <FlyoutItem.Icon>
             <FontImageSource FontFamily="MaterialIcons" Glyph="&#xe87d;" Color="#EF4444" Size="20"/>
@@ -59,10 +59,10 @@
         <ShellContent Title="ToRead" Route="toRead" ContentTemplate="{DataTemplate local:ToReadBookView}" />
     </FlyoutItem>
 
-    <FlyoutItem Title="{Binding CountReadedBooksCount,StringFormat='Readed book  ({0})'}"            
+    <FlyoutItem Title="{Binding TitleReaded}"          
         IsVisible="True">
         <FlyoutItem.Icon>
-            
+
             <FontImageSource FontFamily="MaterialIcons" Glyph="&#xe86c;" Color="#059669" Size="20"/>
         </FlyoutItem.Icon>
         <ShellContent Title="Readed" Route="readed" ContentTemplate="{DataTemplate local:ReadedBookView}" />
@@ -79,17 +79,24 @@
     <!-- Flyout Footer -->
     <Shell.FlyoutFooter>
         <StackLayout BackgroundColor="{AppThemeBinding Light=#F0F0F0, Dark=#1C1C1E}" 
-                     Padding="20,10">
-            <Label FontSize="14" HorizontalOptions="Center" >
-                <Label.FormattedText>
-                    <FormattedString>
-                        <Span Text="{Binding UserData.User.Username}"/>
-                        <Span Text=" (" />
-                        <Span Text="{Binding UserData.User.Role}" />
-                        <Span Text=")" />
-                    </FormattedString>
-                </Label.FormattedText>
-            </Label>
+                     Padding="20,5">
+            <HorizontalStackLayout HorizontalOptions="End">
+                <Label FontSize="14" HorizontalOptions="Center" VerticalOptions="Center">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="{Binding UserData.User.Username}"/>
+                            <Span Text=" (" />
+                            <Span Text="{Binding UserData.User.Role}" />
+                            <Span Text=")" />
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+                <Button BackgroundColor="Transparent" >
+                    <Button.ImageSource>
+                        <FontImageSource FontFamily="MaterialIcons" Glyph="&#xf02e;" Color="#512BD4" />
+                    </Button.ImageSource>
+                </Button>
+            </HorizontalStackLayout>
             <Label Text="{Binding CountdownDisplay}"
                    FontSize="14"
                    TextColor="Red"

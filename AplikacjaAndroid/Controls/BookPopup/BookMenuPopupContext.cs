@@ -45,14 +45,14 @@ namespace AplikacjaAndroid
             else if (toReadBookStorage.IfBookExists(_book))
             {
                 snackBar = _succesSnackBarOption;
-                toReadBookStorage.Remove(_book);
-                readedBookStorage.Add(_book);
+                await toReadBookStorage.Remove(_book);
+                await readedBookStorage.Add(_book);
                 message = "The book has been moved to read.";
             }
             else
             {
                 snackBar = _succesSnackBarOption;
-                readedBookStorage.Add(_book);
+                await readedBookStorage.Add(_book);
                 message = "The book added to read.";
             }
 
@@ -74,12 +74,12 @@ namespace AplikacjaAndroid
 
             if (toReadBookStorage.IfBookExists(_book))
             {
-                toReadBookStorage.Remove(_book);
+                await toReadBookStorage.Remove(_book);
                 message = "Removed from books to read";
             }
             else if (readedBookStorage.IfBookExists(_book))
             {
-                readedBookStorage.Remove(_book);
+                await readedBookStorage.Remove(_book);
                 message = "Removed from books read.";
             }
             else

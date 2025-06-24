@@ -72,19 +72,26 @@ namespace RestFullApiTest
             return Ok(user);
         }
 
-        [Authorize]
-        [HttpGet("secure")]
-        public async Task<ActionResult<ResponseResult>> Secure()
+        [AllowAnonymous]
+        [HttpPost("register")]
+        public async Task<ActionResult<ResponseResult>> Register([FromBody] RegisterUser dto, [FromServices] IUserRepository repo, ILogger<LoginController> logger)
         {
-            var username = User.Identity?.Name;
-            return Ok(ResponseResult.Success("OK", new { message = $"Hello {username}, this is a secure endpoint!" }));
-        }
+            if (!ModelState.IsValid)
+                return BadRequest(ResponseResult.BadRequest("Invalid model state", ModelState));
 
-        [Authorize(Roles = "Admin")]
-        [HttpGet("admin-data")]
-        public IActionResult GetAdminData()
-        {
-            return Ok(ResponseResult.Success("Tylko dla admina"));
+            if (await repo.GetUserByUsername(dto.Username) != null)
+                return BadRequest(ResponseResult.BadRequest("Username already exists."));
+
+            var user = new CreateUserDto
+            {
+                Username = dto.Username,
+                Password = dto.Password
+            };
+
+            await repo.AddUser(user);
+
+            logger.LogInformation($"User {user.Username} registered successfully.");
+            return Ok(ResponseResult.Success("User registered successfully", true));
         }
     }
 }

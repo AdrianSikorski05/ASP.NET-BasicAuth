@@ -78,7 +78,7 @@ namespace RestFullApiTest
         /// <summary>
         /// Returns updated comment for a given book.
         /// </summary>
-        /// <param name="createCommentBookDto">Comment who will  updating.</param>
+        /// <param name="updateCommentBookDto">Comment who will  updating.</param>
         /// <returns>Updated comment</returns>
         /// <response code="200">Return updated comment</response>
         /// <response code="404">Dont found comment</response> 
@@ -109,7 +109,34 @@ namespace RestFullApiTest
             }
         }
 
+        /// <summary>
+        /// Delete comment by id.
+        /// </summary>
+        /// <param name="id">Id</param>
+        /// <returns>Response true/false</returns>
+        [HttpDelete("deleteComment/{id:int}")]
+        [ProducesResponseType(typeof(ResponseResult), 200)]
+        [ProducesResponseType(typeof(ResponseResult), 404)]
+        [ProducesResponseType(typeof(ResponseResult), 400)]
+        public async Task<ActionResult<ResponseResult>> DeleteComment(int id)
+        {
+            if (id <= 0) 
+            {
+                logger.LogError("Parameter is null or empty.");
+                return BadRequest(ResponseResult.BadRequest("Parameter is null or empty.", id));
+            }
 
-
+            var result = await mediator.Send(new DeleteCommentByIdCommand(id));
+            if (!result)
+            {
+                logger.LogError($"Comment with id {id} not found.");
+                return NotFound(ResponseResult.NotFound($"Comment with id {id} not found."));
+            }
+            else
+            {
+                logger.LogInformation($"Comment with id {id} deleted.");
+                return Ok(ResponseResult.Success("Comment deleted", result));
+            }
+        }
     }
 }

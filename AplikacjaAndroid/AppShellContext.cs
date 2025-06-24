@@ -36,6 +36,22 @@ namespace AplikacjaAndroid
         private void OnToReadCountChanged(object? sender, EventArgs e) =>
             CountToReadBooksCount = _toRead.Count;
 
+        [ObservableProperty]
+        string _titleToRead = "Book to read (0)";
+
+        [ObservableProperty]
+        string _titleReaded = "Readed book (0)";
+
+        partial void OnCountToReadBooksCountChanged(int value)
+        {
+            TitleToRead = $"Book to read ({value})";
+        }
+
+        partial void OnCountReadedBooksCountChanged(int value)
+        {
+            TitleReaded = $"Readed book ({value})";
+        }
+
         [ObservableProperty] UserStorage _userData;
         [ObservableProperty] bool _isVisibleAdminTab = false;
 

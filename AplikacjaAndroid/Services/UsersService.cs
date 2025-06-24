@@ -3,7 +3,7 @@ using System.Net.Http.Json;
 
 namespace AplikacjaAndroid
 {
-    public class UsersService: IUsersService
+    public class UsersService : IUsersService
     {
         private HttpClient _httpClient;
         private readonly UserStorage _userStorage;
@@ -56,6 +56,23 @@ namespace AplikacjaAndroid
                 Console.WriteLine($"[WhoIam ERROR] {ex.Message}");
                 return null;
             }           
+        }
+
+        public async Task<ResponseResult<bool>> Register(RegisterUser registerUser)
+        {
+            try
+            {
+                var response = await _httpClient.PostAsJsonAsync("Login/register", registerUser);
+
+                var responseResult = await response.Content.ReadFromJsonAsync<ResponseResult<bool>>();
+
+                return responseResult;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[Register ERROR] {ex.Message}");
+                return new ResponseResult<bool> { StatusCode = 500, Message = "Connect serwer error. ", Data = false };
+            }
         }
     }
 }

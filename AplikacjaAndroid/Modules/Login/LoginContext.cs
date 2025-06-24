@@ -1,7 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Mopups.Services;
 using System.Diagnostics;
-using System.Threading.Tasks;
 
 namespace AplikacjaAndroid;
 
@@ -11,21 +11,32 @@ public partial class LoginContext(IUsersService usersService, ReadedBookStorage 
     private LoginUser _loginUser = new();
 
     [ObservableProperty]
-    private bool _labelVisible = false;
+    private RegisterUser _registerUser = new();
 
     [ObservableProperty]
-    private string _errorMessage = string.Empty;
+    private bool _labelVisibleLogin = false;
 
+    [ObservableProperty]
+    private string _errorMessageLogin = string.Empty;
+
+    [ObservableProperty]
+    private bool _loginRegister = true;
+
+    [ObservableProperty]
+    private bool _labelVisibleRegister = false;
+
+    [ObservableProperty]
+    private string _errorMessageRegister = string.Empty;
 
     [RelayCommand]
-	public async Task Login()
-	{
+    public async Task Login()
+    {
         try
         {
             if (!LoginUser.IsValid())
             {
-                ErrorMessage = "Field username and password is required.";
-                LabelVisible = true;
+                ErrorMessageLogin = "Field username and password is required.";
+                LabelVisibleLogin = true;
                 return;
             }
 
@@ -35,8 +46,8 @@ public partial class LoginContext(IUsersService usersService, ReadedBookStorage 
                 // zabezpiecz dane
                 if (response.Data == null)
                 {
-                    ErrorMessage = "Login failed. Missing user data.";
-                    LabelVisible = true;
+                    ErrorMessageLogin = "Login failed. Missing user data.";
+                    LabelVisibleLogin = true;
                     return;
                 }
 
@@ -53,20 +64,64 @@ public partial class LoginContext(IUsersService usersService, ReadedBookStorage 
                     Application.Current.MainPage = App.ServiceProvider.GetRequiredService<AppShell>();
                 });
             }
-            else if(response.StatusCode == 401 && response.Message == "Invalid username or password")
+            else if (response.StatusCode == 401 && response.Message == "Invalid username or password")
             {
-                ErrorMessage = response.Message;
-                LabelVisible = true;
+                ErrorMessageLogin = response.Message;
+                LabelVisibleLogin = true;
             }
-            else 
+            else
             {
-                ErrorMessage = response.Message;
-                LabelVisible = true;
-            }           
+                ErrorMessageLogin = response.Message;
+                LabelVisibleLogin = true;
+            }
         }
         catch (Exception ex)
         {
             Debug.Write(ex);
-        }       
-    }	
+        }
+    }
+
+    [RelayCommand]
+    public async Task Register()
+    {
+        try
+        {
+            if (!RegisterUser.IsValid())
+            {
+                LabelVisibleRegister = true;
+                ErrorMessageRegister = RegisterUser.GetErrors().FirstOrDefault()?.ErrorMessage ?? "Validation error.";
+                return;
+            }
+            if (!RegisterUser.ConfirmePasswordIsTheSame())
+            {
+                LabelVisibleRegister = true;
+                ErrorMessageRegister = "Passwords aren't the same.";
+                return;
+            }
+
+            var response = await usersService.Register(RegisterUser);
+            if (response != null && response.StatusCode == 200 && response.Data == true)
+            {
+                await MopupService.Instance.PushAsync(new SuccessPopupView(AnimationType.Check));
+                RegisterUser = new();
+                LabelVisibleRegister = false;
+            }
+            else
+            {
+                LabelVisibleRegister = true;
+                ErrorMessageRegister = response.Message;
+                return;
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.Write(ex);
+        }
+    }
+
+    [RelayCommand]
+    public void ChangeMode()
+    {
+        LoginRegister = !LoginRegister;
+    }
 }

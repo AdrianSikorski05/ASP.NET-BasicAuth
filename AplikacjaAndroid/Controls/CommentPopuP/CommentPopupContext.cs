@@ -61,12 +61,17 @@ namespace AplikacjaAndroid
         [RelayCommand]
         public async Task DeleteComment()
         {
-            if (Comment != null)
+            if (Comment == null)
+                return;
+
+            var result = await commentService.DeleteCommentAsync(Comment.Id);
+            if (result.StatusCode == 200 && result.Data)
             {
-                
+                await Snackbar.Make("Deleted.", visualOptions: _succesSnackBarOption).Show();
+                Comment.ActionComment = ActionComment.Delete;
+                ReturnResult(Comment);
             }
 
-            await Snackbar.Make("Deleted.", visualOptions: _succesSnackBarOption).Show();
             await Close();
         }
 
@@ -94,6 +99,7 @@ namespace AplikacjaAndroid
             if (result.StatusCode == 200 && result.Data != null)
             {
                 await Snackbar.Make("Updated.", visualOptions: _succesSnackBarOption).Show();
+                result.Data.ActionComment = ActionComment.Update;
                 ReturnResult(result.Data);
             }
 

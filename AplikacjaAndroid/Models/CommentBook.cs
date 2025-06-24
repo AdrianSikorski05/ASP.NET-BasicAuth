@@ -20,6 +20,9 @@ namespace AplikacjaAndroid
         [ObservableProperty]
         bool _isOwner = false;
 
+        [JsonIgnore]
+        public ActionComment ActionComment { get; set; } = ActionComment.Default;
+
         public bool IsValid()
         {
             ValidateAllProperties();

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<mopups:PopupPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="AplikacjaAndroid.SuccessPopupView"
+             xmlns:vm ="clr-namespace:AplikacjaAndroid"
+             xmlns:mopups ="clr-namespace:Mopups.Pages;assembly=Mopups"
+             xmlns:skia ="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI">
+    <Border BackgroundColor="Transparent" WidthRequest="200" HeightRequest="200" StrokeThickness="0">
+        <skia:SKLottieView x:Name="Animation"                          
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"
+                           HeightRequest="200" 
+                           WidthRequest="200" 
+                           BackgroundColor="Transparent" 
+                           RepeatCount="1">
+        </skia:SKLottieView>
+    </Border>
+</mopups:PopupPage>

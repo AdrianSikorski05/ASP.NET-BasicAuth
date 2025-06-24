@@ -14,4 +14,18 @@ namespace AplikacjaAndroid
         AddedToToRead = 3,
         DeletedFromToRead = 4
     }
+
+    public enum ActionComment
+    {
+        Default = 0,
+        Add = 1,
+        Update = 2,
+        Delete = 3
+    }
+
+    public enum AnimationType
+    { 
+        Check = 0,
+        Loading = 1
+    }
 }

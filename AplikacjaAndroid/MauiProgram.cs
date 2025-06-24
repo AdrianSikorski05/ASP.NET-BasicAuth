@@ -2,7 +2,9 @@
 using CommunityToolkit.Maui;
 using CommunityToolkit.Maui.Core;
 using Microsoft.Extensions.Logging;
+using Microsoft.Maui.Controls.Embedding;
 using Mopups.Hosting;
+using SkiaSharp.Views.Maui.Controls.Hosting;
 
 namespace AplikacjaAndroid
 {
@@ -15,8 +17,9 @@ namespace AplikacjaAndroid
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                .UseSkiaSharp()
                 .UseMauiCommunityToolkit()
-                .ConfigureMopups()
+                .ConfigureMopups()                
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -27,7 +30,7 @@ namespace AplikacjaAndroid
             // Dodaj HttpClient do usług
             builder.Services.AddHttpClient("api", client =>
             {
-                client.BaseAddress = new Uri("http://192.168.33.103:5000/api/");
+                client.BaseAddress = new Uri("http://192.168.33.104:5000/api/");
             });
 
             // Rejestracja Views i Contexts
@@ -57,6 +60,8 @@ namespace AplikacjaAndroid
 
             builder.Services.AddTransientPopup<CommentPopupView>();
             builder.Services.AddTransient<CommentPopupContext>();
+
+            builder.Services.AddTransientPopup<SuccessPopupView>();
 
             // Serwisy
             builder.Services.AddSingleton<IUsersService, UsersService>();

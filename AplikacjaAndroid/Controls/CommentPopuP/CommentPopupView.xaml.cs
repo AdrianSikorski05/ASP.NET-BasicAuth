@@ -9,4 +9,12 @@ public partial class CommentPopupView : PopupPage
 		InitializeComponent();
 		BindingContext = context;
 	}
+
+    protected override bool OnBackgroundClicked()
+    {
+        if (BindingContext is CommentPopupContext context)
+            context.ReturnResult(null); 
+        return base.OnBackgroundClicked();
+    }
+
 }

@@ -2,42 +2,53 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="AplikacjaAndroid.LoginView"
-             xmlns:vm="clr-namespace:AplikacjaAndroid"            
+             xmlns:vm="clr-namespace:AplikacjaAndroid" 
+             xmlns:skia ="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
              x:DataType="vm:LoginContext"
              Title="Aplikacja z książkami">
-    <VerticalStackLayout Margin="20,40, 20, 0" Spacing="30">
-        <Image Source="login.png" 
-               WidthRequest="200" 
-               HeightRequest="200" />
-        <Label 
-            Text="Login" 
-            FontSize="32"
-            FontAttributes="Bold"           
-            VerticalOptions="Center" 
-            HorizontalOptions="Center"/>
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <vm:InverseBoolConverter x:Key="InverseBoolConverter"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <Grid ColumnDefinitions="*">
+        
+        <!-- Login -->
+        <VerticalStackLayout Margin="20,40, 20, 0" Spacing="30" Grid.Column="1" IsVisible="{Binding LoginRegister}">
+            <skia:SKLottieView WidthRequest="200" 
+                               HeightRequest="200"
+                               Source="Login.json"
+                               RepeatCount="-1">
+            </skia:SKLottieView>
+            <Label Text="Login" 
+                   Margin="0,-25,0,0"
+                   FontSize="32"
+                   FontAttributes="Bold"           
+                   VerticalOptions="Center" 
+                   HorizontalOptions="Center"/>
 
 
-        <Grid Margin="20, 20, 20, 10">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-            
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
+            <Grid Margin="20, 20, 20, 10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
 
-            <Image Grid.Column="0" Grid.Row="0" Scale="1.4" Margin="5, 9, 11,5">
-                <Image.Source>
-                    <FontImageSource Glyph="&#xe853;"
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Image Grid.Column="0" Grid.Row="0" Scale="1.4" Margin="5, 9, 11,5">
+                    <Image.Source>
+                        <FontImageSource Glyph="&#xe853;"
                      FontFamily="MaterialIcons"
                      Size="20"
                      Color="#512BD4"/>
-                </Image.Source>
-            </Image>
-            
-            <Entry Placeholder="Username"
+                    </Image.Source>
+                </Image>
+
+                <Entry Placeholder="Username"
                    Text="{Binding LoginUser.Username}"
                    HorizontalOptions="Fill"
                    VerticalOptions="Center" 
@@ -46,52 +57,180 @@
                    Grid.Column="1"
                    Grid.Row="0"/>
 
-            <Image Grid.Column="0" Grid.Row="1" Scale="1.4" Margin="5, 9, 11,5">
-                <Image.Source>
-                    <FontImageSource Glyph="&#xe897;"
+                <Image Grid.Column="0" Grid.Row="1" Scale="1.4" Margin="5, 9, 11,5">
+                    <Image.Source>
+                        <FontImageSource Glyph="&#xe897;"
                                      FontFamily="MaterialIcons"
                                      Size="20"
                                      Color="#512BD4"/>
-                </Image.Source>
-            </Image>
-            
-            <vm:PasswordEntry
-            Text="{Binding LoginUser.Password}"
-            Placeholder="Password"
-            Grid.Column="1"
-            Grid.Row="1"/>
-        </Grid>
-                   
-        <Button Text="Log in"
+                    </Image.Source>
+                </Image>
+
+                <vm:PasswordEntry Text="{Binding LoginUser.Password}"
+                                  Placeholder="Password"
+                                  Grid.Column="1"
+                                  Grid.Row="1"/>
+            </Grid>
+
+            <Button Text="Log in"
                 Command="{Binding LoginCommand}"
                 HorizontalOptions="Fill"
                 VerticalOptions="Center"
-                Margin="20"
+                Margin="20,0,20,0"
                 FontSize="20"
                 FontAttributes="Bold">
-            <Button.ImageSource>
-                <FontImageSource Glyph="&#xe890;"
+                <Button.ImageSource>
+                    <FontImageSource Glyph="&#xe890;"
                          FontFamily="MaterialIcons"
                          Size="20"
                          Color="White"/>
-            </Button.ImageSource>
-        </Button>
+                </Button.ImageSource>
+            </Button>
+            <Label Text="Register"
+                   TextColor="#2563eb"
+                   TextDecorations="Underline"
+                   FontAttributes="Bold"
+                   FontSize="14"
+                   HorizontalOptions="End"
+                   Margin="0,-20,5,-5">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding ChangeModeCommand}" />
+                </Label.GestureRecognizers>
+            </Label>
 
-        <Border Stroke="Red" 
+
+            <Border Stroke="Red" 
                 StrokeThickness="2" 
                 BackgroundColor="#FFEBEE" 
                 Padding="15,10"
-                Opacity="0.9"
+                Opacity="0.7"
                 StrokeShape="10"
-                IsVisible="{Binding LabelVisible}">
-            <Border.Shadow>
-                <Shadow Brush="Red" Offset="2,2" Radius="4" Opacity="0.3"/>
-            </Border.Shadow>
-            <Label Text="{Binding ErrorMessage}" 
+                IsVisible="{Binding LabelVisibleLogin}">
+                <Border.Shadow>
+                    <Shadow Brush="Red" Offset="2,2" Radius="4" Opacity="0.3"/>
+                </Border.Shadow>
+                <Label Text="{Binding ErrorMessageLogin}" 
                    TextColor="#C62828" 
-                   FontSize="14"
+                   FontSize="9"
                    FontAttributes="Bold"
                    HorizontalOptions="Center"/>
-        </Border>
-    </VerticalStackLayout>
+            </Border>
+        </VerticalStackLayout>
+        
+        <!-- Register -->
+        <VerticalStackLayout Margin="20,40, 20, 0"
+                             IsVisible="{Binding LoginRegister, Converter={StaticResource InverseBoolConverter}}" 
+                             Grid.Column="1"
+                             Spacing="10">
+            <skia:SKLottieView WidthRequest="200" 
+                               HeightRequest="200"
+                               Source="Login.json"
+                               RepeatCount="-1">
+            </skia:SKLottieView>
+            <Label Text="Register" 
+                    FontSize="32"
+                    FontAttributes="Bold"           
+                    VerticalOptions="Center" 
+                    HorizontalOptions="Center"/>
+
+            <Grid Margin="20, 20, 20, 10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Image Grid.Column="0" Grid.Row="0" Scale="1.4" Margin="5, 9, 11,5">
+                    <Image.Source>
+                        <FontImageSource Glyph="&#xe853;"
+                                         FontFamily="MaterialIcons"
+                                         Size="20"
+                                         Color="#512BD4"/>
+                    </Image.Source>
+                </Image>
+
+                <Entry Placeholder="Username"
+                       Text="{Binding RegisterUser.Username}"
+                       HorizontalOptions="Fill"
+                       VerticalOptions="Center" 
+                       ClearButtonVisibility="WhileEditing"
+                       FontSize="17"
+                       Grid.Column="1"
+                       Grid.Row="0"/>
+
+                <Image Grid.Column="0" Grid.Row="1" Scale="1.4" Margin="5, 9, 11,5">
+                    <Image.Source>
+                        <FontImageSource Glyph="&#xe897;"
+                         FontFamily="MaterialIcons"
+                         Size="20"
+                         Color="#512BD4"/>
+                    </Image.Source>
+                </Image>
+
+                <vm:PasswordEntry Text="{Binding RegisterUser.Password}"
+                      Placeholder="Password"
+                      Grid.Column="1"
+                      Grid.Row="1"/>
+
+                <Image Grid.Column="0" Grid.Row="2" Scale="1.4" Margin="5, 9, 11,5">
+                    <Image.Source>
+                        <FontImageSource Glyph="&#xe897;"
+                                         FontFamily="MaterialIcons"
+                                         Size="20"
+                                         Color="#512BD4"/>
+                    </Image.Source>
+                </Image>
+
+                <vm:PasswordEntry Text="{Binding RegisterUser.ConfirmPassword}"
+                                  Placeholder="Password"
+                                  Grid.Column="1"
+                                  Grid.Row="2"/>
+            </Grid>
+
+            <Button Text="Register"
+                    Command="{Binding RegisterCommand}"
+                    HorizontalOptions="Fill"
+                    VerticalOptions="Center"
+                    Margin="20,0,20,0"
+                    FontSize="20"
+                    FontAttributes="Bold">
+                <Button.ImageSource>
+                    <FontImageSource Glyph="&#xe890;" FontFamily="MaterialIcons" Size="20" Color="White"/>
+                </Button.ImageSource>
+            </Button>
+            
+            <Label Text="Login"
+                   TextColor="#2563eb"
+                   TextDecorations="Underline"
+                   FontAttributes="Bold"
+                   FontSize="14"
+                   HorizontalOptions="End"
+                   >
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding ChangeModeCommand}" />
+                </Label.GestureRecognizers>
+            </Label>
+            <Border Stroke="Red" 
+                    StrokeThickness="2" 
+                    BackgroundColor="#FFEBEE" 
+                    Padding="15,10"
+                    Opacity="0.7"
+                    StrokeShape="10"
+                    IsVisible="{Binding LabelVisibleRegister}">
+                <Border.Shadow>
+                    <Shadow Brush="Red" Offset="2,2" Radius="4" Opacity="0.3"/>
+                </Border.Shadow>
+                <Label Text="{Binding ErrorMessageRegister}" 
+                       TextColor="#C62828" 
+                       FontSize="9"
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center"/>
+            </Border>
+        </VerticalStackLayout>
+    </Grid>
 </ContentPage>

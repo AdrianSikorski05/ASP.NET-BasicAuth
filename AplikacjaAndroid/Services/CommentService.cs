@@ -67,6 +67,21 @@ namespace AplikacjaAndroid
             }           
         }
 
+        public async Task<ResponseResult<bool>> DeleteCommentAsync(int id)
+        {
+            try
+            {
+                var url = $"Comment/deleteComment/{id}";
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _userStorage.Token);
+                var response = await _httpClient.DeleteAsync(url);
+                return await response.Content.ReadFromJsonAsync<ResponseResult<bool>>();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[DeleteCommentAsync ERROR] {ex.Message}");
+                return new ResponseResult<bool> { StatusCode = 500, Message = "Connect serwer error. " };
+            }
+        }
 
         private string ToQueryString(CommentFilter filter)
         {

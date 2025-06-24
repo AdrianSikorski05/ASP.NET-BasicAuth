@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="AplikacjaAndroid.DetailsBookView"
              xmlns:toolkit ="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:skia ="clr-namespace:SkiaSharp.Extended.UI.Controls;assembly=SkiaSharp.Extended.UI"
              xmlns:vm="clr-namespace:AplikacjaAndroid"             
              Title="{Binding Book.Title}">
     <ContentPage.Resources>
@@ -13,18 +14,22 @@
 
     <ScrollView>
         <VerticalStackLayout Spacing="15">
-            <!-- Obrazek -->
-            <Image WidthRequest="200" 
-                   HeightRequest="200" 
-                   Source="{Binding Book.ImageSource}" 
-                   Aspect="AspectFit"/>
 
-            <!-- Ustawienia -->
-            <AbsoluteLayout IsVisible="{Binding IsVisibleConfig}">
-                <ImageButton                  
-                AbsoluteLayout.LayoutBounds="0.97,0,30,30"
-                AbsoluteLayout.LayoutFlags="PositionProportional"
-                Command="{Binding ShowPopupCommand}">
+            <AbsoluteLayout >
+                <!-- Obrazek -->
+                <Image WidthRequest="200" 
+                       HeightRequest="200" 
+                       Source="{Binding Book.ImageSource}" 
+                       Aspect="AspectFit" 
+                       AbsoluteLayout.LayoutFlags="All"
+                       AbsoluteLayout.LayoutBounds="0.5,0.5,200,230"/>
+
+                <!-- Ustawienia -->
+
+                <ImageButton AbsoluteLayout.LayoutBounds="0.95,0.02,30,30"
+                             AbsoluteLayout.LayoutFlags="PositionProportional"
+                             Command="{Binding ShowPopupCommand}"
+                             IsVisible="{Binding IsVisibleConfig}">
                     <ImageButton.Source>
                         <FontImageSource FontFamily="MaterialIcons" Glyph="&#xe8b8;" Color="#512BD4" Size="20"/>
                     </ImageButton.Source>

@@ -6,8 +6,7 @@
              x:Class="AplikacjaAndroid.CommentPopupView"
              xmlns:vm="clr-namespace:AplikacjaAndroid"              
              BackgroundColor="#80000000"
-             Padding="10"             
-             CloseWhenBackgroundIsClicked="True">
+             Padding="10">
     <mopups:PopupPage.Resources>
         <ResourceDictionary>
             <vm:InverseBoolConverter x:Key="InverseBoolConverter" />

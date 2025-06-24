@@ -123,12 +123,22 @@ namespace RestFullApiTest
             return null;
         }
 
-
-        public Task DeleteCommentAsync(int id)
+        public async Task<bool> DeleteCommentAsync(int id)
         {
-            throw new NotImplementedException();
-        }
+            string query = "DELETE FROM Comments WHERE Id = @Id";
+            var parameters = new DynamicParameters();
+            parameters.Add("Id", id);
 
+            using var connection = dbConnectionFactory.CreateConnection();
+            var result = await connection.ExecuteAsync(query, parameters);
+            if (result > 0)
+            {
+                return true;
+
+            }
+
+            return false;
+        }
         #endregion
     }
 }

@@ -44,7 +44,7 @@ namespace AplikacjaAndroid
 
         public DetailsBookContext(ReadedBookStorage readedBookStorage, ToReadBookStorage toReadBookStorage
             , BookMenuPopup bookMenuPopup, UserStorage userStorage, ICommentService commentService,
-            CommentPopupView commentPopupView, NavigationService navigationService , IServiceProvider serviceProvider)
+            CommentPopupView commentPopupView, NavigationService navigationService, IServiceProvider serviceProvider)
         {
             _readedBookStorage = readedBookStorage;
             _toReadBookStorage = toReadBookStorage;
@@ -165,7 +165,7 @@ namespace AplikacjaAndroid
         public async Task ShowPopup()
         {
             var context = _bookMenuPopup.BindingContext as BookMenuPopupContext;
-            context?.LoadContext(Book, false);
+            context?.LoadContext(Book, true);
             await MopupService.Instance.PushAsync(_bookMenuPopup, true);
 
         }
@@ -188,8 +188,15 @@ namespace AplikacjaAndroid
                 var result = await _commentService.AddCommentAsync(NewComment);
                 if (result != null && result.StatusCode == 200 && result.Data != null)
                 {
-                    Comments.Insert(0, result.Data);
-                    NewComment = new();
+                    if (Comments.Count == 0)
+                        await LoadComments();
+                    else
+                    {
+                        result.Data.IsOwner = true;
+                        Comments.Insert(0, result.Data);
+                        NewComment = new();
+                    }
+                    await MopupService.Instance.PushAsync(new SuccessPopupView(AnimationType.Check));
                 }
             }
         }
@@ -213,7 +220,7 @@ namespace AplikacjaAndroid
             {
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
-                    Comments = new ObservableCollection<CommentBook>(response.Data.Items);                    
+                    Comments = new ObservableCollection<CommentBook>(response.Data.Items);
                 });
 
                 response.Data.Items.Where(c => c.UserId == _userStorage?.User?.Id).ToList().ForEach(c => c.IsOwner = true);
@@ -247,7 +254,7 @@ namespace AplikacjaAndroid
             if (result?.Data?.Items != null && result.Data.Items.Any())
             {
                 foreach (var item in result.Data.Items)
-                {                   
+                {
                     MainThread.BeginInvokeOnMainThread(() =>
                     {
                         Comments.Add(item);
@@ -282,14 +289,31 @@ namespace AplikacjaAndroid
             var result = await context.ShowAsync();
             if (result != null)
             {
-                var original = Comments.FirstOrDefault(c => c.Id == result.Id);
-                if (original != null)
+                if (result.ActionComment == ActionComment.Update)
                 {
-                    var index = Comments.IndexOf(original);
-        Comments.RemoveAt(index);
-        Comments.Insert(index, result);
+                    var original = Comments.FirstOrDefault(c => c.Id == result.Id);
+                    if (original != null)
+                    {
+                        result.IsOwner = true;
+                        var index = Comments.IndexOf(original);
+                        Comments.RemoveAt(index);
+                        Comments.Insert(index, result);
+
+                        await MopupService.Instance.PushAsync(new SuccessPopupView(AnimationType.Check));
+                    }
+                }
+                else if (result.ActionComment == ActionComment.Delete)
+                {
+                    var original = Comments.FirstOrDefault(c => c.Id == result.Id);
+                    if (original != null)
+                    {
+                        Comments.Remove(original);
+
+                        await MopupService.Instance.PushAsync(new SuccessPopupView(AnimationType.Check));
+                    }
                 }
             }
+
             await Task.Delay(1000);
         }
     }
