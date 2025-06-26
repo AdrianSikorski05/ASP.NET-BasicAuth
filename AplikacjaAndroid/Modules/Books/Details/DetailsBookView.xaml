@@ -231,15 +231,15 @@
                                                Scale="0.7"
                                                VerticalOptions="Center"/>
 
-                                    <ImageButton Grid.Column="4" 
-                                             Scale="0.4"
+                                    <Button Grid.Column="4" 
+                                             BackgroundColor="Transparent"
                                              Command="{Binding BindingContext.OpenCommentPopupCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
                                              CommandParameter="{Binding .}"
                                              IsVisible="{Binding IsOwner}">
-                                        <ImageButton.Source>
+                                        <Button.ImageSource>
                                             <FontImageSource FontFamily="MaterialIcons" Glyph="&#xe8b8;" Color="#512BD4" Size="20"/>
-                                        </ImageButton.Source>
-                                    </ImageButton>
+                                        </Button.ImageSource>
+                                    </Button>
                                 </Grid>
 
                                 <Label Text="{Binding Content}" Grid.Row="1" FontSize="13" TextColor="Gray"/>

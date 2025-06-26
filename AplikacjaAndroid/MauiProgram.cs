@@ -58,6 +58,9 @@ namespace AplikacjaAndroid
             builder.Services.AddTransient<BookMenuPopup>();
             builder.Services.AddTransient<BookMenuPopupContext>();
 
+            builder.Services.AddTransient<UserConfigView>();
+            builder.Services.AddTransient<UserConfigContext>();
+
             builder.Services.AddTransientPopup<CommentPopupView>();
             builder.Services.AddTransient<CommentPopupContext>();
 

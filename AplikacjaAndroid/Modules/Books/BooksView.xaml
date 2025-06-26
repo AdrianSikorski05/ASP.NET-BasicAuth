@@ -53,13 +53,14 @@
                                     <FontImageSource FontFamily="MaterialIcons" Glyph="&#xe87d;" Color="#EF4444" Size="20"/>
                                 </ImageButton.Source>
                             </ImageButton>
-                            <ImageButton Scale="0.5" Grid.Column="3" 
+                            <Button Grid.Column="3" 
                                     Command="{Binding BindingContext.ShowPopupCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
-                                    CommandParameter="{Binding .}">
-                                <ImageButton.Source>
+                                    CommandParameter="{Binding .}"
+                                    BackgroundColor="Transparent">
+                                <Button.ImageSource>
                                     <FontImageSource FontFamily="MaterialIcons" Glyph="&#xe8b8;" Color="#512BD4" Size="20"/>
-                                </ImageButton.Source>
-                            </ImageButton>
+                                </Button.ImageSource>
+                            </Button>
                         </Grid>
                     </Border>
                 </DataTemplate>

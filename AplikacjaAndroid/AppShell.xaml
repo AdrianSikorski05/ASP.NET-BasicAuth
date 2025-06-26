@@ -10,7 +10,8 @@
     Title="AplikacjaAndroid"
     FlyoutBehavior="Flyout"
     FlyoutVerticalScrollMode="Disabled"
-    FlyoutWidth="250">
+    FlyoutWidth="250"
+    FlyoutIsPresented="{Binding Navigation}">
 
     <Shell.FlyoutHeader>
         <Grid BackgroundColor="#512BD4" 
@@ -91,10 +92,12 @@
                         </FormattedString>
                     </Label.FormattedText>
                 </Label>
-                <Button BackgroundColor="Transparent" >
+                <Button BackgroundColor="Transparent"
+                        Command="{Binding OpenUserConfigCommand}">
                     <Button.ImageSource>
                         <FontImageSource FontFamily="MaterialIcons" Glyph="&#xf02e;" Color="#512BD4" />
                     </Button.ImageSource>
+                    
                 </Button>
             </HorizontalStackLayout>
             <Label Text="{Binding CountdownDisplay}"

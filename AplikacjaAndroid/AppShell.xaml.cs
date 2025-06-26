@@ -13,6 +13,7 @@
             Routing.RegisterRoute(nameof(DetailsBookView), typeof(DetailsBookView));
             Routing.RegisterRoute(nameof(ToReadBookView), typeof(ToReadBookView));
             Routing.RegisterRoute(nameof(ReadedBookView), typeof(ReadedBookView));
+            Routing.RegisterRoute(nameof(UserConfigView),typeof(UserConfigView));
         }
     }
 }

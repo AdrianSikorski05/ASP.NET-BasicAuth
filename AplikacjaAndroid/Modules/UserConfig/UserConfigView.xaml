@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="AplikacjaAndroid.UserConfigView"
+             xmlns:toolkit ="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:vm="clr-namespace:AplikacjaAndroid"
+             Title="Account Settings"              
+             HideSoftInputOnTapped="True">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <vm:InverseBoolConverter x:Key="InverseBoolConverter"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="20">
+            <toolkit:AvatarView HorizontalOptions="Center" 
+                                VerticalOptions="Center" 
+                                WidthRequest="150" 
+                                HeightRequest="150"
+                                BorderWidth="0.5"
+                                BorderColor="Gray"                              
+                                StrokeShape="50"
+                                FontSize="40"
+                                CharacterSpacing="2"
+                                Text="{Binding Initials}"
+                                ImageSource="{Binding AvatarImage}"
+                                BackgroundColor="{Binding UserConfig.SelectedColor}">
+
+            </toolkit:AvatarView>
+            <Label Text="Choose bacground color:" FontAttributes="Bold" HorizontalOptions="Center" FontSize="10" />
+
+            <!-- Color Picker Collection -->
+            <CollectionView ItemsSource="{Binding AvailableColors}"
+                    SelectionMode="Single"
+                    SelectedItem="{Binding UserConfig.SelectedColor}">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Horizontal" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Border StrokeThickness="0"
+                                Background="{Binding}"
+                                HeightRequest="40"
+                                WidthRequest="40"
+                                Margin="4">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="20" />
+                            </Border.StrokeShape>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <Button Text="Select avatar" 
+                    Command="{Binding ChangeAvatarCommand}"
+                    IsVisible="{Binding ButtonVisible}">
+                <Button.ImageSource>
+                    <FontImageSource Glyph="&#xe43e;" FontFamily="MaterialIcons" Size="20" Color="White"/>
+                </Button.ImageSource>
+            </Button>
+            <Button Text="Delete avatar" 
+                    Command="{Binding DeleteAvatarImageCommand}"
+                    IsVisible="{Binding ButtonVisible,Converter={StaticResource InverseBoolConverter}}"
+                    BackgroundColor="#B22222">
+                <Button.ImageSource>
+                    <FontImageSource Glyph="&#xe872;" FontFamily="MaterialIcons" Size="20" Color="White"/>
+                </Button.ImageSource>
+            </Button>
+            <VerticalStackLayout Margin="10">
+                <Grid RowDefinitions="*,*,*,*,*"  ColumnDefinitions="auto,auto,*" RowSpacing="10">
+                    <Image Grid.Column="0" Margin="0,0,2,0">
+                        <Image.Source>
+                            <FontImageSource Glyph="&#xea67;" FontFamily="MaterialIcons" Size="20" Color="#512BD4"/>
+                        </Image.Source>
+                    </Image>
+                    <Label Text="Name: " VerticalOptions="Center" Grid.Column="1" />
+                    <Entry Placeholder="Name" Text="{Binding UserConfig.Name}" Keyboard="Text" Grid.Column="2" ClearButtonVisibility="WhileEditing"/>
+                    <Image Grid.Column="0" Grid.Row="1" Margin="0,0,2,0">
+                        <Image.Source>
+                            <FontImageSource Glyph="&#xea67;" FontFamily="MaterialIcons" Size="20" Color="#512BD4"/>
+                        </Image.Source>
+                    </Image>
+                    <Label Text="Surename: " VerticalOptions="Center" Grid.Column="1" Grid.Row="1"/>
+                    <Entry Placeholder="Surename" Text="{Binding UserConfig.Surename}" Keyboard="Text" Grid.Row="1" Grid.Column="2" ClearButtonVisibility="WhileEditing"/>
+                    <Image Grid.Column="0" Grid.Row="2" Margin="0,0,4,0">
+                        <Image.Source>
+                            <FontImageSource Glyph="&#xe0d0;" FontFamily="MaterialIcons" Size="20" Color="#512BD4"/>
+                        </Image.Source>
+                    </Image>
+                    <Label Text="Email: " VerticalOptions="Center" Grid.Row ="2" Grid.Column="1"/>
+                    <Entry Placeholder="Email" Text="{Binding UserConfig.Email}" Keyboard="Email" Grid.Row ="2" Grid.Column="2" ClearButtonVisibility="WhileEditing"/>
+                    <Image Grid.Column="0" Grid.Row="3" Margin="0,0,4,0">
+                        <Image.Source>
+                            <FontImageSource Glyph="&#xe0e8;" FontFamily="MaterialIcons" Size="20" Color="#512BD4"/>
+                        </Image.Source>
+                    </Image>
+                    <Label Text="Phone: " VerticalOptions="Center" Grid.Row ="3" Grid.Column="1"/>
+                    <Entry Placeholder="Phone Number" Text="{Binding UserConfig.PhoneNumber}" Keyboard="Telephone" Grid.Row ="3" Grid.Column="2" ClearButtonVisibility="WhileEditing"/>
+                    <Image Grid.Column="0" Grid.Row="4">
+                        <Image.Style>
+                            <Style TargetType="Image">
+                                <Style.Triggers>
+                                    <DataTrigger TargetType="Image" Binding="{Binding UserConfig.Theme}" Value="Light">
+                                        <Setter Property="Source">
+                                            <Setter.Value>
+                                                <FontImageSource Glyph="&#xe518;" FontFamily="MaterialIcons" Size="20" Color="#512BD4"/>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+                                    <DataTrigger TargetType="Image" Binding="{Binding UserConfig.Theme}" Value="Dark">
+                                        <Setter Property="Source">
+                                            <Setter.Value>
+                                                <FontImageSource Glyph="&#xe51c;" FontFamily="MaterialIcons" Size="20" Color="#512BD4"/>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Image.Style>
+                    </Image>
+                    <Label Text="Theme: " VerticalOptions="Center" Grid.Row ="4" Grid.Column="1"/>
+                    <Picker Title="Theme" ItemsSource="{Binding Themes}" SelectedItem="{Binding UserConfig.Theme}" Grid.Row ="4" Grid.Column="2"/>
+                </Grid>
+
+
+                <toolkit:Expander Margin="0,15,0,0" >
+                    <toolkit:Expander.Header>
+                        <Label Text="Change password" TextDecorations="Underline" TextColor="Blue"/>
+                    </toolkit:Expander.Header>
+                    <toolkit:Expander.Content>
+                        <Grid ColumnDefinitions="auto,auto,*" RowDefinitions="*,*" >
+                            <Image Grid.Column="0" Margin="0,0,4,0">
+                                <Image.Source>
+                                    <FontImageSource Glyph="&#xe897;"
+                                                     FontFamily="MaterialIcons"
+                                                     Size="20"
+                                                     Color="#512BD4"/>
+                                </Image.Source>
+                            </Image>
+                            <Label Text="Password: " Grid.Column="1" VerticalOptions="Center"/>
+                            <vm:PasswordEntry Grid.Column="2" 
+                                              Placeholder="Password"
+                                              FontSize="14"/>
+                            <Image Grid.Column="0" Grid.Row="1" Margin="0,0,4,0">
+                                <Image.Source>
+                                    <FontImageSource Glyph="&#xe897;"
+                                                     FontFamily="MaterialIcons"
+                                                     Size="20"
+                                                     Color="#512BD4"/>
+                                </Image.Source>
+                            </Image>
+                            <Label Text="Confirm: " Grid.Column="1" Grid.Row="1" VerticalOptions="Center"/>
+                            <vm:PasswordEntry Grid.Column="2" 
+                                              Grid.Row="1"
+                                              Placeholder="Password"
+                                              FontSize="14"/>
+                        </Grid>
+                    </toolkit:Expander.Content>
+                </toolkit:Expander>
+                <StackLayout Orientation="Vertical" Spacing="4" Margin="0,15,0,0">
+                    <Label FontSize="12">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="Role: "/>
+                                <Span/>
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+                    <Label FontSize="12">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="Account creation date: "/>
+                                <Span/>
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+                </StackLayout>
+                
+            </VerticalStackLayout>
+
+            <Button Text="Save"
+                    BackgroundColor="#512BD4"
+                    TextColor="White"
+                    CornerRadius="8"
+                    Command="{Binding SaveConfigCommand}" >
+                <Button.ImageSource>
+                    <FontImageSource Glyph="&#xe161;" FontFamily="MaterialIcons" Size="20" Color="White"/>
+                </Button.ImageSource>
+            </Button>
+
+            <Button Text="Delete Account" Margin="0,2,0,0" BackgroundColor="#B22222">
+                <Button.ImageSource>
+                    <FontImageSource Glyph="&#xf03e;"
+                                     FontFamily="MaterialIcons"
+                                     Size="20"
+                                     Color="White"/>
+                </Button.ImageSource>
+            </Button>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

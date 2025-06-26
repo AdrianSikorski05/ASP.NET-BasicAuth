@@ -13,6 +13,15 @@ public partial class PasswordEntry : ContentView
     public static readonly BindableProperty TextProperty =
         BindableProperty.Create(nameof(Text), typeof(string), typeof(PasswordEntry), default(string), BindingMode.TwoWay, propertyChanged: OnTextChanged);
 
+
+    public static readonly BindableProperty FontSizeProperty =
+    BindableProperty.Create(nameof(FontSize), typeof(double), typeof(PasswordEntry), 17.0);
+
+    public double FontSize
+    {
+        get => (double)GetValue(FontSizeProperty);
+        set => SetValue(FontSizeProperty, value);
+    }
     public string Text
     {
         get => (string)GetValue(TextProperty);

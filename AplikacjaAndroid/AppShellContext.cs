@@ -17,7 +17,8 @@ namespace AplikacjaAndroid
 
         private readonly ReadedBookStorage _readed;
         private readonly ToReadBookStorage _toRead;
-        public AppShellContext(UserStorage userStorage, ReadedBookStorage readedBookStorage, ToReadBookStorage toReadBookStorage)
+        private readonly NavigationService _navigationService;
+        public AppShellContext(UserStorage userStorage, ReadedBookStorage readedBookStorage, ToReadBookStorage toReadBookStorage, NavigationService navigationService)
         {
             UserData = userStorage;
             _readed = readedBookStorage;
@@ -28,6 +29,7 @@ namespace AplikacjaAndroid
             StartCountdown();
             CountReadedBooksCount = _readed.Count;
             CountToReadBooksCount = _toRead.Count;
+            _navigationService = navigationService;
         }
 
         private void OnReadedCountChanged(object? sender, EventArgs e) =>
@@ -135,6 +137,29 @@ namespace AplikacjaAndroid
             {
                 CountdownDisplay = _timeLeft.ToString(@"mm\:ss");
             });
+        }
+
+        private bool _isNavigating = false;
+
+        [ObservableProperty]
+        bool _navigation = false;
+
+        [RelayCommand]
+        public async Task OpenUserConfig() 
+        {
+            Navigation = false;
+
+            if (_isNavigating) return;
+            _isNavigating = true;
+
+            try
+            {
+                await _navigationService.NavigateToAsync(nameof(UserConfigView));
+            }
+            finally
+            {
+                _isNavigating = false;
+            }
         }
     }
 }

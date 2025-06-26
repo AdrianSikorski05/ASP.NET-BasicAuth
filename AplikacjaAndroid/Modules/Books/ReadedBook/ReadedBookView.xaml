@@ -37,17 +37,17 @@
                                        TextColor="Gray"/>
                             </VerticalStackLayout>
                             
-                            <ImageButton Scale="0.5" 
-                                         Grid.Column="2" 
-                                         Command="{Binding BindingContext.ShowPopupCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
-                                         CommandParameter="{Binding .}">
-                                <ImageButton.Source>
+                            <Button BackgroundColor="Transparent"
+                                    Grid.Column="2" 
+                                    Command="{Binding BindingContext.ShowPopupCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
+                                    CommandParameter="{Binding .}">
+                                <Button.ImageSource>
                                     <FontImageSource FontFamily="MaterialIcons" 
                                                      Glyph="&#xe8b8;" 
                                                      Color="#512BD4" 
                                                      Size="20"/>
-                                </ImageButton.Source>
-                            </ImageButton>
+                                </Button.ImageSource>
+                            </Button>
                         </Grid>
                     </Border>
                 </DataTemplate>
