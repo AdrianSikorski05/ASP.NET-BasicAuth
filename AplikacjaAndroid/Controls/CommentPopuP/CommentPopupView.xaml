@@ -24,14 +24,15 @@
             <HorizontalStackLayout HorizontalOptions="Center">
                 <Image>
                     <Image.Source>
-                        <FontImageSource FontFamily="MaterialIcons" Glyph="&#xe666;" Color="#512BD4" Size="20"/>
+                        <FontImageSource FontFamily="MaterialIcons" Glyph="&#xe666;" Color="{AppThemeBinding Light={DynamicResource Primary},Dark= {DynamicResource PrimaryDark}}" Size="20"/>
                     </Image.Source>
                 </Image>
                 <Label Text="Action Comment"
                        FontAttributes="Bold"
                        FontSize="16"
                        HorizontalOptions="Center"
-                       Padding="10"/>
+                       Padding="10"
+                       TextColor="{AppThemeBinding Light={DynamicResource Primary},Dark= {DynamicResource PrimaryDark}}"/>
             </HorizontalStackLayout>
             <StackLayout x:Name="ButtonSection" 
                          IsVisible="{Binding IsEditMode, Converter={StaticResource InverseBoolConverter}}">

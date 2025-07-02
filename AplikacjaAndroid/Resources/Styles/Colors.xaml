@@ -28,6 +28,17 @@
     <Color x:Key="Gray900">#212121</Color>
     <Color x:Key="Gray950">#141414</Color>
 
+    <Color x:Key="PrimaryText">#242424</Color>
+    <Color x:Key="PrimaryBackground">#FFFFFF</Color>
+    <Color x:Key="DarkBackground">#2D2D2D</Color>
+    <Color x:Key="SeparatorLight">#CCCCCC</Color>
+    <Color x:Key="SeparatorDark">#444444</Color>
+    <Color x:Key="SuccessGreen">#34D399</Color>
+    <Color x:Key="ErrorRed">#EF4444</Color>
+    <Color x:Key="RatingGold">#FBBF24</Color>
+    <Color x:Key="BackgroundDarkMode">#1E293B</Color>
+    <Color x:Key="BackgroundLightMode">#F3F4F6</Color>
+
     <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource Primary}"/>
     <SolidColorBrush x:Key="SecondaryBrush" Color="{StaticResource Secondary}"/>
     <SolidColorBrush x:Key="TertiaryBrush" Color="{StaticResource Tertiary}"/>
@@ -42,4 +53,5 @@
     <SolidColorBrush x:Key="Gray600Brush" Color="{StaticResource Gray600}"/>
     <SolidColorBrush x:Key="Gray900Brush" Color="{StaticResource Gray900}"/>
     <SolidColorBrush x:Key="Gray950Brush" Color="{StaticResource Gray950}"/>
+    
 </ResourceDictionary>

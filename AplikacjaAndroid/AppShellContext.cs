@@ -1,12 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Mopups.Services;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AplikacjaAndroid
 {
@@ -18,7 +13,9 @@ namespace AplikacjaAndroid
         private readonly ReadedBookStorage _readed;
         private readonly ToReadBookStorage _toRead;
         private readonly NavigationService _navigationService;
-        public AppShellContext(UserStorage userStorage, ReadedBookStorage readedBookStorage, ToReadBookStorage toReadBookStorage, NavigationService navigationService)
+        private readonly IUsersService _usersService;
+
+        public AppShellContext(UserStorage userStorage, ReadedBookStorage readedBookStorage, ToReadBookStorage toReadBookStorage, NavigationService navigationService,IUsersService usersService)
         {
             UserData = userStorage;
             _readed = readedBookStorage;
@@ -29,7 +26,8 @@ namespace AplikacjaAndroid
             StartCountdown();
             CountReadedBooksCount = _readed.Count;
             CountToReadBooksCount = _toRead.Count;
-            _navigationService = navigationService;
+            _navigationService = navigationService;          
+            _usersService = usersService;
         }
 
         private void OnReadedCountChanged(object? sender, EventArgs e) =>
@@ -63,10 +61,11 @@ namespace AplikacjaAndroid
 
         [ObservableProperty] int _countReadedBooksCount;
         [ObservableProperty] int _countToReadBooksCount;
-
+        [ObservableProperty] bool _isBusy;
         [RelayCommand]
         public void Logout()
         {
+            UserData.Logout();
             MainThread.BeginInvokeOnMainThread(() =>
             {
                 Application.Current.MainPage = App.ServiceProvider.GetRequiredService<LoginView>();
@@ -93,15 +92,48 @@ namespace AplikacjaAndroid
 
         public void StartCountdown()
         {
-            _timeLeft = TimeSpan.FromMinutes(30);
+            _timeLeft = TimeSpan.FromMinutes(60);
             UpdateCountdownText();
 
             _countdownTimer = new Timer(OnCountdownTick, null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
         }
 
+        private bool _refreshPopupShown = false;
+        private TaskCompletionSource<bool> _sessionResponseTcs;
         private void OnCountdownTick(object? state)
         {
             _timeLeft = _timeLeft.Subtract(TimeSpan.FromSeconds(1));
+
+            if (_timeLeft <= TimeSpan.FromMinutes(2) && !_refreshPopupShown)
+            {
+                _refreshPopupShown = true;
+                _sessionResponseTcs = new TaskCompletionSource<bool>();
+
+                
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    var context = new RefreshTokenPopupContext();
+                    context.SetCompletionSource(_sessionResponseTcs);
+                    var popup = new RefreshTokenPopupView(context);
+
+                    await MopupService.Instance.PushAsync(popup);
+
+                   //oczekiwanie na wynik
+                   var result = await _sessionResponseTcs.Task;
+                    if (result)
+                    {
+                        IsBusy = true;
+                        var res = await _usersService.RefreshToken();
+                        if (res == true)
+                        {
+                            _timeLeft = TimeSpan.FromSeconds(60);
+                            _refreshPopupShown = false;
+                        }
+                        IsBusy = false;
+                    }
+                });
+            }
+
 
             if (_timeLeft <= TimeSpan.Zero)
             {
@@ -160,6 +192,6 @@ namespace AplikacjaAndroid
             {
                 _isNavigating = false;
             }
-        }
+        }   
     }
 }

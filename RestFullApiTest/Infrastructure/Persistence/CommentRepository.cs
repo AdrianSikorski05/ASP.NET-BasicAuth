@@ -15,15 +15,20 @@ namespace RestFullApiTest
             var sqlCount = @"SELECT COUNT(*) FROM Comments WHERE BookId = @BookId";
 
             var sb = new StringBuilder();
-            sb.Append(@$"SELECT Id [{nameof(CommentBook.id)}]
-                              ,BookId [{nameof(CommentBook.BookId)}]
-                              ,UserId [{nameof(CommentBook.UserId)}]
-                              ,Author [{nameof(CommentBook.Author)}]
-                              ,Content [{nameof(CommentBook.Content)}]
-                              ,Rate [{nameof(CommentBook.Rate)}]
-                              ,PublishedDate [{nameof(CommentBook.PublishedDate)}]
-                        FROM Comments
-                        WHERE BookId = @BookId");
+            sb.Append(@$"SELECT c.Id [{nameof(CommentBook.id)}]
+                              ,c.BookId [{nameof(CommentBook.BookId)}]
+                              ,c.UserId [{nameof(CommentBook.UserId)}]
+                              ,c.Author [{nameof(CommentBook.Author)}]
+                              ,c.Content [{nameof(CommentBook.Content)}]
+                              ,c.Rate [{nameof(CommentBook.Rate)}]
+                              ,c.PublishedDate [{nameof(CommentBook.PublishedDate)}]
+                              ,uc.AvatarImage [{nameof(CommentBook.AvatarImage)}]
+							  ,uc.name [{nameof(CommentBook.Name)}]
+							  ,uc.Surename [{nameof(CommentBook.Surename)}]
+							  ,uc.AvatarColor [{nameof(CommentBook.AvatarColor)}]
+                        FROM Comments c
+                        inner join UserConfig uc on c.UserId = uc.UserId
+                        WHERE c.BookId = @BookId");
 
             var parameters = new DynamicParameters();
             parameters.Add("BookId", commentFilter.BookId);
@@ -48,6 +53,36 @@ namespace RestFullApiTest
                 PageSize = commentFilter.PageSize
             };
         }
+
+        private async Task<CommentBook> GetCommentBookbyId(int id) 
+        { 
+            string sql = @$"SELECT c.Id [{nameof(CommentBook.id)}]
+                              ,c.BookId [{nameof(CommentBook.BookId)}]
+                              ,c.UserId [{nameof(CommentBook.UserId)}]
+                              ,c.Author [{nameof(CommentBook.Author)}]
+                              ,c.Content [{nameof(CommentBook.Content)}]
+                              ,c.Rate [{nameof(CommentBook.Rate)}]
+                              ,c.PublishedDate [{nameof(CommentBook.PublishedDate)}]
+                              ,uc.AvatarImage [{nameof(CommentBook.AvatarImage)}]
+							  ,uc.name [{nameof(CommentBook.Name)}]
+							  ,uc.Surename [{nameof(CommentBook.Surename)}]
+							  ,uc.AvatarColor [{nameof(CommentBook.AvatarColor)}]
+                        FROM Comments c
+                        inner join UserConfig uc on c.UserId = uc.UserId
+                        WHERE c.Id = @Id";
+            var parameters = new DynamicParameters();
+            parameters.Add("Id", id);
+
+            using var connection = dbConnectionFactory.CreateConnection();
+            var comment = await connection.QueryFirstOrDefaultAsync<CommentBook>(sql, parameters);
+
+            if (comment == null)
+            {
+                throw new KeyNotFoundException($"Comment with id {id} not found.");
+            }
+            return comment;
+        }
+
         #endregion
 
 
@@ -69,15 +104,20 @@ namespace RestFullApiTest
             using var connection = dbConnectionFactory.CreateConnection();
             var id = await connection.ExecuteScalarAsync<int>(sql, parameters);
 
+            var result =  await GetCommentBookbyId(id);
             return new CommentBook
             {
                 id = id,
-                BookId = comment.BookId,
-                UserId = comment.UserId,
-                Author = comment.Author,
-                Content = comment.Content,
-                Rate = comment.Rate,
-                PublishedDate = comment.PublishedDate
+                BookId = result.BookId,
+                UserId = result.UserId,
+                Author = result.Author,
+                Content = result.Content,
+                Rate = result.Rate,
+                PublishedDate = result.PublishedDate,
+                AvatarImage = result.AvatarImage,
+                Name = result.Name,
+                Surename = result.Surename,
+                AvatarColor = result.AvatarColor
             };
 
         }
@@ -115,8 +155,7 @@ namespace RestFullApiTest
 
             if (result > 0)
             {
-                var commentUpdated = await dbConnectionFactory.CreateConnection().QueryFirstOrDefaultAsync<CommentBook>(
-                    "SELECT * FROM Comments WHERE Id = @Id", new { Id = comment.id });
+                var commentUpdated = await GetCommentBookbyId(comment.id);
                 return commentUpdated;
             }
 

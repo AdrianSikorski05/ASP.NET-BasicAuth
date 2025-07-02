@@ -41,5 +41,9 @@ namespace RestFullApiTest
         /// Description of the book
         /// </summary>
         public string? Description { get; set; }
+        /// <summary>
+        /// Average rating of the book, nullable if not rated
+        /// </summary>
+        public double? AverageRating { get; set; }
     }
 }

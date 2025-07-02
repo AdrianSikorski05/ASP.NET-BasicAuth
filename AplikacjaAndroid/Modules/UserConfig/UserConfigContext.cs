@@ -1,37 +1,35 @@
-﻿
-using Android.Hardware.Lights;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Mopups.Services;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 
 
 namespace AplikacjaAndroid
 {
     public partial class UserConfigContext : ObservableValidator
     {
-        public UserConfigContext()
+        private readonly UserStorage _userStorage;
+        private readonly IUsersService _usersService;
+        private readonly ConfirmeDeleteAccountView _deleteAccountPopup;
+        public UserConfigContext(UserStorage userStorage, IUsersService usersService, ConfirmeDeleteAccountView confirmeDeleteAccountView)
         {
-            _userConfig.PropertyChanged += ViewModelOnPropertyChanged;
+            _userStorage = userStorage; 
+            _usersService = usersService;
+            _deleteAccountPopup = confirmeDeleteAccountView;
+            LoadData();
         }
-        private void ViewModelOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
-        {
-            OnPropertyChanged(nameof(Initials));
-        }
+    
+        [ObservableProperty]
+        User _user;
 
         [ObservableProperty]
-        UserConfig _userConfig = new UserConfig();
-
-
-        [ObservableProperty]
-        ImageSource _avatarImage;
+        UserConfig _userConfig;
      
         [ObservableProperty]
         bool _buttonVisible = true;
-
-        public string Initials => $"{UserConfig.Name?.FirstOrDefault()}{UserConfig.Surename?.FirstOrDefault()}".ToUpper();
-
+     
         public ObservableCollection<Color> AvailableColors { get; } = new()
         {
             Color.FromArgb("#A3D5FF"), // Baby Blue
@@ -49,6 +47,20 @@ namespace AplikacjaAndroid
             "Light",
             "Dark"
         };
+
+        private void LoadData() 
+        {
+            User = _userStorage.User;
+            UserConfig = _userStorage.User.UserConfig;
+            if (UserConfig?.AvatarBytes != null && UserConfig.AvatarBytes.Length > 0)
+            {
+                ButtonVisible = false;
+            }
+            else
+            {
+                ButtonVisible = true;
+            }
+        }
 
         [RelayCommand]
         public async Task ChangeAvatarAsync()
@@ -72,9 +84,9 @@ namespace AplikacjaAndroid
                     UserConfig.AvatarBytes = memoryStream.ToArray();
 
                     // Uwaga: musisz zrobić osobny MemoryStream, bo FromStream zużyje go:
-                    AvatarImage = ImageSource.FromStream(() => new MemoryStream(UserConfig.AvatarBytes));
+                    UserConfig.AvatarImage = ImageSource.FromStream(() => new MemoryStream(UserConfig.AvatarBytes));
 
-                    if (AvatarImage != null)
+                    if (UserConfig.AvatarImage != null)
                         ButtonVisible = false;
                 }
             }
@@ -84,11 +96,125 @@ namespace AplikacjaAndroid
             }
         }
 
+
+        [RelayCommand]
+        public async Task SaveUserConfig() 
+        {
+            try
+            {
+                var tempImage = UserConfig.AvatarImage;
+                UserConfig.AvatarImage = null;
+
+                UpdateUserDto updateUserDto = new UpdateUserDto
+                {
+                    Id = User.Id,
+                    Username = User.Username,
+                    UserConfig = this.UserConfig,
+                    Enabled = true
+                };
+
+                var result = await _usersService.UpdateUser(updateUserDto);
+                if (result == true)
+                {
+                    UserConfig.AvatarImage = tempImage;
+                    await MopupService.Instance.PushAsync(new SuccessPopupView(AnimationType.Check));
+                }
+                else
+                {
+                    await MopupService.Instance.PushAsync(new SuccessPopupView(AnimationType.Error));
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error saving user config: {ex.Message}");
+            }         
+        }
+
+        [ObservableProperty]
+        string _errorMessage = string.Empty;
+
+        [ObservableProperty]
+        bool _errorMessageVisibility = false;
+
+        [RelayCommand]
+        public async Task ChangePassword() 
+        {
+            try
+            {
+                var strongPasswordRegex = new Regex(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$");
+
+                if (string.IsNullOrWhiteSpace(User.Password) || !strongPasswordRegex.IsMatch(User.Password))
+                {
+                    ErrorMessage = "Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one digit, and one special character.";
+                    ErrorMessageVisibility = true;
+                    return;
+                }
+
+                if (!User.ConfirmePasswordIsTheSame())
+                {
+                    ErrorMessage = "Passwords do not match.";
+                    ErrorMessageVisibility = true;
+                    return;
+                }
+
+                ErrorMessageVisibility = false;
+
+                UpdateUserDto updateUserDto = new UpdateUserDto
+                {
+                    Id = User.Id,
+                    Password = User.Password
+                };
+
+                var result = await _usersService.UpdateUser(updateUserDto);
+                if (result == true)
+                {
+                    await MopupService.Instance.PushAsync(new SuccessPopupView(AnimationType.Check));
+                }
+                else
+                {
+                    await MopupService.Instance.PushAsync(new SuccessPopupView(AnimationType.Error));
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error saving user config: {ex.Message}");
+            }
+        }
+
+        private bool _isPopupOpen = false;
+
+        [RelayCommand]
+        public async Task DeleteAccount() 
+        {
+            if (_isPopupOpen)
+                return;
+            _isPopupOpen = true;
+
+            try
+            {
+                UpdateUserDto updateUserDto = new UpdateUserDto
+                {
+                    Id = User.Id,
+                    Enabled = false
+                };
+
+                var context = _deleteAccountPopup.BindingContext as ConfirmeDeleteAccountContext;
+                context?.LoadContext(updateUserDto);
+
+                await MopupService.Instance.PushAsync(_deleteAccountPopup, true);             
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error saving user config: {ex.Message}");
+            }
+            _isPopupOpen = false;
+        }
+
         [RelayCommand]
         public void DeleteAvatarImage() 
         {
             UserConfig.AvatarBytes = null!;
-            AvatarImage = null!;
+            UserConfig.AvatarImage = null!;
             ButtonVisible = true;
         }
     }

@@ -16,7 +16,7 @@ namespace RestFullApiTest
         /// <param name="stock"></param>
         /// <param name="image"></param>
         /// <param name="description"></param>
-        public Book(int id, string title, string author, string genre, DateTime publishedDate, double price, int stock, byte[] image, string? description)
+        public Book(int id, string title, string author, string genre, DateTime publishedDate, double price, int stock, byte[] image, string? description, double? averageRating)
         {
             Id = id;
             Title = title;
@@ -27,6 +27,7 @@ namespace RestFullApiTest
             Stock = stock;
             Image = image;
             Description = description;
+            AverageRating = averageRating;
         }
 
         public static BookDto MapToDto(Book book) 
@@ -41,7 +42,9 @@ namespace RestFullApiTest
                 Price = book.Price,
                 Stock = book.Stock,
                 Image = book.Image,
-                Description = book.Description
+                Description = book.Description,
+                AverageRating = book.AverageRating
+
             };
         }
 
@@ -83,5 +86,9 @@ namespace RestFullApiTest
         /// Description of the book
         /// </summary>
         public string? Description { get; set; }
+        /// <summary>
+        /// Average rating of the book, nullable if not rated
+        /// </summary>
+        public double? AverageRating { get; set; }
     }
 }

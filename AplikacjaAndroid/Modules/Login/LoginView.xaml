@@ -44,7 +44,7 @@
                         <FontImageSource Glyph="&#xe853;"
                      FontFamily="MaterialIcons"
                      Size="20"
-                     Color="#512BD4"/>
+                     Color="{AppThemeBinding Light={DynamicResource Primary},Dark= {DynamicResource PrimaryDark}}"/>
                     </Image.Source>
                 </Image>
 
@@ -62,7 +62,7 @@
                         <FontImageSource Glyph="&#xe897;"
                                      FontFamily="MaterialIcons"
                                      Size="20"
-                                     Color="#512BD4"/>
+                                     Color="{AppThemeBinding Light={DynamicResource Primary},Dark= {DynamicResource PrimaryDark}}"/>
                     </Image.Source>
                 </Image>
 
@@ -150,7 +150,7 @@
                         <FontImageSource Glyph="&#xe853;"
                                          FontFamily="MaterialIcons"
                                          Size="20"
-                                         Color="#512BD4"/>
+                                         Color="{AppThemeBinding Light={DynamicResource Primary},Dark= {DynamicResource PrimaryDark}}"/>
                     </Image.Source>
                 </Image>
 
@@ -168,7 +168,7 @@
                         <FontImageSource Glyph="&#xe897;"
                          FontFamily="MaterialIcons"
                          Size="20"
-                         Color="#512BD4"/>
+                         Color="{AppThemeBinding Light={DynamicResource Primary},Dark= {DynamicResource PrimaryDark}}"/>
                     </Image.Source>
                 </Image>
 
@@ -183,7 +183,7 @@
                         <FontImageSource Glyph="&#xe897;"
                                          FontFamily="MaterialIcons"
                                          Size="20"
-                                         Color="#512BD4"/>
+                                         Color="{AppThemeBinding Light={DynamicResource Primary},Dark= {DynamicResource PrimaryDark}}"/>
                     </Image.Source>
                 </Image>
 

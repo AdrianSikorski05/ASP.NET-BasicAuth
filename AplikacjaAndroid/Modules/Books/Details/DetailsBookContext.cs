@@ -189,7 +189,10 @@ namespace AplikacjaAndroid
                 if (result != null && result.StatusCode == 200 && result.Data != null)
                 {
                     if (Comments.Count == 0)
+                    {
                         await LoadComments();
+                        NewComment = new();
+                    }
                     else
                     {
                         result.Data.IsOwner = true;

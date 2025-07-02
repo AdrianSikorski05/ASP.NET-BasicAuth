@@ -1,4 +1,6 @@
-﻿namespace AplikacjaAndroid
+﻿using AplikacjaAndroid.Models.Dto.Comment;
+
+namespace AplikacjaAndroid
 {
     public interface ICommentService
     {

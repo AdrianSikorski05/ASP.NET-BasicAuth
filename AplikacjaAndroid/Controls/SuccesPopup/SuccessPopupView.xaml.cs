@@ -31,6 +31,10 @@ public partial class SuccessPopupView : PopupPage
 		else if (_animationType == AnimationType.Loading)
 		{
 			AnimationName = "Loading.json";
+		}
+		else if (_animationType == AnimationType.Error) 
+		{
+            AnimationName = "Error.json";
         }
     }
 }

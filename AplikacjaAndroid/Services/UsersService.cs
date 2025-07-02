@@ -16,7 +16,7 @@ namespace AplikacjaAndroid
         }
         public async Task<ResponseResult<TokenResponse>?> Login(LoginUser loginUser)
         {
-            try
+            try 
             {
                 var response = await _httpClient.PostAsJsonAsync("Login/login", loginUser);
 
@@ -72,6 +72,49 @@ namespace AplikacjaAndroid
             {
                 Console.WriteLine($"[Register ERROR] {ex.Message}");
                 return new ResponseResult<bool> { StatusCode = 500, Message = "Connect serwer error. ", Data = false };
+            }
+        }
+
+        public async Task<bool> UpdateUser(UpdateUserDto updateUserDto) 
+        {
+            try
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _userStorage.Token);
+                var response = await _httpClient.PostAsJsonAsync("Users/UpdateUser", updateUserDto);
+
+                var responseResult = await response.Content.ReadFromJsonAsync<ResponseResult<User>>();
+                if (responseResult.StatusCode == 200 && responseResult.Data != null)
+                {
+                    _userStorage.User = responseResult.Data;
+                    return true;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[UpdateUser ERROR] {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> RefreshToken()
+        {
+            try
+            {
+                var response = await _httpClient.PostAsJsonAsync("Login/refresh-token", new RefreshRequestDto { RefreshToken = _userStorage.RefreshToken });
+                var responseResult = await response.Content.ReadFromJsonAsync<ResponseResult<TokenResponse>>();
+                if (responseResult.StatusCode == 200 && responseResult.Data != null)
+                {
+                    _userStorage.LoadData(responseResult, await WhoIam(responseResult.Data.Token));
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[RefreshToken ERROR] {ex.Message}");
+                return false;
             }
         }
     }

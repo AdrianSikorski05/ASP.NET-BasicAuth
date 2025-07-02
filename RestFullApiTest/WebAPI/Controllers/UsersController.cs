@@ -9,7 +9,7 @@ namespace RestFullApiTest
 {
     [ApiController]
     [Authorize(AuthenticationSchemes = "Bearer")]
-    [Route("[controller]/[action]")]
+    [Route("api/[controller]")]
     [Tags("Users")]
     public class UsersController(ILogger<UsersController> logger, IMediator mediator) : ControllerBase
     {
@@ -114,8 +114,7 @@ namespace RestFullApiTest
         /// <response code="200">Return updated user</response>
         /// <response code="404">Dont found user</response> 
         /// <response code="400">Invalid request parameters</response>
-        [HttpPut("UpdateUser")]
-        [Authorize(Roles = "Admin")]
+        [HttpPost("UpdateUser")]        
         [ProducesResponseType(typeof(ResponseResult), 200)]
         [ProducesResponseType(typeof(ResponseResult), 404)]
         [ProducesResponseType(typeof(ResponseResult), 400)]

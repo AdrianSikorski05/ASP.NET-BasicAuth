@@ -26,6 +26,7 @@ namespace AplikacjaAndroid
     public enum AnimationType
     { 
         Check = 0,
-        Loading = 1
+        Loading = 1,
+        Error = 2
     }
 }

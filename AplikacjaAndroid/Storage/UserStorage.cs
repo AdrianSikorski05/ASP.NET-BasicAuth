@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,9 +7,10 @@ using System.Threading.Tasks;
 
 namespace AplikacjaAndroid
 {
-    public class UserStorage
+    public partial class UserStorage : ObservableValidator
     {
-        public User? User { get; set; }
+        [ObservableProperty]
+        User? _user;
         public string? Token { get; set; }
         public string? RefreshToken { get; set; }
 
@@ -17,6 +19,13 @@ namespace AplikacjaAndroid
             Token = response?.Data?.Token;
             RefreshToken = response?.Data?.RefreshToken;
             User = user;
+        }
+
+        public void Logout()
+        {
+            User = null;
+            Token = null;
+            RefreshToken = null;
         }
     }
 }

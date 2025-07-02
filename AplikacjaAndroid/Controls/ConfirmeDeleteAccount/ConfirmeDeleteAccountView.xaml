@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<mopups:PopupPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:mopups="clr-namespace:Mopups.Pages;assembly=Mopups"
+             x:Class="AplikacjaAndroid.ConfirmeDeleteAccountView"
+             Title="ConfirmeDeleteAccountView"
+             BackgroundColor="#80000000"
+             Padding="10">
+    <Border BackgroundColor="White"
+       WidthRequest="280"                      
+       VerticalOptions="Center">
+        <Border.StrokeShape>
+            <RoundRectangle CornerRadius="15,15,15,15"/>
+        </Border.StrokeShape>
+
+        <VerticalStackLayout >
+            <Border/>
+            <HorizontalStackLayout HorizontalOptions="Center">
+                <Image>
+                    <Image.Source>
+                        <FontImageSource FontFamily="MaterialIcons" Glyph="&#xe510;" Color="{AppThemeBinding Light={DynamicResource Primary},Dark= {DynamicResource PrimaryDark}}" Size="20"/>
+                    </Image.Source>
+                </Image>
+                <Label Text="Delete account"
+                   FontAttributes="Bold"
+                   FontSize="16"
+                   HorizontalOptions="Center"
+                   Padding="10"
+                   TextColor="{AppThemeBinding Light={DynamicResource Primary},Dark= {DynamicResource PrimaryDark}}"/>
+            </HorizontalStackLayout>
+            <Border/>
+            <Label Text="Are you sure to delete account?" HorizontalOptions="Center" VerticalOptions="Center" Padding="10" TextColor="Black"/>
+            <Grid ColumnDefinitions="*,*" Padding="10" ColumnSpacing="10">
+                <Button Grid.Column="0" Text="OK" Command="{Binding DeleteAccountCommand}">
+                    <Button.ImageSource>
+                        <FontImageSource FontFamily="MaterialIcons" Glyph="&#xe5ca;" Color="LightGreen" Size="20"/>
+                    </Button.ImageSource>
+                </Button>
+                <Button Grid.Column="1" Text="Cancel" Command="{Binding CloseCommand}">
+                    <Button.ImageSource>
+                        <FontImageSource FontFamily="MaterialIcons" Glyph="&#xe5c9;" Color="Red" Size="20"/>
+                    </Button.ImageSource>
+                </Button>
+            </Grid>
+            <Border/>
+        </VerticalStackLayout>
+
+
+    </Border>
+</mopups:PopupPage>

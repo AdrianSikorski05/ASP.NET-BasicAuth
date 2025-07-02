@@ -14,105 +14,151 @@
 
     <ScrollView>
         <VerticalStackLayout Spacing="15">
+            <!-- Grid do nałożenia obrazu na border -->
+            <Grid HorizontalOptions="Center" VerticalOptions="Start">
+                <!-- Border z informacjami o książce -->
+                <Border StrokeShape="30" Padding="10" Margin="10,140,10,0" Grid.Row="0" BackgroundColor="{AppThemeBinding Light={DynamicResource White},Dark= {DynamicResource Gray500}}">
+                    <Border.Shadow>
+                        <Shadow Brush="{AppThemeBinding Light={DynamicResource Black},Dark= {DynamicResource Gray300}}"
+                                Offset="4,4"
+                                Radius="10"
+                                Opacity="0.75" />
+                    </Border.Shadow>
+                    <VerticalStackLayout>
+                        <!-- Odstęp na górze dla obrazu -->
+                        <Label Text="{Binding Book.Title}" 
+                               Margin="20,120,0,10" 
+                               FontSize="22" FontAttributes="Bold"
+                               Shadow="1,1,1,gray" 
+                               TextColor="{AppThemeBinding Light={DynamicResource Primary},Dark= {DynamicResource PrimaryDark}}"/>
+                        <Border StrokeShape="20" Padding="10" BackgroundColor="{AppThemeBinding Light={DynamicResource White},Dark= {DynamicResource OffBlack}}">
+                            <VerticalStackLayout Spacing="8">
+                                <!-- Informacje o książce -->
+                                <Label Margin="10,6,0,0" FontSize="13">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="Id:  " />
+                                            <Span Text="{Binding Book.Id}" TextColor="DarkGray"/>
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+                                <Label Margin="10,0,0,0" FontSize="13">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="Title:  " />
+                                            <Span Text="{Binding Book.Title}" TextColor="DarkGray"/>
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+                                <Label Margin="10,0,0,0" FontSize="13">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="Author:  " />
+                                            <Span Text="{Binding Book.Author}" TextColor="DarkGray"/>
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+                                <Label Margin="10,0,0,0" FontSize="13">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="Genre:  " />
+                                            <Span Text="{Binding Book.Genre}" TextColor="DarkGray"/>
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+                                <Label Margin="10,0,0,0" FontSize="13">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="Published date:  " />
+                                            <Span Text="{Binding Book.PublishedDate}" TextColor="DarkGray"/>
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+                                <Label Margin="10,0,0,0" FontSize="13">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="Price:  " />
+                                            <Span Text="{Binding Book.Price}" TextColor="DarkGray"/>
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+                                <Label Margin="10,0,0,0" FontSize="13">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="Stock:  " />
+                                            <Span Text="{Binding Book.Stock}" TextColor="DarkGray"/>
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+                                <Label Margin="10,0,0,0" FontSize="13">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="Description:  " />
+                                            <Span Text="{Binding Book.Description}" FontSize="Micro" TextColor="DarkGray" FontAttributes="Italic"/>
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+                            </VerticalStackLayout>
+                        </Border>
+                    </VerticalStackLayout>
+                </Border>
 
-            <AbsoluteLayout >
-                <!-- Obrazek -->
-                <Image WidthRequest="200" 
-                       HeightRequest="200" 
-                       Source="{Binding Book.ImageSource}" 
-                       Aspect="AspectFit" 
-                       AbsoluteLayout.LayoutFlags="All"
-                       AbsoluteLayout.LayoutBounds="0.5,0.5,200,230"/>
+                <!-- Obrazek nałożony na border -->
+                <Border StrokeThickness="0"
+                        StrokeShape="RoundRectangle 20"
+                        WidthRequest="180"
+                        HeightRequest="250"
+                        HorizontalOptions="Start"
+                        VerticalOptions="Start"
+                        Margin="25,10,10,0"
+                        Grid.Row="0"
+                        Shadow="2,2,2,gray">
+                    <Image Source="{Binding Book.ImageSource}"
+                           Aspect="AspectFill"
+                           WidthRequest="180"
+                           HeightRequest="250" />
+                </Border>
 
-                <!-- Ustawienia -->
+                <!-- Przycisk ustawień -->
+                <Button BackgroundColor="{AppThemeBinding Light={DynamicResource White},Dark= {DynamicResource Gray200}}" 
+                        HorizontalOptions="End" 
+                        VerticalOptions="Start"
+                        CornerRadius="50"
+                        Command="{Binding ShowPopupCommand}"
+                        IsVisible="{Binding IsVisibleConfig}"
+                        Margin="0,10,25,0"
+                        Grid.Row="0"
+                        Shadow="2,2,2,gray">
+                    <Button.ImageSource>
+                        <FontImageSource FontFamily="MaterialIcons" Glyph="&#xe5d4;" Color="{AppThemeBinding Light={DynamicResource Primary},Dark= {DynamicResource PrimaryDark}}" Size="20"/>
+                    </Button.ImageSource>
+                </Button>
+            </Grid>
 
-                <ImageButton AbsoluteLayout.LayoutBounds="0.95,0.02,30,30"
-                             AbsoluteLayout.LayoutFlags="PositionProportional"
-                             Command="{Binding ShowPopupCommand}"
-                             IsVisible="{Binding IsVisibleConfig}">
-                    <ImageButton.Source>
-                        <FontImageSource FontFamily="MaterialIcons" Glyph="&#xe8b8;" Color="#512BD4" Size="20"/>
-                    </ImageButton.Source>
-                </ImageButton>
-            </AbsoluteLayout>
 
-            <!-- Informacje o książce -->
-            <Border/>
-            <Label Margin="10,0,0,0" FontSize="15">
-                <Label.FormattedText>
-                    <FormattedString>
-                        <Span Text="Id:  " FontAttributes="Bold"/>
-                        <Span Text="{Binding Book.Id}"/>
-                    </FormattedString>
-                </Label.FormattedText>
-            </Label>
-            <Border/>
-            <Label Margin="10,0,0,0" FontSize="15">
-                <Label.FormattedText>
-                    <FormattedString>
-                        <Span Text="Title:  " FontAttributes="Bold"/>
-                        <Span Text="{Binding Book.Title}"/>
-                    </FormattedString>
-                </Label.FormattedText>
-            </Label>
-            <Border/>
-            <Label Margin="10,0,0,0" FontSize="15">
-                <Label.FormattedText>
-                    <FormattedString>
-                        <Span Text="Author:  " FontAttributes="Bold"/>
-                        <Span Text="{Binding Book.Author}"/>
-                    </FormattedString>
-                </Label.FormattedText>
-            </Label>
-            <Border/>
-            <Label Margin="10,0,0,0" FontSize="15">
-                <Label.FormattedText>
-                    <FormattedString>
-                        <Span Text="Genre:  " FontAttributes="Bold"/>
-                        <Span Text="{Binding Book.Genre}"/>
-                    </FormattedString>
-                </Label.FormattedText>
-            </Label>
-            <Border/>
-            <Label Margin="10,0,0,0" FontSize="15">
-                <Label.FormattedText>
-                    <FormattedString>
-                        <Span Text="Published date:  " FontAttributes="Bold"/>
-                        <Span Text="{Binding Book.PublishedDate}"/>
-                    </FormattedString>
-                </Label.FormattedText>
-            </Label>
-            <Border/>
-            <Label Margin="10,0,0,0" FontSize="15">
-                <Label.FormattedText>
-                    <FormattedString>
-                        <Span Text="Price:  " FontAttributes="Bold"/>
-                        <Span Text="{Binding Book.Price}"/>
-                    </FormattedString>
-                </Label.FormattedText>
-            </Label>
-            <Border/>
-            <Label Margin="10,0,0,0" FontSize="15">
-                <Label.FormattedText>
-                    <FormattedString>
-                        <Span Text="Stock:  " FontAttributes="Bold"/>
-                        <Span Text="{Binding Book.Stock}"/>
-                    </FormattedString>
-                </Label.FormattedText>
-            </Label>
-            <Border/>
-            <Label Margin="10,0,0,0" FontSize="15">
-                <Label.FormattedText>
-                    <FormattedString>
-                        <Span Text="Description:  " FontAttributes="Bold"/>
-                        <Span Text="{Binding Book.Description}" FontSize="Micro" TextColor="DarkGray" FontAttributes="Italic"/>
-                    </FormattedString>
-                </Label.FormattedText>
-            </Label>
-            <Border/>
 
+            <Grid ColumnDefinitions="*,Auto,*"
+                  VerticalOptions="Center"
+                  Margin="20,10">
+                <BoxView Grid.Column="0"
+                         HeightRequest="1"
+                         VerticalOptions="Center"
+                         BackgroundColor="Gray"
+                         Margin="0,0,10,0"/>
+                <Label Grid.Column="1"
+                       Text="Comments"
+                       FontAttributes="Bold"
+                       FontSize="17"
+                       TextColor="{AppThemeBinding Light={DynamicResource Primary},Dark= {DynamicResource PrimaryDark}}"
+                       HorizontalOptions="Center"/>
+                <BoxView Grid.Column="2"
+                         HeightRequest="1"
+                         VerticalOptions="Center"
+                         BackgroundColor="Gray"
+                         Margin="10,0,0,0"/>
+            </Grid>
+            
             <!--Dodaj komentarz-->
-            <Label Text="Comments" FontAttributes="Bold" Margin="10,0,0,0" FontSize="17"/>
             <Border BackgroundColor="Transparent"
                     Margin="20,5,20,0"
                     StrokeShape="15">
@@ -122,19 +168,21 @@
                                 Text="{Binding NewComment.Content}"
                                 Placeholder="Write your comment..."
                                 AutoSize="TextChanges"
-                                BackgroundColor="#f3f4f6"
-                                TextColor="Black"
+                                BackgroundColor="Transparent"                               
                                 Margin="10"
                                 FontSize="14"
-                                HeightRequest="100"/>
+                                HeightRequest="100"
+                                TextColor="{AppThemeBinding Light={DynamicResource Black},Dark= {DynamicResource White}}">
+
+                        </Editor>
                         <ImageButton BackgroundColor="Transparent"
                                      Scale="0.5"
                                      HorizontalOptions="End"
                                      VerticalOptions="Start"
-                                     Margin="20,10,10,0"
+                                     Margin="20,10,10,0"                                     
                                      Command="{Binding ClearCommentCommand}" >
                             <ImageButton.Source>
-                                <FontImageSource FontFamily="MaterialIcons" Glyph="&#xe5cd;" Color="Black" Size="20"/>
+                                <FontImageSource FontFamily="MaterialIcons" Glyph="&#xe5cd;" Color="{AppThemeBinding Light={DynamicResource Black},Dark= {DynamicResource White}}" Size="20"/>
                             </ImageButton.Source>
                         </ImageButton>
                     </Grid>
@@ -164,13 +212,13 @@
             <Border />
             <Button Text="Show comments" 
                             Background="Transparent" 
-                            TextColor="Black" 
+                            TextColor="{AppThemeBinding Dark={DynamicResource White} ,Light= {DynamicResource Black}}" 
                             FontSize="13"                            
                             HorizontalOptions="Fill"
                             Command="{Binding LoadCommentsCommand}"
                             IsVisible="{Binding IsLoading, Converter={StaticResource InverseBoolConverter}}">
                 <Button.ImageSource>
-                    <FontImageSource FontFamily="MaterialIcons" Glyph="&#xe7cd;" Color="#512BD4" Size="20"/>
+                    <FontImageSource FontFamily="MaterialIcons" Glyph="&#xe7cd;" Color="{AppThemeBinding Light={DynamicResource Primary},Dark= {DynamicResource PrimaryDark}}" Size="20"/>
                 </Button.ImageSource>
             </Button>
 
@@ -198,17 +246,27 @@
                                 </Grid.RowDefinitions>
 
                                 <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto,Auto,Auto" Margin="0,-9,0,0" >
-                                    <Label FontFamily="MaterialIcons" 
-                                               Text="&#xe851;" 
-                                               FontSize="24" 
-                                               TextColor="#512BD4"
-                                               Grid.Column="0"
-                                       VerticalOptions="Center"/>
+                                    <toolkit:AvatarView HorizontalOptions="Center" 
+                                                        VerticalOptions="Center" 
+                                                        WidthRequest="40" 
+                                                        HeightRequest="40"
+                                                        BorderWidth="0.5"
+                                                        BorderColor="Gray"
+                                                        TextColor="Black"
+                                                        StrokeShape="15"
+                                                        FontSize="15"
+                                                        CharacterSpacing="2"
+                                                        Margin="0,5,0,0"
+                                                        Text="{Binding Initials}"
+                                                        ImageSource="{Binding Avatar}"
+                                                        BackgroundColor="{Binding AvatarColor}">
+
+                                    </toolkit:AvatarView>
 
                                     <Label Text="{Binding Author}" 
                                                FontAttributes="Bold" 
                                                VerticalOptions="Center" 
-                                               Margin="5,0,0,0"
+                                               Margin="14,0,0,0"
                                                Grid.Column="1"/>
 
                                     <Label FontSize="13" 
@@ -237,15 +295,19 @@
                                              CommandParameter="{Binding .}"
                                              IsVisible="{Binding IsOwner}">
                                         <Button.ImageSource>
-                                            <FontImageSource FontFamily="MaterialIcons" Glyph="&#xe8b8;" Color="#512BD4" Size="20"/>
+                                            <FontImageSource FontFamily="MaterialIcons" Glyph="&#xe8b8;" Color="{AppThemeBinding Light={DynamicResource Primary},Dark= {DynamicResource PrimaryDark}}" Size="20"/>
                                         </Button.ImageSource>
                                     </Button>
                                 </Grid>
 
-                                <Label Text="{Binding Content}" Grid.Row="1" FontSize="13" TextColor="Gray"/>
+                                <Label Text="{Binding Content}" 
+                                       Grid.Row="1" 
+                                       FontSize="13" 
+                                       TextColor="Gray"
+                                       Margin="0,8,0,0"/>
                                 <Label Text="{Binding PublishedDate}" 
                                            Grid.Row="3" 
-                                           Margin="0,10,0,0"
+                                           Margin="0,5,0,0"
                                            HorizontalTextAlignment="End" 
                                            FontSize="13" 
                                            TextColor="Gray"/>

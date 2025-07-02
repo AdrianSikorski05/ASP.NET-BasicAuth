@@ -39,7 +39,6 @@ public partial class LoginContext(IUsersService usersService, ReadedBookStorage 
                 LabelVisibleLogin = true;
                 return;
             }
-
             var response = await usersService.Login(LoginUser);
             if (response.StatusCode == 200)
             {
@@ -65,6 +64,11 @@ public partial class LoginContext(IUsersService usersService, ReadedBookStorage 
                 });
             }
             else if (response.StatusCode == 401 && response.Message == "Invalid username or password")
+            {
+                ErrorMessageLogin = response.Message;
+                LabelVisibleLogin = true;
+            }
+            else if (response.StatusCode == 401 && response.Message == "Account is disabled.")
             {
                 ErrorMessageLogin = response.Message;
                 LabelVisibleLogin = true;

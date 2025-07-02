@@ -15,6 +15,7 @@ public partial class BooksContext : ObservableObject
     private readonly NavigationService _navigationService;
 
 
+
     private List<Book> _allLoadedBooks = new List<Book>();
 
     public BooksContext(IBooksService booksService, BookMenuPopup bookMenuPopup, ReadedBookStorage readedBookStorage
@@ -25,7 +26,6 @@ public partial class BooksContext : ObservableObject
         _readedBookStorage = readedBookStorage;
         _toReadBookStorage = toReadBookStorage;
         _navigationService = navigationService;
-
         _ = LoadBooksFromServerAsync();
     }
 
@@ -190,7 +190,7 @@ public partial class BooksContext : ObservableObject
             context?.LoadContext(book, false);
             await MopupService.Instance.PushAsync(_bookMenuPopup, true);
 
-            await Task.Delay(1000); // to mo¿e byæ w¹tpliwe UX, ale ok
+            await Task.Delay(700); // to mo¿e byæ w¹tpliwe UX, ale ok
             SetBookStatuses(Books);
         }
         finally

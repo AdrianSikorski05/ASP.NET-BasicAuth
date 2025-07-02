@@ -18,13 +18,14 @@
                                 WidthRequest="150" 
                                 HeightRequest="150"
                                 BorderWidth="0.5"
-                                BorderColor="Gray"                              
+                                BorderColor="Gray"
+                                TextColor="Black"
                                 StrokeShape="50"
                                 FontSize="40"
                                 CharacterSpacing="2"
-                                Text="{Binding Initials}"
-                                ImageSource="{Binding AvatarImage}"
-                                BackgroundColor="{Binding UserConfig.SelectedColor}">
+                                Text="{Binding UserConfig.Initials}"
+                                ImageSource="{Binding UserConfig.AvatarImage}"
+                                BackgroundColor="{Binding UserConfig.SelectedColorAsColor}">
 
             </toolkit:AvatarView>
             <Label Text="Choose bacground color:" FontAttributes="Bold" HorizontalOptions="Center" FontSize="10" />
@@ -32,7 +33,7 @@
             <!-- Color Picker Collection -->
             <CollectionView ItemsSource="{Binding AvailableColors}"
                     SelectionMode="Single"
-                    SelectedItem="{Binding UserConfig.SelectedColor}">
+                    SelectedItem="{Binding UserConfig.SelectedColorAsColor}">
                 <CollectionView.ItemsLayout>
                     <LinearItemsLayout Orientation="Horizontal" />
                 </CollectionView.ItemsLayout>
@@ -70,28 +71,28 @@
                 <Grid RowDefinitions="*,*,*,*,*"  ColumnDefinitions="auto,auto,*" RowSpacing="10">
                     <Image Grid.Column="0" Margin="0,0,2,0">
                         <Image.Source>
-                            <FontImageSource Glyph="&#xea67;" FontFamily="MaterialIcons" Size="20" Color="#512BD4"/>
+                            <FontImageSource Glyph="&#xea67;" FontFamily="MaterialIcons" Size="20" Color="{AppThemeBinding Light={DynamicResource Primary},Dark= {DynamicResource PrimaryDark}}"/>
                         </Image.Source>
                     </Image>
                     <Label Text="Name: " VerticalOptions="Center" Grid.Column="1" />
                     <Entry Placeholder="Name" Text="{Binding UserConfig.Name}" Keyboard="Text" Grid.Column="2" ClearButtonVisibility="WhileEditing"/>
                     <Image Grid.Column="0" Grid.Row="1" Margin="0,0,2,0">
                         <Image.Source>
-                            <FontImageSource Glyph="&#xea67;" FontFamily="MaterialIcons" Size="20" Color="#512BD4"/>
+                            <FontImageSource Glyph="&#xea67;" FontFamily="MaterialIcons" Size="20" Color="{AppThemeBinding Light={DynamicResource Primary},Dark= {DynamicResource PrimaryDark}}"/>
                         </Image.Source>
                     </Image>
                     <Label Text="Surename: " VerticalOptions="Center" Grid.Column="1" Grid.Row="1"/>
                     <Entry Placeholder="Surename" Text="{Binding UserConfig.Surename}" Keyboard="Text" Grid.Row="1" Grid.Column="2" ClearButtonVisibility="WhileEditing"/>
                     <Image Grid.Column="0" Grid.Row="2" Margin="0,0,4,0">
                         <Image.Source>
-                            <FontImageSource Glyph="&#xe0d0;" FontFamily="MaterialIcons" Size="20" Color="#512BD4"/>
+                            <FontImageSource Glyph="&#xe0d0;" FontFamily="MaterialIcons" Size="20" Color="{AppThemeBinding Light={DynamicResource Primary},Dark= {DynamicResource PrimaryDark}}"/>
                         </Image.Source>
                     </Image>
                     <Label Text="Email: " VerticalOptions="Center" Grid.Row ="2" Grid.Column="1"/>
                     <Entry Placeholder="Email" Text="{Binding UserConfig.Email}" Keyboard="Email" Grid.Row ="2" Grid.Column="2" ClearButtonVisibility="WhileEditing"/>
                     <Image Grid.Column="0" Grid.Row="3" Margin="0,0,4,0">
                         <Image.Source>
-                            <FontImageSource Glyph="&#xe0e8;" FontFamily="MaterialIcons" Size="20" Color="#512BD4"/>
+                            <FontImageSource Glyph="&#xe0e8;" FontFamily="MaterialIcons" Size="20" Color="{AppThemeBinding Light={DynamicResource Primary},Dark= {DynamicResource PrimaryDark}}"/>
                         </Image.Source>
                     </Image>
                     <Label Text="Phone: " VerticalOptions="Center" Grid.Row ="3" Grid.Column="1"/>
@@ -103,14 +104,14 @@
                                     <DataTrigger TargetType="Image" Binding="{Binding UserConfig.Theme}" Value="Light">
                                         <Setter Property="Source">
                                             <Setter.Value>
-                                                <FontImageSource Glyph="&#xe518;" FontFamily="MaterialIcons" Size="20" Color="#512BD4"/>
+                                                <FontImageSource Glyph="&#xe518;" FontFamily="MaterialIcons" Size="20" Color="{AppThemeBinding Light={DynamicResource Primary},Dark= {DynamicResource PrimaryDark}}"/>
                                             </Setter.Value>
                                         </Setter>
                                     </DataTrigger>
                                     <DataTrigger TargetType="Image" Binding="{Binding UserConfig.Theme}" Value="Dark">
                                         <Setter Property="Source">
                                             <Setter.Value>
-                                                <FontImageSource Glyph="&#xe51c;" FontFamily="MaterialIcons" Size="20" Color="#512BD4"/>
+                                                <FontImageSource Glyph="&#xe51c;" FontFamily="MaterialIcons" Size="20" Color="{AppThemeBinding Light={DynamicResource Primary},Dark= {DynamicResource PrimaryDark}}"/>
                                             </Setter.Value>
                                         </Setter>
                                     </DataTrigger>
@@ -122,47 +123,81 @@
                     <Picker Title="Theme" ItemsSource="{Binding Themes}" SelectedItem="{Binding UserConfig.Theme}" Grid.Row ="4" Grid.Column="2"/>
                 </Grid>
 
-
+                <Border Margin="0,30,0,10"/>
+                
                 <toolkit:Expander Margin="0,15,0,0" >
                     <toolkit:Expander.Header>
-                        <Label Text="Change password" TextDecorations="Underline" TextColor="Blue"/>
+                        <Label Text="Change password" TextDecorations="Underline" TextColor="{AppThemeBinding Light={DynamicResource Primary},Dark= {DynamicResource PrimaryDark}}"/>
                     </toolkit:Expander.Header>
                     <toolkit:Expander.Content>
-                        <Grid ColumnDefinitions="auto,auto,*" RowDefinitions="*,*" >
+                        <Grid ColumnDefinitions="auto,auto,*" RowDefinitions="*,*,*,*" RowSpacing="-5">
                             <Image Grid.Column="0" Margin="0,0,4,0">
                                 <Image.Source>
                                     <FontImageSource Glyph="&#xe897;"
                                                      FontFamily="MaterialIcons"
                                                      Size="20"
-                                                     Color="#512BD4"/>
+                                                     Color="{AppThemeBinding Light={DynamicResource Primary},Dark= {DynamicResource PrimaryDark}}"/>
                                 </Image.Source>
                             </Image>
                             <Label Text="Password: " Grid.Column="1" VerticalOptions="Center"/>
                             <vm:PasswordEntry Grid.Column="2" 
                                               Placeholder="Password"
-                                              FontSize="14"/>
+                                              FontSize="14"
+                                              Text="{Binding User.Password}"/>
                             <Image Grid.Column="0" Grid.Row="1" Margin="0,0,4,0">
                                 <Image.Source>
                                     <FontImageSource Glyph="&#xe897;"
                                                      FontFamily="MaterialIcons"
                                                      Size="20"
-                                                     Color="#512BD4"/>
+                                                     Color="{AppThemeBinding Light={DynamicResource Primary},Dark= {DynamicResource PrimaryDark}}"/>
                                 </Image.Source>
                             </Image>
                             <Label Text="Confirm: " Grid.Column="1" Grid.Row="1" VerticalOptions="Center"/>
                             <vm:PasswordEntry Grid.Column="2" 
                                               Grid.Row="1"
                                               Placeholder="Password"
-                                              FontSize="14"/>
+                                              FontSize="14"
+                                              Text="{Binding User.ConfirmPassword}"/>
+
+
+                            <Border Stroke="Red" 
+                                    StrokeThickness="2" 
+                                    BackgroundColor="#FFEBEE" 
+                                    Padding="15,10"
+                                    Opacity="0.7"
+                                    StrokeShape="10"
+                                    IsVisible="{Binding ErrorMessageVisibility}"
+                                    Grid.ColumnSpan="3" Grid.Row="2"
+                                    Margin="0,10,0,10">
+                                <Border.Shadow>
+                                    <Shadow Brush="Red" Offset="2,2" Radius="4" Opacity="0.3"/>
+                                </Border.Shadow>
+                                <Label Text="{Binding ErrorMessage}" 
+                                       TextColor="#C62828" 
+                                       FontSize="9"
+                                       FontAttributes="Bold"
+                                       HorizontalOptions="Center"/>
+                            </Border>
+
+
+
+                            <Button Grid.ColumnSpan="3" Grid.Row="3" Text="Change password" Command="{Binding ChangePasswordCommand}">
+                                <Button.ImageSource>
+                                    <FontImageSource Glyph="&#xe161;" FontFamily="MaterialIcons" Size="20" Color="White"/>
+                                </Button.ImageSource>
+                            </Button>
                         </Grid>
                     </toolkit:Expander.Content>
                 </toolkit:Expander>
+
+                <Border Margin="0,30,0,10"/>
+                
                 <StackLayout Orientation="Vertical" Spacing="4" Margin="0,15,0,0">
                     <Label FontSize="12">
                         <Label.FormattedText>
                             <FormattedString>
                                 <Span Text="Role: "/>
-                                <Span/>
+                                <Span Text="{Binding User.Role}" FontAttributes="Bold"/>
                             </FormattedString>
                         </Label.FormattedText>
                     </Label>
@@ -170,25 +205,29 @@
                         <Label.FormattedText>
                             <FormattedString>
                                 <Span Text="Account creation date: "/>
-                                <Span/>
+                                <Span Text="{Binding User.CreatedAt}" FontAttributes="Bold"/>
                             </FormattedString>
                         </Label.FormattedText>
                     </Label>
                 </StackLayout>
-                
+                <Border Margin="0,30,0,0"/>
             </VerticalStackLayout>
 
             <Button Text="Save"
-                    BackgroundColor="#512BD4"
+                    BackgroundColor="{AppThemeBinding Light={DynamicResource Primary},Dark= {DynamicResource PrimaryDark}}"
                     TextColor="White"
                     CornerRadius="8"
-                    Command="{Binding SaveConfigCommand}" >
+                    Command="{Binding SaveUserConfigCommand}" >
                 <Button.ImageSource>
                     <FontImageSource Glyph="&#xe161;" FontFamily="MaterialIcons" Size="20" Color="White"/>
                 </Button.ImageSource>
             </Button>
 
-            <Button Text="Delete Account" Margin="0,2,0,0" BackgroundColor="#B22222">
+            <Button Text="Delete Account" 
+                    Margin="0,2,0,0" 
+                    TextColor="White"
+                    BackgroundColor="#B22222" 
+                    Command="{Binding DeleteAccountCommand}">
                 <Button.ImageSource>
                     <FontImageSource Glyph="&#xf03e;"
                                      FontFamily="MaterialIcons"

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<mopup:PopupPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="AplikacjaAndroid.RefreshTokenPopupView"
+             xmlns:mopup ="clr-namespace:Mopups.Pages;assembly=Mopups"
+             BackgroundColor="#80000000"
+             Padding="10"
+             CloseWhenBackgroundIsClicked="False">
+    <Border BackgroundColor="White"
+            WidthRequest="280"                      
+            VerticalOptions="Center">
+        <Border.StrokeShape>
+            <RoundRectangle CornerRadius="15,15,15,15"/>
+        </Border.StrokeShape>
+
+        <VerticalStackLayout >
+            <Border/>
+            <HorizontalStackLayout HorizontalOptions="Center">
+                <Image>
+                    <Image.Source>
+                        <FontImageSource FontFamily="MaterialIcons" Glyph="&#xe86a;" Color="{AppThemeBinding Light={DynamicResource Primary},Dark= {DynamicResource PrimaryDark}}" Size="20"/>
+                    </Image.Source>
+                </Image> 
+                <Label Text="Session"
+                       FontAttributes="Bold"
+                       FontSize="16"
+                       HorizontalOptions="Center"
+                       Padding="10"
+                       TextColor="{AppThemeBinding Light={DynamicResource Primary},Dark= {DynamicResource PrimaryDark}}"/>
+            </HorizontalStackLayout>
+            <Border/>
+            <Label Text="Do you want to extend your session?" HorizontalOptions="Center" VerticalOptions="Center" Padding="10" TextColor="Black"/>
+            <Grid ColumnDefinitions="*,*" Padding="10" ColumnSpacing="10">
+                <Button Grid.Column="0" Text="Extend" Command="{Binding ExtendCommand}">
+                    <Button.ImageSource>
+                        <FontImageSource FontFamily="MaterialIcons" Glyph="&#xe5ca;" Color="LightGreen" Size="20"/>
+                    </Button.ImageSource>
+                </Button>
+                <Button Grid.Column="1" Text="No" Command="{Binding CloseCommand}">
+                    <Button.ImageSource>
+                        <FontImageSource FontFamily="MaterialIcons" Glyph="&#xe5c9;" Color="Red" Size="20"/>
+                    </Button.ImageSource>
+                </Button>
+            </Grid>
+            <Border/>
+        </VerticalStackLayout>
+
+
+    </Border>
+</mopup:PopupPage>

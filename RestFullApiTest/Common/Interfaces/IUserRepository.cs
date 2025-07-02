@@ -12,5 +12,6 @@ namespace RestFullApiTest
         Task<(User,int)> UpdateUser(UpdateUserDto updateUserDto, IDbConnection? connection = null, IDbTransaction? transaction = null);
         Task<int> DeleteUser(DeleteUserDto deleteUserDto, IDbConnection? connection = null, IDbTransaction? transaction = null);
         Task<int> DeleteUserById(int id, IDbConnection? connection = null, IDbTransaction? transaction = null);
+        Task<UserConfig?> GetUserConfig(int userId, IDbConnection connection = null, IDbTransaction? transaction = null);
     }
 }

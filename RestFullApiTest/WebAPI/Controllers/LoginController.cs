@@ -20,6 +20,9 @@ namespace RestFullApiTest
             if (user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.Password))
                 return Unauthorized(ResponseResult.Unauthorized("Invalid username or password"));
 
+            if (!user.Enabled)
+                return Unauthorized(ResponseResult.Unauthorized("Account is disabled."));
+
             var token = jwt.GenerateToken(user);
             var refreshToken = jwt.GenerateRefreshToken();
 
@@ -56,20 +59,23 @@ namespace RestFullApiTest
 
         [Authorize]
         [HttpGet("me")]
-        public async Task<IActionResult> GetCurrentUser()
-        {
-            var username = User.Identity?.Name;
+        public async Task<IActionResult> GetCurrentUser([FromServices] IUserRepository repo)
+        {            
             var id = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var role = User.FindFirst(ClaimTypes.Role)?.Value;
+            var user = await repo.GetUserById(Convert.ToInt32(id!));
+            var config = await repo.GetUserConfig(Convert.ToInt32(id!));
 
-            var user = new User
+            var whoIam = new User
             {
                 Id = Convert.ToInt32(id),
-                Username = username!,
-                Role = role!
+                Username = user.Username,
+                Role = user.Role,
+                UserConfig = config,
+                CreatedAt = user.CreatedAt,
+                Enabled  = user.Enabled
             };
 
-            return Ok(user);
+            return Ok(whoIam);
         }
 
         [AllowAnonymous]
@@ -85,7 +91,9 @@ namespace RestFullApiTest
             var user = new CreateUserDto
             {
                 Username = dto.Username,
-                Password = dto.Password
+                Password = dto.Password,
+                UserConfig = dto.UserConfig,
+                CreatedAt = dto.CreatedAt
             };
 
             await repo.AddUser(user);

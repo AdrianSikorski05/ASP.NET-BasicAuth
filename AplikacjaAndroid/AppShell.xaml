@@ -11,11 +11,11 @@
     FlyoutBehavior="Flyout"
     FlyoutVerticalScrollMode="Disabled"
     FlyoutWidth="250"
-    FlyoutIsPresented="{Binding Navigation}">
+    FlyoutIsPresented="{Binding Navigation}"
+    IsBusy="{Binding IsBusy}">
 
     <Shell.FlyoutHeader>
-        <Grid BackgroundColor="#512BD4" 
-              HeightRequest="100">
+        <Grid BackgroundColor="{AppThemeBinding Light={DynamicResource Primary},Dark= {DynamicResource PrimaryDark}}">
             <StackLayout>
                 <Grid ColumnDefinitions="Auto,*,Auto">
                     <Image Grid.Column="0"
@@ -33,6 +33,19 @@
                  Command="{Binding CloseTheFlyoutPresenterCommand}"
                  HorizontalOptions="End"/>
                 </Grid>
+                <toolkit:AvatarView HorizontalOptions="Center" 
+                                    VerticalOptions="Center" 
+                                    WidthRequest="70" 
+                                    HeightRequest="70"
+                                    BorderWidth="0.5"
+                                    BorderColor="Gray"
+                                    TextColor="Black"
+                                    StrokeShape="25"                                    
+                                    CharacterSpacing="2"
+                                    Text="{Binding UserData.User.UserConfig.Initials}"
+                                    ImageSource="{Binding UserData.User.UserConfig.AvatarImage}"
+                                    BackgroundColor="{Binding UserData.User.UserConfig.SelectedColorAsColor}"/>
+                
                 <Label Text="Menu" 
                        TextColor="White" 
                        FontSize="24" 
@@ -47,7 +60,7 @@
         <FlyoutItem.Icon>
             <FontImageSource FontFamily="MaterialIcons" 
                          Glyph="&#xea19;" 
-                         Color="#512BD4"/>
+                         Color="{AppThemeBinding Light={DynamicResource Primary},Dark= {DynamicResource PrimaryDark}}"/>
         </FlyoutItem.Icon>
         <ShellContent Title="Books" Route="books" ContentTemplate="{DataTemplate local:BooksView}" />
     </FlyoutItem>
@@ -72,7 +85,7 @@
     <FlyoutItem Title="Users"                        
         IsVisible="{Binding IsVisibleAdminTab}">
         <FlyoutItem.Icon>
-            <FontImageSource FontFamily="MaterialIcons" Glyph="&#xe7fd;" Color="#512BD4" />
+            <FontImageSource FontFamily="MaterialIcons" Glyph="&#xe7fd;" Color="{AppThemeBinding Light={DynamicResource Primary},Dark= {DynamicResource PrimaryDark}}" />
         </FlyoutItem.Icon>
         <ShellContent Title="Users" Route="users" ContentTemplate="{DataTemplate local:UsersView}" />
     </FlyoutItem>
@@ -95,7 +108,7 @@
                 <Button BackgroundColor="Transparent"
                         Command="{Binding OpenUserConfigCommand}">
                     <Button.ImageSource>
-                        <FontImageSource FontFamily="MaterialIcons" Glyph="&#xf02e;" Color="#512BD4" />
+                        <FontImageSource FontFamily="MaterialIcons" Glyph="&#xf02e;" Color="{AppThemeBinding Light={DynamicResource Primary},Dark= {DynamicResource PrimaryDark}}" />
                     </Button.ImageSource>
                     
                 </Button>
@@ -110,7 +123,7 @@
                     HorizontalOptions="Fill" 
                     VerticalOptions="End" 
                     Margin="0,10,0,0"
-                    BackgroundColor="#512BD4"
+                    BackgroundColor="{AppThemeBinding Light={DynamicResource Primary},Dark= {DynamicResource PrimaryDark}}"
                     TextColor="White">
                 <Button.ImageSource>
                     <FontImageSource FontFamily="MaterialIcons" Glyph="&#xe9ba;" Color="White" Size="16"/>

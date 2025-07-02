@@ -22,6 +22,19 @@ namespace RestFullApiTest
         /// </summary>
         public string Role { get; set; }
         /// <summary>
+        /// User configuration details
+        /// </summary>
+        public UserConfig UserConfig { get; set; }
+        /// <summary>
+        /// Created date of the user account
+        /// </summary>
+        public DateTime CreatedAt { get; set; }
+        /// <summary>
+        /// Is user enabled?
+        /// </summary>
+        public bool Enabled { get; set; }
+
+        /// <summary>
         /// Constructor to initialize a new instance of the User class
         /// </summary>
         /// <param name="id"></param>

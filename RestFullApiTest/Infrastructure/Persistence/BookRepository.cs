@@ -263,16 +263,19 @@ namespace RestFullApiTest
                 var sqlCount = @$"SELECT CAST(COUNT(*) AS int) FROM Books WHERE 1=1 ";
 
                 var sb = new StringBuilder();
-                sb.Append(@$"SELECT Id [{nameof(Book.Id)}],
-                                Title [{nameof(Book.Title)}],
-                                Author [{nameof(Book.Author)}],
-                                Genre [{nameof(Book.Genre)}],
-                                PublishedDate [{nameof(Book.PublishedDate)}],
-                                Price [{nameof(Book.Price)}],
-                                Stock [{nameof(Book.Stock)}],
-                                Image [{nameof(Book.Image)}],
-                                Description [{nameof(Book.Description)}]
-                        FROM Books
+                sb.Append(@$"SELECT 
+                                b.Id [{nameof(Book.Id)}],
+                                b.Title [{nameof(Book.Title)}],
+                                b.Author [{nameof(Book.Author)}],
+                                b.Genre [{nameof(Book.Genre)}],
+                                b.PublishedDate [{nameof(Book.PublishedDate)}],
+                                b.Price [{nameof(Book.Price)}],
+                                b.Stock [{nameof(Book.Stock)}],
+                                b.Image [{nameof(Book.Image)}],
+                                b.Description [{nameof(Book.Description)}],
+                                ROUND(SUM(c.Rate) * 1.0 / NULLIF(COUNT(c.Rate), 0), 1) [{nameof(Book.AverageRating)}]
+                            FROM Books b
+                            LEFT JOIN Comments c ON b.Id = c.BookId
                         Where 1 = 1 ");
                 var parameters = new DynamicParameters();
 
@@ -292,6 +295,8 @@ namespace RestFullApiTest
                     sb.Append($" and {nameof(BookFilter.Title)} = @Title ");
                     parameters.Add($"Title", filter.Title);
                 }
+
+                sb.Append(" group by b.Id, b.Title, b.Author, b.Genre, b.PublishedDate, b.Price, b.Stock, b.Image, b.Description ");
 
                 var sortColumn = filter.SortBy.ToLower() switch
                 {

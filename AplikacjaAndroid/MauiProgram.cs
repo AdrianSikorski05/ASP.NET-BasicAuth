@@ -1,8 +1,6 @@
 ﻿
 using CommunityToolkit.Maui;
-using CommunityToolkit.Maui.Core;
 using Microsoft.Extensions.Logging;
-using Microsoft.Maui.Controls.Embedding;
 using Mopups.Hosting;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 
@@ -64,12 +62,18 @@ namespace AplikacjaAndroid
             builder.Services.AddTransientPopup<CommentPopupView>();
             builder.Services.AddTransient<CommentPopupContext>();
 
+            builder.Services.AddTransientPopup<RefreshTokenPopupView>();
+            builder.Services.AddTransient<RefreshTokenPopupContext>();
+
+            builder.Services.AddTransientPopup<ConfirmeDeleteAccountView>();
+            builder.Services.AddTransient<ConfirmeDeleteAccountContext>();
+
             builder.Services.AddTransientPopup<SuccessPopupView>();
 
             // Serwisy
-            builder.Services.AddSingleton<IUsersService, UsersService>();
             builder.Services.AddSingleton<IBooksService, BooksService>();
             builder.Services.AddSingleton<ICommentService, CommentService>();
+            builder.Services.AddSingleton<IUsersService, UsersService>();
             builder.Services.AddSingleton<NavigationService>();
 
             //Storage

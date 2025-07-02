@@ -8,16 +8,25 @@ namespace AplikacjaAndroid
     {
         [Required]
         [StringLength(12, MinimumLength = 4, ErrorMessage = "Username length must be between 4 and 12 characters.")]
-        public string Username { get; set; } = string.Empty;
+        public string? Username { get; set; } = string.Empty;
         [Required]
         [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$",
         ErrorMessage = "Password must be at least 8 characters, include upper, lower, digit and special char.")]
-        public string Password { get; set; } = string.Empty;
+        public string? Password { get; set; } = string.Empty;
 
         [JsonIgnore]
         [Required]
         public string ConfirmPassword { get; set; } = string.Empty;
 
+        /// <summary>
+        /// User configuration details
+        /// </summary>
+        public UserConfig? UserConfig { get; set; } =  new UserConfig();
+
+        /// <summary>
+        /// Created date of the user account
+        /// </summary>
+        public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
         public bool IsValid()
         {
             ValidateAllProperties();
